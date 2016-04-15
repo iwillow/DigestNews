@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="QuoteLayout">
+        <attr name="left_border_width" format="dimension" />
+        <attr name="left_border_color" format="color" />
+        <attr name="quote_text_size" format="dimension" />
+        <attr name="quote_text_color" format="color" />
+        <attr name="author_text_size" format="dimension" />
+        <attr name="author_text_color" format="color" />
+    </declare-styleable>
+
+</resources>
