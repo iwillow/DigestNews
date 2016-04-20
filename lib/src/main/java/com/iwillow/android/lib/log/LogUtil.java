@@ -3,7 +3,7 @@ package com.iwillow.android.lib.log;
 import android.util.*;
 
 /**
- * Created by Administrator on 2016/4/20.
+ * Created by https://www.github.com/iwillow on 2016/4/20.
  */
 public class LogUtil {
     public static final int NONE = -1;
