@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 /**
- * Created by https://github.com/ on 2016/4/19.
+ * Created by https://github.com/iwillow on 2016/4/19.
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
