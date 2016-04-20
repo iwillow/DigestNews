@@ -1,4 +1,4 @@
-package com.iwillow.android.digestnews.widget;
+package com.iwillow.android.digestnews.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
