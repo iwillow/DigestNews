@@ -1,0 +1,338 @@
+package com.iwillow.android.digestnews;
+
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.content.Context;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.iwillow.android.digestnews.view.CircleView;
+import com.iwillow.android.digestnews.view.SunAndMoon;
+import com.iwillow.android.lib.log.LogUtil;
+import com.iwillow.android.lib.widget.BaseFragment;
+
+
+/**
+ * Created by https://github.com/iwillow  2016/4/13.
+ */
+public class ProductGuideDialog extends DialogFragment {
+
+    private final String TAG = ProductGuideDialog.class.getSimpleName();
+
+
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+    private ViewPager mViewPager;
+    private boolean mViewPagerScrollingLeft;
+    private float mPreviousPositionOffset;
+    private int mPreviousPosition;
+    private int mPageSelected;
+    private int mViewPagerScrollState = -1;
+    private CircleView mCircleView;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+    private FragmentPagerAdapter adapter;
+    private OnFragmentInteractionListener mListener;
+
+    public ProductGuideDialog() {
+
+
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment ProductGuideDialog.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static ProductGuideDialog newInstance(String param1, String param2) {
+        ProductGuideDialog fragment = new ProductGuideDialog();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Black_NoTitleBar);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View root = inflater.inflate(R.layout.fragment_product_guide_dialog, container, false);
+        mViewPager = (ViewPager) root.findViewById(R.id.viewPager);
+        final TextView skip = (TextView) root.findViewById(R.id.skip);
+        Typeface typeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Thin.ttf");
+        skip.setTypeface(typeFace);
+        skip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProductGuideDialog.this.dismiss();
+            }
+        });
+        adapter = new ProductTourPagerAdapter(getChildFragmentManager());
+        mViewPager.setAdapter(adapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                //LogUtil.d(TAG, "onPageScrolled called(position=" + position + ",positionOffset=" + positionOffset + ",positionOffsetPixels=" + positionOffsetPixels + ")");
+                // Scrolling to left or right
+                if ((positionOffset > mPreviousPositionOffset && position == mPreviousPosition) || (positionOffset < mPreviousPositionOffset && position > mPreviousPosition)) {
+                    mViewPagerScrollingLeft = true;
+                } else if (positionOffset < mPreviousPositionOffset) {
+
+                    mViewPagerScrollingLeft = false;
+                }
+                //LogUtil.d(TAG,"position="+position+",mPreviousPosition="+mPreviousPosition+",positionOffset="+positionOffset+",mPreviousPositionOffset="+mPreviousPositionOffset);
+
+                mPreviousPositionOffset = positionOffset;
+                mPreviousPosition = position;
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mPageSelected = position;
+                LogUtil.d(TAG, "position=" + mPageSelected);
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                mViewPagerScrollState = state;
+                final View page = getView();
+                final View img1 = page.findViewById(R.id.img1);
+                final View img2 = page.findViewById(R.id.img2);
+                final View img3 = page.findViewById(R.id.img3);
+                final View img4 = page.findViewById(R.id.img4);
+                final View video = page.findViewById(R.id.video);
+                final View infoGraphic = page.findViewById(R.id.infoGraphic);
+                final View stockChart = page.findViewById(R.id.stockChart);
+                final View sound = page.findViewById(R.id.sound);
+                final View map = page.findViewById(R.id.map);
+                final View wikipedia = page.findViewById(R.id.wikipedia);
+                final View quote = page.findViewById(R.id.quote);
+                switch (mViewPagerScrollState) {
+                    case ViewPager.SCROLL_STATE_IDLE:
+                        if (mViewPager.getCurrentItem() == 0 && video != null && infoGraphic != null && stockChart != null && sound != null && map != null && quote != null && wikipedia != null) {
+                            if (video.getAlpha() < 1) {
+                                AnimatorSet set = new AnimatorSet();
+                                Animator animatorVideo = ObjectAnimator.ofFloat(video, "alpha", 0f, 1f);
+                                Animator animatorInfoGraphic = ObjectAnimator.ofFloat(infoGraphic, "alpha", 0f, 1f);
+                                Animator animatorStockChart = ObjectAnimator.ofFloat(stockChart, "alpha", 0f, 1f);
+                                Animator animatorSound = ObjectAnimator.ofFloat(sound, "alpha", 0f, 1f);
+                                Animator animatorMap = ObjectAnimator.ofFloat(map, "alpha", 0f, 1f);
+                                Animator animatorQuote = ObjectAnimator.ofFloat(quote, "alpha", 0f, 1f);
+                                Animator animatorWikipedia = ObjectAnimator.ofFloat(wikipedia, "alpha", 0f, 1f);
+                                set.setDuration(250);
+                                set.playSequentially(animatorVideo, animatorInfoGraphic, animatorStockChart, animatorSound, animatorMap, animatorQuote, animatorWikipedia);
+                                set.start();
+                            }
+                        } else if (mViewPager.getCurrentItem() != 0 && video != null && infoGraphic != null && stockChart != null && sound != null && map != null && quote != null && wikipedia != null) {
+                            video.setAlpha(0f);
+                            infoGraphic.setAlpha(0f);
+                            stockChart.setAlpha(0f);
+                            sound.setAlpha(0f);
+                            map.setAlpha(0f);
+                            quote.setAlpha(0f);
+                            wikipedia.setAlpha(0f);
+                        }
+
+
+                        if (img1 != null && img2 != null && img3 != null && img4 != null && mViewPager.getCurrentItem() == 1) {
+
+                            if (img1.getAlpha() < 1) {
+                                AnimatorSet animatorSet = new AnimatorSet();
+                                Animator animator1 = ObjectAnimator.ofFloat(img1, "alpha", 0f, 1f);
+                                Animator animator2 = ObjectAnimator.ofFloat(img2, "alpha", 0f, 1f);
+                                Animator animator3 = ObjectAnimator.ofFloat(img3, "alpha", 0f, 1f);
+                                Animator animator4 = ObjectAnimator.ofFloat(img4, "alpha", 0f, 1f);
+                                animatorSet.setDuration(200);
+                                animatorSet.playSequentially(animator1, animator2, animator3, animator4);
+                                animatorSet.start();
+                            }
+
+                        }
+                        if (mCircleView != null && mViewPager.getCurrentItem() == 2) {
+                            mCircleView.setState(CircleView.BitmapState.ROTATION);
+                        }
+
+                        break;
+/*                  case ViewPager.SCROLL_STATE_DRAGGING:
+                    case ViewPager.SCROLL_STATE_SETTLING:
+                        break;*/
+                    default:
+                        if (img1 != null && img2 != null && img3 != null && img4 != null && mViewPager.getCurrentItem() != 1) {
+                            img1.setAlpha(0f);
+                            img2.setAlpha(0f);
+                            img3.setAlpha(0f);
+                            img4.setAlpha(0f);
+                        }
+
+                        break;
+                }
+            }
+        });
+        mViewPager.setPageTransformer(true, new ViewPager.PageTransformer() {
+            @Override
+            public void transformPage(View page, float position) {
+
+                if (page.findViewById(R.id.sunAndMoon) != null) {
+
+                    SunAndMoon sunAndMoon = (SunAndMoon) page.findViewById(R.id.sunAndMoon);
+                    sunAndMoon.rotationAnim(mViewPagerScrollingLeft, position);
+
+                }
+
+                if (page.findViewById(R.id.circleView) != null) {
+                    mCircleView = (CircleView) page.findViewById(R.id.circleView);
+                    mCircleView.setOnStateChangedListener(new CircleView.OnStateChangedListener() {
+                        @Override
+                        public void onRadicalMoveOver() {
+                            ProductGuideDialog.this.dismiss();
+                        }
+                    });
+                    if (mViewPagerScrollState != ViewPager.SCROLL_STATE_IDLE) {
+                        mCircleView.translateTheSpheres(position);
+                    }
+                }
+
+            }
+        });
+        return root;
+    }
+
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
+    public class ProductTourPagerAdapter extends FragmentPagerAdapter {
+
+
+        public ProductTourPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return PlaceholderFragment.newInstance(position);
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+    }
+
+    public static class PlaceholderFragment extends BaseFragment {
+
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        public PlaceholderFragment() {
+        }
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        protected int getLayoutId() {
+            switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
+                case 0:
+                    return R.layout.product_guide_page1;
+                case 1:
+                    return R.layout.product_guide_page2;
+                case 2:
+                    return R.layout.product_guide_page3;
+            }
+            return -1;
+        }
+
+        @Override
+        protected void initView(View rootView) {
+            final Button start = $(rootView, R.id.start);
+            final CircleView circleView = $(rootView, R.id.circleView);
+            if (start != null) {
+                start.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (circleView != null) {
+                            circleView.setState(CircleView.BitmapState.RADICAL);
+                        }
+                    }
+                });
+            }
+        }
+    }
+}

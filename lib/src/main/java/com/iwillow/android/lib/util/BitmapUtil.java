@@ -21,7 +21,7 @@ public class BitmapUtil {
      * @param config  bitmap config
      * @return clipped  circle bitmap
      */
-    public Bitmap createCircleBitmap(Bitmap src, boolean recycle, Bitmap.Config config) {
+    public static Bitmap createCircleBitmap(Bitmap src, boolean recycle, Bitmap.Config config) {
         if (src == null) {
             return null;
         }
