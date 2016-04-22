@@ -2,8 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical">
+    android:background="@android:color/white">
 
     <ImageView
         android:id="@+id/sound"
@@ -80,5 +79,28 @@
         android:alpha="0"
         android:src="@mipmap/onboarding_1_atom_wikipedia" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="120dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+
+            style="@style/guide_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/page1_small_title" />
+
+        <TextView
+            style="@style/guide_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/page1_big_title" />
+
+    </LinearLayout>
 
 </FrameLayout>

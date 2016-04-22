@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="120dp"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -48,6 +48,7 @@
         android:text="@string/learn"
         android:textColor="@android:color/white"
         android:textSize="20sp" />
+
 
 
 </FrameLayout>

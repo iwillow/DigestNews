@@ -28,5 +28,24 @@
 
     </declare-styleable>
 
+    <!--
+     see  https://github.com/JakeWharton/ViewPagerIndicator/blob/master/library/res/values/vpi__attrs.xml
+    -->
+    <declare-styleable name="CirclePageIndicator">
+        <attr name="centered" format="boolean" />
+        <attr name="pageColor" format="color" />
+        <attr name="fillColor" format="color" />
+        <attr name="selectedColor" format="color" />
+        <attr name="unselectedColor" format="color" />
+        <attr name="strokeWidth" format="dimension" />
+        <attr name="strokeColor" format="color" />
+        <attr name="snap" format="boolean" />
+        <!-- Orientation of the indicator. -->
+        <attr name="orientation" format="enum">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+        <attr name="radius" format="dimension" />
+    </declare-styleable>
 
 </resources>

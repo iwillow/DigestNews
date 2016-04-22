@@ -2,10 +2,13 @@
     <string name="app_name">DigestNews</string>
     <string name="action_settings">Settings</string>
     <string name="skip">跳过</string>
+    <string name="page1_small_title">聚合资讯</string>
+    <string name="page1_big_title">犀利点评</string>
     <string name="page2_big_title">追大新闻</string>
     <string name="page2_small_title">不舍昼夜</string>
     <string name="page3_big_title">有钱任性</string>
     <string name="page3_small_title">谈笑风生</string>
+
     <string name="learn">开启提高姿势水平之旅</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
