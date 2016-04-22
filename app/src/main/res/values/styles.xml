@@ -23,4 +23,9 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="Translucent_NoTitle">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>

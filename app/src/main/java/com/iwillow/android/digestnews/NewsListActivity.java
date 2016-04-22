@@ -23,7 +23,7 @@ public class NewsListActivity extends AppCompatActivity implements ProductGuideD
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ProductGuideDialog dialog = ProductGuideDialog.newInstance(null, null);
+                NewsGalleryDialog dialog = NewsGalleryDialog.newInstance(null, null);
                 dialog.show(getSupportFragmentManager(), "product_tour");
             }
         });

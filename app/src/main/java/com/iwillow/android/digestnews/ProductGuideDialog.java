@@ -8,19 +8,21 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.iwillow.android.digestnews.util.BakedBezierInterpolator;
 import com.iwillow.android.digestnews.view.CircleView;
 import com.iwillow.android.digestnews.view.CircularRevealView;
 import com.iwillow.android.digestnews.view.SunAndMoon;
@@ -297,13 +299,37 @@ public class ProductGuideDialog extends DialogFragment {
             @Override
             public void onRadicalMoveOver() {
                 final int color = Color.parseColor("#F0F8FF");
-                mCircularRevealView.reveal(cx, cy, color, 20, 500, new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        ProductGuideDialog.this.dismiss();
-                    }
-                });
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mCircularRevealView.setBackgroundColor(color);
+                    mCircularRevealView.setVisibility(View.INVISIBLE);
+                    int startRadius = 20;
+                    int x = mCircularRevealView.getWidth() / 2;
+                    int y = mCircularRevealView.getHeight() / 2;
+                    final float endRadius = (float) Math.hypot(x, y);
+
+                    Animator animator = ViewAnimationUtils.createCircularReveal(mCircularRevealView, cx, cy, startRadius, endRadius);
+                    animator.setDuration(500);
+                    animator.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            ProductGuideDialog.this.dismiss();
+                        }
+                    });
+                    animator.setInterpolator(BakedBezierInterpolator.getInstance());
+                    mCircularRevealView.setVisibility(View.VISIBLE);
+                    animator.start();
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    mCircularRevealView.reveal(cx, cy, color, 20, 500, new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            ProductGuideDialog.this.dismiss();
+                        }
+                    });
+                } else {
+                    ProductGuideDialog.this.dismiss();
+                }
             }
         });
     }
