@@ -2,33 +2,35 @@ package com.iwillow.android.digestnews.entity;
 
 import java.util.List;
 
+import io.realm.RealmList;
+
 /**
  * Created by https://www/github.com/iwillow on 2016/4/23.
  */
 public class TweetEntity {
 
-    private List<TweetUrls> urls;
+    private RealmList<TweetUrls> urls;
 
-    private List<TweetMedia> media;
+    private RealmList<TweetMedia> media;
 
     private List<String> hashtags;
 
     private List<String> symbols;
 
 
-    public List<TweetUrls> getUrls() {
+    public RealmList<TweetUrls> getUrls() {
         return urls;
     }
 
-    public void setUrls(List<TweetUrls> urls) {
+    public void setUrls(RealmList<TweetUrls> urls) {
         this.urls = urls;
     }
 
-    public List<TweetMedia> getMedia() {
+    public RealmList<TweetMedia> getMedia() {
         return media;
     }
 
-    public void setMedia(List<TweetMedia> media) {
+    public void setMedia(RealmList<TweetMedia> media) {
         this.media = media;
     }
 

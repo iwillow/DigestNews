@@ -2,16 +2,19 @@ package com.iwillow.android.digestnews.entity;
 
 import java.util.List;
 
+import io.realm.RealmList;
+import io.realm.RealmObject;
+
 /**
  * Created by https://www.github.com/iwillow on 2016/4/23.
  */
-public class Video {
+public class Video extends RealmObject {
     private String thumbnail;
     private String title;
     private String uuid;
     private String summary;
     private String publisher;
-    private List<Stream> streams;
+    private RealmList<Stream> streams;
 
     public String getThumbnail() {
         return thumbnail;
@@ -53,11 +56,11 @@ public class Video {
         this.publisher = publisher;
     }
 
-    public List<Stream> getStreams() {
+    public RealmList<Stream> getStreams() {
         return streams;
     }
 
-    public void setStreams(List<Stream> streams) {
+    public void setStreams(RealmList<Stream> streams) {
         this.streams = streams;
     }
 

@@ -2,10 +2,13 @@ package com.iwillow.android.digestnews.entity;
 
 import java.util.List;
 
+import io.realm.RealmList;
+import io.realm.RealmObject;
+
 /**
  * Created by https://github.com/iwillow  on 2016/4/23.
  */
-public class Image {
+public class Image extends RealmObject {
     private String url;
     private int width;
     private int height;
@@ -13,7 +16,7 @@ public class Image {
     private String provider;
     private String title;
     private String caption;
-    private List<ImageAsset> image_assets;
+    private RealmList<ImageAsset> image_assets;
 
     public String getUrl() {
         return url;
@@ -71,11 +74,11 @@ public class Image {
         this.caption = caption;
     }
 
-    public List<ImageAsset> getImage_assets() {
+    public RealmList<ImageAsset> getImage_assets() {
         return image_assets;
     }
 
-    public void setImage_assets(List<ImageAsset> image_assets) {
+    public void setImage_assets(RealmList<ImageAsset> image_assets) {
         this.image_assets = image_assets;
     }
 

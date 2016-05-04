@@ -1,9 +1,11 @@
 package com.iwillow.android.digestnews.entity;
 
+import io.realm.RealmObject;
+
 /**
  * Created by https://github.com/iwillow on 2016/4/23.
  */
-public class Location {
+public class Location extends RealmObject{
     private String latitude;
     private String longtitude;
     private String zoonLevel;

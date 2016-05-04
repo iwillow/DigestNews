@@ -8,12 +8,18 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.ColorInt;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnticipateInterpolator;
 
+import com.iwillow.android.lib.R;
 import com.iwillow.android.lib.log.Log;
+import com.iwillow.android.lib.log.LogUtil;
 import com.iwillow.android.lib.util.DimensionUtil;
 
 import java.util.ArrayList;
@@ -49,7 +55,7 @@ public class CircleLayout extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Log.d(TAG, "onMeasure called");
+        LogUtil.d(TAG, "onMeasure called");
         int minw = getPaddingLeft() + getPaddingRight() + getSuggestedMinimumWidth();
         int w = Math.max(minw, MeasureSpec.getSize(widthMeasureSpec));
         int minh = getPaddingTop() + getPaddingBottom() + getSuggestedMinimumHeight();
@@ -70,7 +76,7 @@ public class CircleLayout extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        Log.d(TAG, "onLayout called");
+        LogUtil.d(TAG, "onLayout called");
     }
 
     @Override
@@ -84,8 +90,8 @@ public class CircleLayout extends ViewGroup {
             for (int i = 0; i < count; i++) {
                 View view = getChildAt(i);
                 if (view.getVisibility() != GONE) {
-                    int cx = (int) (mCenterX + 8 * radius * Math.sin(i * 2 * Math.PI / count) / 9);
-                    int cy = (int) (mCenterY - 8 * radius * Math.cos(i * 2 * Math.PI / count) / 9);
+                    int cx = (int) (mCenterX + 7 * radius * Math.sin(i * 2 * Math.PI / count) / 9);
+                    int cy = (int) (mCenterY - 7 * radius * Math.cos(i * 2 * Math.PI / count) / 9);
                     int left = cx - view.getMeasuredWidth() / 2;
                     int top = cy - view.getMeasuredHeight() / 2;
                     int right = cx + view.getMeasuredWidth() / 2;
@@ -95,7 +101,8 @@ public class CircleLayout extends ViewGroup {
                 }
             }
         } else {
-            Log.d(TAG, "getChildCount() < 0");
+            LogUtil.d(TAG, "getChildCount() <= 0");
+
         }
 
     }
@@ -106,8 +113,8 @@ public class CircleLayout extends ViewGroup {
         boolean activation;
     }
 
-    public int addItem(String text, int color) {
-        Log.d(TAG, "addItem called");
+    public int addItem(String text, @ColorInt int color) {
+        LogUtil.d(TAG, "addItem called");
         CircleItem item = new CircleItem();
         item.text = text;
         item.color = color;
@@ -116,6 +123,7 @@ public class CircleLayout extends ViewGroup {
         LayoutParams layoutParams = new LayoutParams((int) DimensionUtil.dp2px(getResources(), 30f), (int) DimensionUtil.dp2px(getResources(), 30f));
         textView.setLayoutParams(layoutParams);
         textView.setText(text);
+        textView.setBackgroundColor(Color.TRANSPARENT);
         textView.setTextSize(DimensionUtil.dp2px(getResources(), 20f));
         textView.setTextColor(Color.GRAY);
         textView.setInnerBackgroundColor(Color.TRANSPARENT);
@@ -123,8 +131,6 @@ public class CircleLayout extends ViewGroup {
         textView.setFinishedStrokeWidth(DimensionUtil.dp2px(getResources(), 1f));
         textView.setUnfinishedStrokeColor(Color.GRAY);
         textView.setFinishedStrokeColor(Color.GRAY);
-
-
         addView(textView);
         textView.setOnClickListener(new OnClickListener() {
             @Override
@@ -139,6 +145,32 @@ public class CircleLayout extends ViewGroup {
         return mData.size() - 1;
     }
 
+
+    public int addItem(@LayoutRes int resId, String text, @ColorInt int color) {
+        LogUtil.d(TAG, "addItem called");
+        CircleItem item = new CircleItem();
+        item.text = text;
+        item.color = color;
+        mData.add(item);
+        final DonutProgress textView = (DonutProgress) LayoutInflater.from(getContext()).inflate(resId, null);
+        textView.setText(text);
+        textView.setUnfinishedStrokeColor(Color.GRAY);
+        textView.setFinishedStrokeColor(Color.GRAY);
+        textView.setBackgroundColor(Color.TRANSPARENT);
+        textView.setInnerBackgroundColor(Color.TRANSPARENT);
+        addView(textView);
+        textView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final int index = indexOfChild(v);
+                if (mOnChildViewClickListener != null && index >= 0 && index < getChildCount()) {
+                    mOnChildViewClickListener.onChildViewClick(v, index);
+                }
+            }
+        });
+
+        return mData.size() - 1;
+    }
 
     public void activeItem(int index) {
 
@@ -155,11 +187,13 @@ public class CircleLayout extends ViewGroup {
                 textView.setInnerBackgroundColor(item.color);
                 textView.setUnfinishedStrokeColor(item.color);
                 textView.setFinishedStrokeColor(item.color);
-                Log.d(TAG, "active item: " + index);
+                LogUtil.d(TAG, "active item: " + index);
             } else {
-                Log.d(TAG, "item: " + index + " actived");
+                LogUtil.d(TAG, "item: " + index + " actived");
             }
-
+            if (mActiveCount == mData.size()) {
+                marquee();
+            }
         }
 
     }

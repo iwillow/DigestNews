@@ -1,9 +1,11 @@
 package com.iwillow.android.digestnews.entity;
 
+import io.realm.RealmObject;
+
 /**
  * Created by https://www.github.com/iwillow on 2016/4/23.
  */
-public class Stream {
+public class Stream extends RealmObject{
     private String mime_type;
     private String duration;
     private String bitrate;

@@ -3,7 +3,9 @@
     package="com.iwillow.android.digestnews">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
+        android:name=".MyApplicaition"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,6 +21,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".NewsDetailActivity"
+            android:label="@string/title_activity_news_detail"
+            android:theme="@style/AppTheme"></activity>
+        <activity
+            android:name=".ExtraNewsListActivity"
+            android:label="@string/extra_news_activity"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

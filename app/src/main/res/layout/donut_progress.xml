@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.iwillow.android.lib.view.DonutProgress xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/index"
+    android:layout_width="25dp"
+    android:layout_height="25dp"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentTop="true"
+    app:donut_background_color="@android:color/transparent"
+    app:donut_finished_color="#ff0000"
+    app:donut_finished_stroke_width="1dp"
+    app:donut_progress="90"
+    app:donut_text="10"
+    app:donut_text_color="#ff0000"
+    app:donut_text_size="13sp"
+    app:donut_unfinished_color="#0000ff"
+    app:donut_unfinished_stroke_width="1dp" />

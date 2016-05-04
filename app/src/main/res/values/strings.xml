@@ -12,4 +12,12 @@
     <string name="learn">开启提高姿势水平之旅</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_news_detail">NewsDetailActivity</string>
+    <string name="extra_news_activity">ExtraNewsListActivity</string>
+       <string name="link_text_manual">#Breaking: Ted Cruz drops out of the 2016 presidential race https://t.co/7eshI3SCbQ https://t.co/fO5Q3c4hBi <b>text2: Explicit links using &lt;a&gt; markup.</b>
+      This has markup for a <a href="http://www.google.com">link</a> specified
+      via an &lt;a&gt; tag.  Use a \"tel:\" URL
+      to <a href="tel:4155551212">dial a phone number</a>.
+    </string>
 </resources>

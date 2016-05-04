@@ -15,7 +15,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 /**
- * Created by Administrator on 2016/4/26.
+ * Created by https://www.github.com/iwillow on 2016/4/26.
  */
 public class RxNewsParser {
 

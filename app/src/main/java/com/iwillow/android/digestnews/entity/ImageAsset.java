@@ -1,9 +1,11 @@
 package com.iwillow.android.digestnews.entity;
 
+import io.realm.RealmObject;
+
 /**
  * Created by https://github.com/iwillow on 2016/4/23.
  */
-public class ImageAsset {
+public class ImageAsset  extends RealmObject{
 
     private String tag;
     private String url;

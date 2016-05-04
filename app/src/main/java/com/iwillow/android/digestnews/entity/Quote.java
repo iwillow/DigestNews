@@ -1,9 +1,11 @@
 package com.iwillow.android.digestnews.entity;
 
+import io.realm.RealmObject;
+
 /**
  * Created by  https://github.com/iwillow on 2016/4/23.
  */
-public class Quote {
+public class Quote extends RealmObject {
     private String url;
     private String text;
     private String source;

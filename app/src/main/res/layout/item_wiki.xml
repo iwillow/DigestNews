@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:background="@drawable/news_detail_border"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/wikiTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Peshmerga"
+        android:textColor="@android:color/black" />
+
+    <TextView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Ssddsds dfffd dffdfdfdfdfdv dffdfd fdfdfd  Ssddsds dfffd dffdfdfd fdfdv dffdf dfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfd fdfdfdv dffdfdf dfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd " />
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:src="@mipmap/icon_wikipedia_logo" />
+
+    <TextView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:drawableLeft="@mipmap/wikipedia_atom_icon"
+        android:drawableStart="@mipmap/wikipedia_atom_icon"
+        android:gravity="center_vertical"
+        android:text="Learn more: Talc"
+        android:textColor="@android:color/holo_red_light" />
+
+</LinearLayout>

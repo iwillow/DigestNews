@@ -1,9 +1,11 @@
 package com.iwillow.android.digestnews.entity;
 
+import io.realm.RealmObject;
+
 /**
  * Created by https://www.github.com/iwillow on 2016/4/23.
  */
-public class TweetUser {
+public class TweetUser extends RealmObject {
     private String name;
     private String screen_name;
     private String profile_image_url;

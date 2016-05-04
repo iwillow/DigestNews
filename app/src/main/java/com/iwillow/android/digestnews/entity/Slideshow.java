@@ -2,13 +2,16 @@ package com.iwillow.android.digestnews.entity;
 
 import java.util.List;
 
+import io.realm.RealmList;
+import io.realm.RealmObject;
+
 /**
  * Created by https://www.github.com/iwillow on 2016/4/23.
  */
-public class Slideshow {
+public class Slideshow extends RealmObject {
     private int total;
     private String layout;
-    private List<Photo> photos;
+    private RealmList<Photo> photos;
 
     public int getTotal() {
         return total;
@@ -26,11 +29,11 @@ public class Slideshow {
         this.layout = layout;
     }
 
-    public List<Photo> getPhotos() {
+    public RealmList<Photo> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(List<Photo> photos) {
+    public void setPhotos(RealmList<Photo> photos) {
         this.photos = photos;
     }
 

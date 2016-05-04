@@ -1,9 +1,11 @@
 package com.iwillow.android.digestnews.entity;
 
+import io.realm.RealmObject;
+
 /**
  * Created by https://www.github.com/iwillow on 2016/4/23.
  */
-public class TweetMedia {
+public class TweetMedia extends RealmObject{
 
     private String expanded_url;
     private String url;

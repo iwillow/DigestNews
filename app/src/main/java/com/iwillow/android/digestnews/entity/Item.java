@@ -2,6 +2,8 @@ package com.iwillow.android.digestnews.entity;
 
 import java.util.List;
 
+import io.realm.RealmList;
+
 /**
  * Created by https://www.github.com/iwillow on 2016/4/23.
  */
@@ -14,25 +16,26 @@ public class Item {
     private String published;
     private String tumblrUrl;
     private String link;
-    private List<String> order;
-    private List<Location> locations;
-    private List<Color> colors;
-    private List<Infograph> infographs;
-    private List<Category> categories;
-    private List<Summary> multiSummary;
-    private List<Wiki> wikis;
-    private Image images;
-    private List<LongRead> longreads;
-    private List<Video> videos;
-    private List<String> tweetKeywords;
-    private List<Source> sources;
-    private List<StatDetail> statDetail;
-    private Slideshow slideshow;
-    private Tweet tweets;
     private String deeplinkIOS;
     private String deeplinkAndroid;
     private boolean is_more_story;
     private String relativeLink;
+
+    private List<String> order;
+    private RealmList<Location> locations;
+    private RealmList<Color> colors;
+    private RealmList<Infograph> infographs;
+    private RealmList<Category> categories;
+    private RealmList<Summary> multiSummary;
+    private List<Wiki> wikis;
+    private Image images;
+    private RealmList<LongRead> longreads;
+    private RealmList<Video> videos;
+    private List<String> tweetKeywords;
+    private RealmList<Source> sources;
+    private RealmList<StatDetail> statDetail;
+    private Slideshow slideshow;
+    private Tweet tweets;
 
     public String getDigest_uuid() {
         return digest_uuid;
@@ -98,126 +101,6 @@ public class Item {
         this.link = link;
     }
 
-    public List<String> getOrder() {
-        return order;
-    }
-
-    public void setOrder(List<String> order) {
-        this.order = order;
-    }
-
-    public List<Location> getLocations() {
-        return locations;
-    }
-
-    public void setLocations(List<Location> locations) {
-        this.locations = locations;
-    }
-
-    public List<Color> getColors() {
-        return colors;
-    }
-
-    public void setColors(List<Color> colors) {
-        this.colors = colors;
-    }
-
-    public List<Infograph> getInfographs() {
-        return infographs;
-    }
-
-    public void setInfographs(List<Infograph> infographs) {
-        this.infographs = infographs;
-    }
-
-    public List<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
-    }
-
-    public List<Summary> getMultiSummary() {
-        return multiSummary;
-    }
-
-    public void setMultiSummary(List<Summary> multiSummary) {
-        this.multiSummary = multiSummary;
-    }
-
-    public List<Wiki> getWikis() {
-        return wikis;
-    }
-
-    public void setWikis(List<Wiki> wikis) {
-        this.wikis = wikis;
-    }
-
-    public Image getImages() {
-        return images;
-    }
-
-    public void setImages(Image images) {
-        this.images = images;
-    }
-
-    public List<LongRead> getLongreads() {
-        return longreads;
-    }
-
-    public void setLongreads(List<LongRead> longreads) {
-        this.longreads = longreads;
-    }
-
-    public List<Video> getVideos() {
-        return videos;
-    }
-
-    public void setVideos(List<Video> videos) {
-        this.videos = videos;
-    }
-
-    public List<String> getTweetKeywords() {
-        return tweetKeywords;
-    }
-
-    public void setTweetKeywords(List<String> tweetKeywords) {
-        this.tweetKeywords = tweetKeywords;
-    }
-
-    public List<Source> getSources() {
-        return sources;
-    }
-
-    public void setSources(List<Source> sources) {
-        this.sources = sources;
-    }
-
-    public List<StatDetail> getStatDetail() {
-        return statDetail;
-    }
-
-    public void setStatDetail(List<StatDetail> statDetail) {
-        this.statDetail = statDetail;
-    }
-
-    public Slideshow getSlideshow() {
-        return slideshow;
-    }
-
-    public void setSlideshow(Slideshow slideshow) {
-        this.slideshow = slideshow;
-    }
-
-    public Tweet getTweets() {
-        return tweets;
-    }
-
-    public void setTweets(Tweet tweets) {
-        this.tweets = tweets;
-    }
-
     public String getDeeplinkIOS() {
         return deeplinkIOS;
     }
@@ -250,6 +133,126 @@ public class Item {
         this.relativeLink = relativeLink;
     }
 
+    public List<String> getOrder() {
+        return order;
+    }
+
+    public void setOrder(List<String> order) {
+        this.order = order;
+    }
+
+    public RealmList<Location> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(RealmList<Location> locations) {
+        this.locations = locations;
+    }
+
+    public RealmList<Color> getColors() {
+        return colors;
+    }
+
+    public void setColors(RealmList<Color> colors) {
+        this.colors = colors;
+    }
+
+    public RealmList<Infograph> getInfographs() {
+        return infographs;
+    }
+
+    public void setInfographs(RealmList<Infograph> infographs) {
+        this.infographs = infographs;
+    }
+
+    public RealmList<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(RealmList<Category> categories) {
+        this.categories = categories;
+    }
+
+    public RealmList<Summary> getMultiSummary() {
+        return multiSummary;
+    }
+
+    public void setMultiSummary(RealmList<Summary> multiSummary) {
+        this.multiSummary = multiSummary;
+    }
+
+    public List<Wiki> getWikis() {
+        return wikis;
+    }
+
+    public void setWikis(List<Wiki> wikis) {
+        this.wikis = wikis;
+    }
+
+    public Image getImages() {
+        return images;
+    }
+
+    public void setImages(Image images) {
+        this.images = images;
+    }
+
+    public RealmList<LongRead> getLongreads() {
+        return longreads;
+    }
+
+    public void setLongreads(RealmList<LongRead> longreads) {
+        this.longreads = longreads;
+    }
+
+    public RealmList<Video> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(RealmList<Video> videos) {
+        this.videos = videos;
+    }
+
+    public List<String> getTweetKeywords() {
+        return tweetKeywords;
+    }
+
+    public void setTweetKeywords(List<String> tweetKeywords) {
+        this.tweetKeywords = tweetKeywords;
+    }
+
+    public RealmList<Source> getSources() {
+        return sources;
+    }
+
+    public void setSources(RealmList<Source> sources) {
+        this.sources = sources;
+    }
+
+    public RealmList<StatDetail> getStatDetail() {
+        return statDetail;
+    }
+
+    public void setStatDetail(RealmList<StatDetail> statDetail) {
+        this.statDetail = statDetail;
+    }
+
+    public Slideshow getSlideshow() {
+        return slideshow;
+    }
+
+    public void setSlideshow(Slideshow slideshow) {
+        this.slideshow = slideshow;
+    }
+
+    public Tweet getTweets() {
+        return tweets;
+    }
+
+    public void setTweets(Tweet tweets) {
+        this.tweets = tweets;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
@@ -261,6 +264,10 @@ public class Item {
                 ", published='" + published + '\'' +
                 ", tumblrUrl='" + tumblrUrl + '\'' +
                 ", link='" + link + '\'' +
+                ", deeplinkIOS='" + deeplinkIOS + '\'' +
+                ", deeplinkAndroid='" + deeplinkAndroid + '\'' +
+                ", is_more_story=" + is_more_story +
+                ", relativeLink='" + relativeLink + '\'' +
                 ", order=" + order +
                 ", locations=" + locations +
                 ", colors=" + colors +
@@ -276,10 +283,6 @@ public class Item {
                 ", statDetail=" + statDetail +
                 ", slideshow=" + slideshow +
                 ", tweets=" + tweets +
-                ", deeplinkIOS='" + deeplinkIOS + '\'' +
-                ", deeplinkAndroid='" + deeplinkAndroid + '\'' +
-                ", is_more_story=" + is_more_story +
-                ", relativeLink='" + relativeLink + '\'' +
                 '}';
     }
 }

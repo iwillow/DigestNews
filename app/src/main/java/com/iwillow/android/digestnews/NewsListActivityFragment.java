@@ -1,21 +1,8 @@
 package com.iwillow.android.digestnews;
 
-import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.Point;
-import android.support.v4.app.Fragment;
-import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
-import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.view.ViewGroup;
-import android.view.animation.AnticipateOvershootInterpolator;
-import android.view.animation.BounceInterpolator;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.iwillow.android.digestnews.view.CircularRevealView;
 import com.iwillow.android.lib.widget.BaseFragment;
@@ -31,7 +18,7 @@ public class NewsListActivityFragment extends BaseFragment {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_news_list;
+        return R.layout.fragment_test;
     }
 
     @Override

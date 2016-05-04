@@ -1,9 +1,11 @@
 package com.iwillow.android.digestnews.entity;
 
+import io.realm.RealmObject;
+
 /**
  * Created by https://www.github.com/iwillow on 2016/4/23.
  */
-public class StatDetail {
+public class StatDetail extends RealmObject{
     private String layout;
     private StatDetailMeta title;
     private StatDetailMeta value;
