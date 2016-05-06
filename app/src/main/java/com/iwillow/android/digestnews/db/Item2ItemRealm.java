@@ -11,6 +11,7 @@ import com.iwillow.android.digestnews.entity.TweetItemRealm;
 import com.iwillow.android.digestnews.entity.TweetRealm;
 import com.iwillow.android.digestnews.entity.Wiki;
 import com.iwillow.android.digestnews.entity.WikiRealm;
+import com.iwillow.android.lib.log.LogUtil;
 
 import java.util.List;
 
@@ -70,11 +71,15 @@ public class Item2ItemRealm {
         }
         Tweet tweet = item.getTweets();
         if (tweet != null) {
+            // LogUtil.d("Item2ItemRealm", "tweet>>>>>\n" + tweet);
             TweetRealm tweetRealm = new TweetRealm();
             tweetRealm.setItem_id(tweet.getItem_id());
             tweetRealm.setUuid(tweet.getUuid());
             List<TweetItem> tweetItems = tweet.getTweets();
+            //   LogUtil.d("Item2ItemRealm", "tweetItems:" + tweetItems.size());
             if (tweetItems != null && tweetItems.size() > 0) {
+
+                RealmList<TweetItemRealm> tweetsList = new RealmList<TweetItemRealm>();
 
                 for (TweetItem tweetItem : tweetItems) {
 
@@ -107,12 +112,13 @@ public class Item2ItemRealm {
                             }
                             tweetEntityRealm.setSymbols(realmSymbols);
                         }
-
                         tweetItemRealm.setEntities(tweetEntityRealm);
                     }
+                    tweetsList.add(tweetItemRealm);
                 }
-
+                tweetRealm.setTweets(tweetsList);
             }
+            // LogUtil.d("Item2ItemRealm", "tweetRealm>>>>>\n" + tweetRealm);
             itemRealm.setTweets(tweetRealm);
         }
         itemRealm.setVideos(item.getVideos());

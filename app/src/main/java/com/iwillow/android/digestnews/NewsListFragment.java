@@ -57,6 +57,20 @@ public class NewsListFragment extends BaseFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
         adapter = new NewsAdapter();
         recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(new NewsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(NewsAdapter.ViewHolder holder, int position) {
+
+                Intent intent = new Intent(recyclerView.getContext(), NewsDetailActivity.class);
+                Color color = holder.itemRealm.getColors().get(0);
+                int stateColor = android.graphics.Color.parseColor(color.getHexcode());
+                intent.putExtra("color", stateColor);
+                intent.putExtra("index", position + 1);
+                intent.putExtra("uuid", holder.itemRealm.getId());
+                startActivity(intent);
+
+            }
+        });
         subscription = load();
     }
 
@@ -86,12 +100,13 @@ public class NewsListFragment extends BaseFragment {
                     public void onNext(RealmResults<ItemRealm> itemRealms) {
                         int size = itemRealms == null ? -1 : itemRealms.size();
                         if (adapter != null) {
+                            adapter.clear();
                             for (ItemRealm itemRealm : itemRealms) {
                                 adapter.addItem(itemRealm);
                             }
                             addFooterView(itemRealms);
                         }
-                        Toast.makeText(getContext(), "onNext" + size, Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(getContext(), "onNext" + size, Toast.LENGTH_SHORT).show();
 
                     }
                 });

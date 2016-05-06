@@ -30,6 +30,10 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+    public void clear(){
+        data.clear();
+        notifyDataSetChanged();
+    }
     public void addItem(T item) {
         data.add(item);
         notifyDataSetChanged();

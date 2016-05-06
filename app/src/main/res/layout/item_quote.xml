@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/quoteContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp">
+
+    <TextView
+        android:id="@+id/quoteSymbol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:padding="0dp"
+        android:text="“"
+        android:textSize="20sp"
+        android:textColor="@android:color/holo_red_light" />
+
+
+    <TextView
+        android:id="@+id/quoteText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/quoteSymbol"
+        android:text="I am in for the distance, as long as we have a viable path to victory."
+        android:textColor="@android:color/holo_red_light"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/quoteSource"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/quoteText"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/quoteSymbol"
+        android:text="Cruze"
+        android:textSize="14sp" />
+
+    <View
+        android:id="@+id/bottomLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/quoteSource"
+        android:background="@android:color/transparent" />
+
+    <View
+        android:id="@+id/verticalLine"
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomLine"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/quoteSymbol"
+        android:background="@android:color/holo_red_light" />
+
+</RelativeLayout>

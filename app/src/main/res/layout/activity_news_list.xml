@@ -21,7 +21,15 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_news_list" />
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <!--    <include layout="@layout/content_news_list" />-->
+
+    </android.support.v4.widget.NestedScrollView>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

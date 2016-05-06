@@ -3,9 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/container"
     tools:context="com.iwillow.android.digestnews.NewsDetailActivity">
 
-    <include layout="@layout/content_news_detail" />
+    <!--<include layout="@layout/content_news_detail" />-->
 
 </FrameLayout>
 

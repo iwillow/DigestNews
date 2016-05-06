@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="10dp">
+
+    <View
+        android:id="@+id/dot"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/circle_drawable" />
+
+
+    <TextView
+        android:id="@+id/sourceTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:text="Donald Trump picks former Goldman Sachs partner to spearhead new fundraising operation"
+        android:textSize="15sp" />
+
+</LinearLayout>

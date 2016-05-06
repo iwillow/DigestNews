@@ -46,7 +46,7 @@ public class NewsListActivity extends AppCompatActivity implements ProductGuideD
         setContentView(R.layout.activity_news_list);
         // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // setSupportActionBar(toolbar);
-       subscription = newsListSubscription();
+        subscription = newsListSubscription();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,7 +124,7 @@ public class NewsListActivity extends AppCompatActivity implements ProductGuideD
                         return list;
                     }
                 })
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<RealmList<ItemRealm>>() {
                     @Override
@@ -152,7 +152,12 @@ public class NewsListActivity extends AppCompatActivity implements ProductGuideD
                         }, new Realm.Transaction.OnSuccess() {
                             @Override
                             public void onSuccess() {
-                                Toast.makeText(NewsListActivity.this, "executeTransactionAsync onSuccess:", Toast.LENGTH_SHORT).show();
+
+                                getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .add(R.id.container, new NewsListFragment(), "list")
+                                        .commit();
+
                             }
                         }, new Realm.Transaction.OnError() {
                             @Override

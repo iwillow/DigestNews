@@ -58,4 +58,16 @@ public class TweetItem {
     public void setEntities(TweetEntity entities) {
         this.entities = entities;
     }
+
+    @Override
+    public String toString() {
+        return "TweetItem{" +
+                "id='" + id + '\'' +
+                ", text='" + text + '\'' +
+                ", possibly_sensitive='" + possibly_sensitive + '\'' +
+                ", created_at='" + created_at + '\'' +
+                ", user=" + user +
+                ", entities=" + entities +
+                '}';
+    }
 }

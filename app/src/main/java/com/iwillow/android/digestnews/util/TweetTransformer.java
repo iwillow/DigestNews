@@ -16,15 +16,15 @@ public class TweetTransformer {
             if (array != null) {
                 for (int i = 0; i < array.length; i++) {
                     if (array[i].startsWith("#")) {
-                        sb.append("<a href=\"").append(tag).append(array[i]).append("\">").append(array[i]).append("</a>");
+                        sb.append("<a  style=\"text-decoration:none;\"   href=\"").append(tag).append(array[i]).append("\">").append(array[i]).append("</a>");
 
                     } else if (array[i].startsWith("@")) {
-                        sb.append("<a href=\"").append(url).append(array[i].substring(1)).append("\">").append(array[i])
+                        sb.append("<a  style=\"text-decoration:none;\"  href=\"").append(url).append(array[i].substring(1)).append("\">").append(array[i])
                                 .append("</a>");
 
                     } else if (array[i].startsWith("http")) {
 
-                        sb.append("<a href=\"").append(array[i]).append("\">").append(array[i]).append("</a>");
+                        sb.append("<a  style=\"text-decoration:none;\"  href=\"").append(array[i]).append("\">").append(array[i]).append("</a>");
 
                     } else {
                         sb.append(array[i]);

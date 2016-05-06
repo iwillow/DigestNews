@@ -1,7 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.iwillow.android.digestnews.NewsDetailFragment">
@@ -54,11 +53,9 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:text="news title"
             android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="20sp" />
 
 
         <LinearLayout
@@ -76,7 +73,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:drawableRight="@mipmap/yahoo"
             android:gravity="center"
             android:text="summarized by"
@@ -131,17 +127,7 @@
             <include layout="@layout/item_location" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/singleImage"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:visibility="gone"
-            android:layout_marginTop="10dp"
-            android:background="@android:color/darker_gray"
-            />
-
         <HorizontalScrollView
-            android:id="@+id/gallery"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">
@@ -177,16 +163,16 @@
 
 
         <LinearLayout
-            android:id="@+id/wikis"
+            android:id="@+id/wiki"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:orientation="vertical">
 
             <include layout="@layout/item_wiki" />
 
             <include layout="@layout/item_wiki" />
         </LinearLayout>
-
 
         <HorizontalScrollView
             android:layout_width="wrap_content"
@@ -213,13 +199,10 @@
         </HorizontalScrollView>
 
         <TextView
-            android:id="@+id/referCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="4 References"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:text="4 References" />
 
         <View
             android:layout_width="match_parent"
@@ -236,10 +219,7 @@
             android:id="@+id/sources"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:orientation="vertical"
-            android:paddingBottom="10dp"
-            android:visibility="gone">
+            android:orientation="vertical">
 
 
         </LinearLayout>

@@ -25,7 +25,12 @@ import io.realm.RealmList;
  * Created by https://www.githhub.com/iwillow on 2016/5/3.
  */
 public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
+    private OnItemClickListener onItemClickListener;
 
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
 
     public NewsAdapter() {
 
@@ -75,7 +80,7 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
 
 
             //press
-            Typeface typeFacePress = Typeface.createFromAsset(holder.view.getContext().getAssets(), "fonts/Roboto-Thin.ttf");
+            Typeface typeFacePress = Typeface.createFromAsset(holder.view.getContext().getAssets(), "fonts/Roboto-Light.ttf");
             holder.sources.setTypeface(typeFacePress);
             RealmList<Source> presses = holder.itemRealm.getSources();
             if (presses != null && presses.size() > 0) {
@@ -105,16 +110,9 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
             holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   /* if (onItemClickListener != null) {
+                    if (onItemClickListener != null) {
                         onItemClickListener.onItemClick(holder1, position1);
-                    }*/
-                    RealmList<Summary> contents = holder1.itemRealm.getMultiSummary();
-                    int content = -1;
-                    if (contents != null && contents.size() > 0) {
-                        content = contents.size();
                     }
-
-                    Toast.makeText(v.getContext(), "position:" + position1 + ";id:" + holder1.itemRealm.getId() + ";summary count:" + content, Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -205,6 +203,11 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
             super(itemView);
             this.itemView = itemView;
         }
+    }
+
+
+    public interface OnItemClickListener {
+        void onItemClick(ViewHolder holder, int position);
     }
 
 }

@@ -11,6 +11,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.iwillow.android.digestnews.util.MyGlideModule"
+            android:value="GlideModule" />
+
         <activity
             android:name=".NewsListActivity"
             android:label="@string/app_name"

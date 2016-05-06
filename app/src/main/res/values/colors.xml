@@ -8,4 +8,5 @@
     <color name="start_default">#FF18DA76</color>
     <color name="start_pressed">#FF039F4F</color>
     <color name="twitter_border">#FF95CEFB</color>
+    <color name="news_detail_border">#77a7a6a6</color>
 </resources>
