@@ -26,6 +26,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.exoplayer.util.Util;
 import com.iwillow.android.digestnews.db.Item2ItemRealm;
 import com.iwillow.android.digestnews.entity.Category;
 import com.iwillow.android.digestnews.entity.Image;
@@ -37,9 +38,11 @@ import com.iwillow.android.digestnews.entity.Location;
 import com.iwillow.android.digestnews.entity.LongRead;
 import com.iwillow.android.digestnews.entity.Photo;
 import com.iwillow.android.digestnews.entity.Quote;
+import com.iwillow.android.digestnews.entity.SlideItem;
 import com.iwillow.android.digestnews.entity.Slideshow;
 import com.iwillow.android.digestnews.entity.Source;
 import com.iwillow.android.digestnews.entity.StatDetail;
+import com.iwillow.android.digestnews.entity.Stream;
 import com.iwillow.android.digestnews.entity.StringRealmWrapper;
 import com.iwillow.android.digestnews.entity.Summary;
 import com.iwillow.android.digestnews.entity.TweetItemRealm;
@@ -130,6 +133,7 @@ public class NewsDetailFragment extends BaseFragment {
         args.putInt(COLOR, color);
         args.putInt(INDEX, index);
         fragment.setArguments(args);
+        LogUtil.d(TAG, "uuid:" + uuid);
         return fragment;
     }
 
@@ -534,22 +538,60 @@ public class NewsDetailFragment extends BaseFragment {
                     String src = photos.get(0).getImages().getUrl();
                     Glide.with(NewsDetailFragment.this).load(src).centerCrop().crossFade().into(singleImage);
                     gallery.setVisibility(View.GONE);
+                    final ArrayList<SlideItem> slideItems = new ArrayList<SlideItem>();
+                    SlideItem slideItem = new SlideItem();
+                    slideItem.caption = photos.get(0).getCaption();
+                    slideItem.headline = photos.get(0).getHeadline();
+                    slideItem.provider_name = photos.get(0).getProvider_name();
+                    slideItem.url = src;
+                    slideItems.add(slideItem);
+                    singleImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(v.getContext(), SlideShowActivity.class);
+                            intent.putParcelableArrayListExtra(SlideShowActivity.DATA, slideItems);
+                            intent.putExtra(SlideShowActivity.CURRENT_INDEX, 0);
+                            startActivity(intent);
+                        }
+                    });
+
                 } else {
                     singleImage.setVisibility(View.GONE);
                     slideshow.removeAllViews();
+
+                    final ArrayList<SlideItem> slideItems = new ArrayList<SlideItem>();
+                    for (Photo photo : photos) {
+                        SlideItem slideItem = new SlideItem();
+                        slideItem.caption = photos.get(0).getCaption();
+                        slideItem.headline = photos.get(0).getHeadline();
+                        slideItem.provider_name = photos.get(0).getProvider_name();
+                        slideItem.url = photo.getImages().getUrl();
+                        slideItems.add(slideItem);
+                    }
+                    int currentItem = 0;
                     for (Photo photo : photos) {
 
                         View photoItemView =
                                 LayoutInflater.from(slideshow.getContext()).inflate(R.layout.item_image, slideshow, false);
 
                         ImageView imageView = $(photoItemView, R.id.photo);
-
+                        final int index = currentItem;
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(v.getContext(), SlideShowActivity.class);
+                                intent.putParcelableArrayListExtra(SlideShowActivity.DATA, slideItems);
+                                intent.putExtra(SlideShowActivity.CURRENT_INDEX, index);
+                                startActivity(intent);
+                            }
+                        });
 
                         //  String src = getImageSource(photo.getImages());
                         String src = photo.getImages().getUrl();
                         Glide.with(NewsDetailFragment.this).load(src).centerCrop().crossFade().into(imageView);
 
                         slideshow.addView(photoItemView);
+                        currentItem++;
                     }
                 }
 
@@ -566,10 +608,47 @@ public class NewsDetailFragment extends BaseFragment {
                     TextView title = $(videoItemView, R.id.title);
                     title.setText("" + video.getTitle());
                     //title.setTypeface(typefaceBold);
+                    ImageView playIcon = $(videoItemView, R.id.playIcon);
+                    ShapeDrawable shapeDrawable = new ShapeDrawable(new OvalShape());
+                    shapeDrawable.getPaint().setColor(color);
+                    shapeDrawable.getPaint().setStyle(Paint.Style.FILL);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        playIcon.setBackground(shapeDrawable);
+                    }
 
                     ImageView imageView = $(videoItemView, R.id.thumbnail);
                     Glide.with(NewsDetailFragment.this).load(video.getThumbnail()).centerCrop().crossFade().into(imageView);
+                    RealmList<Stream> streams = video.getStreams();
+                    if (streams != null && streams.size() > 0) {
+                        String url = null;
+                        for (Stream stream : streams) {
+                            if (!TextUtils.isEmpty(stream.getUrl())
+                                    && !TextUtils.isEmpty(stream.getMime_type())
+                                    && !"application/vnd.apple.mpegurl".equalsIgnoreCase(stream.getMime_type())
+                                    ) {
+                                url = stream.getUrl();
+                                break;
+                            }
+                        }
+                        if (url != null) {
+                            final String src = url;
+                            videoItemView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent mpdIntent = new Intent(v.getContext(), MediaPlayerActivity.class);
+                                    mpdIntent.setData(Uri.parse(src));
+                                    mpdIntent.putExtra(MediaPlayerActivity.CONTENT_TYPE_EXTRA, Util.TYPE_OTHER);
+                                    mpdIntent.putExtra(MediaPlayerActivity.CONTENT_ID_EXTRA, src);
+                                    mpdIntent.putExtra(MediaPlayerActivity.PROVIDER_EXTRA, "");
+                                    startActivity(mpdIntent);
+                                }
+                            });
+
+                        }
+                    }
+
                     videos.addView(videoItemView);
+
 
                 }
 

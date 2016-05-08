@@ -23,7 +23,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:src="@mipmap/icon_video_usnews" />
+            android:layout_centerVertical="true"
+            android:background="@drawable/circle_drawable"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/play" />
 
         <TextView
             android:id="@+id/title"
