@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="10dp"
@@ -13,17 +14,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="Peshmerga"
-        android:textSize="18sp"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/wikiText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:textSize="16sp"
+        android:text=" dfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfd fdfdfdv dffdfdf dfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd "
         android:textColor="@android:color/black"
-        android:text="Ssddsds dfffd dffdfdfdfdfdv dffdfd fdfdfd  Ssddsds dfffd dffdfdfd fdfdv dffdf dfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfd fdfdfdv dffdfdf dfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd Ssddsds dfffd dffdfdfdfdfdv dffdfdfdfdfd " />
+        android:textSize="16sp" />
 
 
     <ImageView
@@ -32,16 +33,28 @@
         android:layout_marginTop="10dp"
         android:src="@mipmap/icon_wikipedia_logo" />
 
-    <TextView
-        android:id="@+id/searchTerms"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:drawableLeft="@mipmap/wikipedia_atom_icon"
-        android:drawableStart="@mipmap/wikipedia_atom_icon"
-        android:gravity="center_vertical"
-        android:text="Learn more: Talc"
-        android:textSize="15sp"
-        android:textColor="@android:color/holo_red_light" />
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/wikiSearch"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:tint="@android:color/darker_gray"
+            app:srcCompat="@drawable/search" />
+
+        <TextView
+            android:id="@+id/searchTerms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:text="Learn more: Taldsd Ta"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="15sp" />
+    </LinearLayout>
 
 </LinearLayout>

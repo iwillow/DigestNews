@@ -1,13 +1,13 @@
 package com.iwillow.android.digestnews;
 
-import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.iwillow.android.digestnews.api.RequestAddress;
@@ -15,7 +15,9 @@ import com.iwillow.android.digestnews.db.Item2ItemRealm;
 import com.iwillow.android.digestnews.entity.Item;
 import com.iwillow.android.digestnews.entity.ItemRealm;
 import com.iwillow.android.digestnews.http.RxNewsParser;
+import com.iwillow.android.digestnews.util.StatusBarCompat;
 import com.iwillow.android.lib.log.LogUtil;
+import com.jaeger.library.StatusBarUtil;
 
 import java.util.List;
 
@@ -42,24 +44,17 @@ public class NewsListActivity extends AppCompatActivity implements ProductGuideD
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StatusBarCompat.showSystemUI(this);
+      /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }*/
         realm = Realm.getDefaultInstance();
         setContentView(R.layout.activity_news_list);
-        // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        // setSupportActionBar(toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        StatusBarUtil.setTransparent(this);
         subscription = newsListSubscription();
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               /* NewsGalleryDialog dialog = NewsGalleryDialog.newInstance(null, null);
-                dialog.show(getSupportFragmentManager(), "product_tour");*/
-                // search();
-                Intent intent = new Intent(NewsListActivity.this, NewsDetailActivity.class);
-                startActivity(intent);
-
-            }
-        });
-
 
     }
 
@@ -141,6 +136,9 @@ public class NewsListActivity extends AppCompatActivity implements ProductGuideD
                     @Override
                     public void onNext(RealmList<ItemRealm> itemRealms) {
                         Toast.makeText(NewsListActivity.this, "subscribe onNext:" + itemRealms.size(), Toast.LENGTH_SHORT).show();
+                        for (ItemRealm itemRealm : itemRealms) {
+                            LogUtil.d("item", "publish date:" + itemRealm.getPublished());
+                        }
                         cancelAsyncTransaction();
                         final RealmList<ItemRealm> data = itemRealms;
                         asyncTransaction = realm.executeTransactionAsync(new Realm.Transaction() {

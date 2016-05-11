@@ -81,7 +81,7 @@ public class NewsListFragment extends BaseFragment {
                 .map(new Func1<Realm, RealmResults<ItemRealm>>() {
                     @Override
                     public RealmResults<ItemRealm> call(Realm realm) {
-                        return realm.where(ItemRealm.class).findAllSorted("published");
+                        return realm.where(ItemRealm.class).contains("published","2016-05-10").findAllSorted("published");
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())

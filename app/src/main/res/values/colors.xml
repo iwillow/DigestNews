@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--  <color name="colorPrimary">#3F51B5</color> -->
+    <color name="colorPrimaryDark">@android:color/transparent</color>
     <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <!--<color name="colorPrimaryDark">#303F9F</color>-->
     <color name="colorAccent">#FF4081</color>
     <color name="skip_gray">#a7a0a0</color>
     <color name="micro_text_light">#262626</color>
+    <color name="micro_text_light_tran">#64000000</color>
     <color name="start_default">#FF18DA76</color>
     <color name="start_pressed">#FF039F4F</color>
     <color name="twitter_border">#FF95CEFB</color>
     <color name="news_detail_border">#77a7a6a6</color>
+    <color name="default_color">#20000000</color>
 </resources>

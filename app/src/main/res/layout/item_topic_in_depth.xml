@@ -23,8 +23,8 @@
 
         <ImageView
             android:id="@+id/longreadImg"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
             android:src="@mipmap/ic_launcher" />
 
         <LinearLayout
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:text="U.S. death in iraq hightlights enduring ISIS war debate"
                 android:textColor="@android:color/holo_red_light"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/longreadPublisher"

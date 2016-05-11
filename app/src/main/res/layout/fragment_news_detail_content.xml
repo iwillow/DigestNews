@@ -14,47 +14,10 @@
         android:paddingRight="10dp"
         android:paddingTop="10dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-
-            <com.iwillow.android.lib.view.DonutProgress
-                android:id="@+id/index"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                app:donut_background_color="@android:color/transparent"
-                app:donut_finished_color="#ff0000"
-                app:donut_finished_stroke_width="1dp"
-                app:donut_progress="90"
-                app:donut_text="10"
-                app:donut_text_color="#ff0000"
-                app:donut_text_size="13sp"
-                app:donut_unfinished_color="#0000ff"
-                app:donut_unfinished_stroke_width="1dp" />
-
-            <TextView
-                android:id="@+id/label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_toRightOf="@id/index"
-                android:text="politics"
-                android:textColor="#ff0000"
-                android:textSize="18sp" />
-
-        </LinearLayout>
-
-
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:text="news title"
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -135,10 +98,9 @@
             android:id="@+id/singleImage"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:visibility="gone"
             android:layout_marginTop="10dp"
             android:background="@android:color/darker_gray"
-            />
+            android:visibility="gone" />
 
         <HorizontalScrollView
             android:id="@+id/gallery"
@@ -212,14 +174,44 @@
 
         </HorizontalScrollView>
 
-        <TextView
-            android:id="@+id/referCount"
+        <RelativeLayout
+            android:id="@+id/anchorArea"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="4 References"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/anchor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@drawable/circle_stroke_drawable"
+                android:padding="5dp"
+                android:tint="@android:color/darker_gray"
+                app:srcCompat="@drawable/anchor" />
+
+            <TextView
+                android:id="@+id/referCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/anchor"
+                android:text="4 References"
+                android:textColor="@android:color/black"
+                android:textSize="22sp" />
+
+            <ImageView
+                android:id="@+id/toggleImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="5dp"
+                android:tint="@android:color/darker_gray"
+                app:srcCompat="@drawable/reference_close" />
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
@@ -240,7 +232,6 @@
             android:orientation="vertical"
             android:paddingBottom="10dp"
             android:visibility="gone">
-
 
         </LinearLayout>
     </LinearLayout>

@@ -34,6 +34,7 @@ import com.google.android.exoplayer.metadata.id3.PrivFrame;
 import com.google.android.exoplayer.metadata.id3.TxxxFrame;
 import com.google.android.exoplayer.text.Cue;
 import com.google.android.exoplayer.util.Util;
+import com.iwillow.android.digestnews.util.StatusBarCompat;
 import com.iwillow.android.lib.log.LogUtil;
 import com.iwillow.android.lib.video.EventLogger;
 import com.iwillow.android.lib.video.SmoothStreamingTestMediaDrmCallback;
@@ -98,6 +99,7 @@ public class MediaPlayerActivity extends AppCompatActivity implements SurfaceHol
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StatusBarCompat.showSystemUI(this);
         setContentView(R.layout.activity_media_player);
         View root = findViewById(R.id.root);
         root.setOnTouchListener(new View.OnTouchListener() {

@@ -10,46 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:id="@+id/infoArea"
-        android:layout_width="match_parent"
+
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/headline"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="rrerere"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="rrerere"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/press"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="rrerere"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="10sp" />
-
-        <TextView
-            android:id="@+id/section_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="1 of 10"
-            android:textColor="@android:color/white"
-            android:textSize="13sp" />
-
-
-    </LinearLayout>
+        android:layout_gravity="center" />
 </FrameLayout>

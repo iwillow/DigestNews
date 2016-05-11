@@ -30,10 +30,11 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    public void clear(){
+    public void clear() {
         data.clear();
         notifyDataSetChanged();
     }
+
     public void addItem(T item) {
         data.add(item);
         notifyDataSetChanged();
@@ -178,7 +179,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter {
                 @Override
                 public int getSpanSize(int position) {
                     return (getItemViewType(position) == TYPE_HEADER || getItemViewType(position) == TYPE_FOOTER)
-                            ? gridManager.getSpanCount() : TYPE_ITEM;
+                            ? gridManager.getSpanCount() : 1;
                 }
             });
         }

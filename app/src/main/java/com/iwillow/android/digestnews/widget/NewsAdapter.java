@@ -17,6 +17,7 @@ import com.iwillow.android.digestnews.entity.Color;
 import com.iwillow.android.digestnews.entity.ItemRealm;
 import com.iwillow.android.digestnews.entity.Source;
 import com.iwillow.android.digestnews.entity.Summary;
+import com.iwillow.android.digestnews.util.ItemRealUtil;
 import com.iwillow.android.lib.view.DonutProgress;
 
 import io.realm.RealmList;
@@ -82,7 +83,7 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
             //press
             Typeface typeFacePress = Typeface.createFromAsset(holder.view.getContext().getAssets(), "fonts/Roboto-Light.ttf");
             holder.sources.setTypeface(typeFacePress);
-            RealmList<Source> presses = holder.itemRealm.getSources();
+ /*           RealmList<Source> presses = holder.itemRealm.getSources();
             if (presses != null && presses.size() > 0) {
 
                 StringBuilder sb = new StringBuilder();
@@ -103,8 +104,8 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
                 holder.sources.setText("" + sb.toString());
             } else {
                 holder.sources.setText("Yahoo News");
-            }
-
+            }*/
+            holder.sources.setText(ItemRealUtil.getPress(holder.itemRealm));
             final ViewHolder holder1 = holder;
             final int position1 = position;
             holder.view.setOnClickListener(new View.OnClickListener() {
