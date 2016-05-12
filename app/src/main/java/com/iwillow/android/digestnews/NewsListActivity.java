@@ -16,15 +16,21 @@ import com.iwillow.android.digestnews.entity.Item;
 import com.iwillow.android.digestnews.entity.ItemRealm;
 import com.iwillow.android.digestnews.http.RxNewsParser;
 import com.iwillow.android.digestnews.util.StatusBarCompat;
+import com.iwillow.android.lib.log.Log;
 import com.iwillow.android.lib.log.LogUtil;
+import com.iwillow.android.lib.util.DateUtil;
+import com.iwillow.android.lib.util.IntentUtil;
 import com.jaeger.library.StatusBarUtil;
 
+import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -33,7 +39,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 
-public class NewsListActivity extends AppCompatActivity implements ProductGuideDialog.OnFragmentInteractionListener {
+public class NewsListActivity extends AppCompatActivity {
 
     public static final String PREFS_NAME = "MyPrefsFile";
     private static final String TAG = "NewsListActivity";
@@ -54,8 +60,119 @@ public class NewsListActivity extends AppCompatActivity implements ProductGuideD
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         StatusBarUtil.setTransparent(this);
-        subscription = newsListSubscription();
+        subscription = checkDataBase();
 
+    }
+
+
+    private Subscription checkDataBase() {
+
+        return realm.asObservable()
+                .map(new Func1<Realm, Boolean>() {
+                    @Override
+                    public Boolean call(Realm realm) {
+                        String preDate = DateUtil.format(DateUtil.getPreDay(new Date()), "yyyy-MM-dd");
+                        RealmResults<ItemRealm> list = realm.where(ItemRealm.class).contains("published", preDate).findAll();
+                        return list != null && list.size() > 0;
+                    }
+                })
+                .onBackpressureBuffer()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        LogUtil.d(TAG, "  checkDataBase from database onCompleted called");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        LogUtil.d(TAG, "  checkDataBase from database onError called");
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        LogUtil.d(TAG, "  checkDataBase from database onNext called");
+                        if (!aBoolean) {
+                            if (subscription != null && !subscription.isUnsubscribed()) {
+                                subscription.unsubscribe();
+                                subscription = null;
+                            }
+
+                            if (IntentUtil.isNetworkConnected(NewsListActivity.this)) {
+                                subscription = newsListSubscription();
+                            } else {
+                                Toast.makeText(NewsListActivity.this, "please connect the network", Toast.LENGTH_SHORT).show();
+                            }
+
+                        } else {
+
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .add(R.id.container, new NewsListFragment(), "list")
+                                    .commit();
+                        }
+                    }
+                });
+
+
+      /*  return rx.Observable
+                .create(new Observable.OnSubscribe<Boolean>() {
+                    @Override
+                    public void call(Subscriber<? super Boolean> subscriber) {
+                        try {
+
+                            RealmResults<ItemRealm> list = realm.where(ItemRealm.class).contains("published", "2016-05-11").findAll();
+                            if (list != null && list.size() > 0) {
+                                subscriber.onNext(true);
+                            } else {
+                                subscriber.onNext(false);
+                            }
+                            subscriber.onCompleted();
+                        } catch (Exception e) {
+                            subscriber.onError(e);
+                        }
+                    }
+                })
+                .onBackpressureBuffer()
+                .asObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        LogUtil.d(TAG, "  checkDataBase from database onCompleted called");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        LogUtil.d(TAG, "  checkDataBase from database onError called");
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        LogUtil.d(TAG, "  checkDataBase from database onNext called");
+                        if (!aBoolean) {
+                            if (subscription != null && !subscription.isUnsubscribed()) {
+                                subscription.unsubscribe();
+                                subscription = null;
+                            }
+
+                            if (IntentUtil.isNetworkConnected(NewsListActivity.this)) {
+                                subscription = newsListSubscription();
+                            } else {
+                                Toast.makeText(NewsListActivity.this, "please connect the network", Toast.LENGTH_SHORT).show();
+                            }
+
+                        } else {
+
+                            getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .add(R.id.container, new NewsListFragment(), "list")
+                                    .commit();
+                        }
+                    }
+                });*/
     }
 
 
@@ -79,11 +196,6 @@ public class NewsListActivity extends AppCompatActivity implements ProductGuideD
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 
 
@@ -136,9 +248,6 @@ public class NewsListActivity extends AppCompatActivity implements ProductGuideD
                     @Override
                     public void onNext(RealmList<ItemRealm> itemRealms) {
                         Toast.makeText(NewsListActivity.this, "subscribe onNext:" + itemRealms.size(), Toast.LENGTH_SHORT).show();
-                        for (ItemRealm itemRealm : itemRealms) {
-                            LogUtil.d("item", "publish date:" + itemRealm.getPublished());
-                        }
                         cancelAsyncTransaction();
                         final RealmList<ItemRealm> data = itemRealms;
                         asyncTransaction = realm.executeTransactionAsync(new Realm.Transaction() {
@@ -166,49 +275,6 @@ public class NewsListActivity extends AppCompatActivity implements ProductGuideD
                         });
                     }
                 });
-    }
-
-
-    public Subscription searchSubscription() {
-
-        Subscription subscription = realm.where(ItemRealm.class)
-                .contains("published", "2016-04-27")
-                .findAllSortedAsync("published")
-                .asObservable()
-                .onBackpressureBuffer()
-                .distinct()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<RealmResults<ItemRealm>>() {
-                    @Override
-                    public void onCompleted() {
-                        Toast.makeText(NewsListActivity.this, "onCompleted", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        Toast.makeText(NewsListActivity.this, "onError" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onNext(RealmResults<ItemRealm> itemRealms) {
-                        if (itemRealms != null) {
-                            StringBuilder sb = new StringBuilder();
-                            for (ItemRealm itemRealm : itemRealms) {
-                                sb.append("[title:").append(itemRealm.getTitle()).append(",");
-                                sb.append("categories:{").append(itemRealm.getCategories()).append("}");
-                                sb.append("sources:{").append(itemRealm.getSources()).append("}");
-                                sb.append("color:{").append(itemRealm.getColors()).append("}");
-                                sb.append("]\n");
-                            }
-                            LogUtil.d("NewsListActivity", "" + sb.toString());
-                            Toast.makeText(NewsListActivity.this, "onNext:" + itemRealms.size(), Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                });
-
-        return new CompositeSubscription(subscription);
     }
 
 

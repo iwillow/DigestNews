@@ -261,36 +261,47 @@ public class CircleLayout extends ViewGroup {
         }
     }
 
-    private Handler mHandler = new Handler() {
-        int index = 0;
+    private Handler mHandler;
 
-        @Override
-        public void handleMessage(Message msg) {
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (mHandler == null) {
 
-            switch (msg.what) {
-                case 0x110:
-                    if (!isAllActived()) {
-                        activeItem(index);
-                        index++;
-                        sendEmptyMessageDelayed(0x110, 150);
-                    } else {
-                        removeMessages(0x110);
-                        index = 0;
-                        if (mCircleLayoutAnimationListener != null) {
-                            mCircleLayoutAnimationListener.onAnimationMarqueeEnd();
-                        }
-                        shrink();
-                        Log.d(TAG, "all the items have been actived");
+            
+            mHandler = new Handler() {
+                int index = 0;
+
+                @Override
+                public void handleMessage(Message msg) {
+
+                    switch (msg.what) {
+                        case 0x110:
+                            if (!isAllActived()) {
+                                activeItem(index);
+                                index++;
+                                sendEmptyMessageDelayed(0x110, 150);
+                            } else {
+                                removeMessages(0x110);
+                                index = 0;
+                                if (mCircleLayoutAnimationListener != null) {
+                                    mCircleLayoutAnimationListener.onAnimationMarqueeEnd();
+                                }
+                                shrink();
+                                Log.d(TAG, "all the items have been actived");
+                            }
+                            break;
+                        default:
+                            break;
+
                     }
-                    break;
-                default:
-                    break;
+                }
+            };
 
-            }
         }
 
 
-    };
+    }
 
     @Override
     protected void onDetachedFromWindow() {

@@ -22,8 +22,8 @@
             android:drawableLeft="@mipmap/icon_twitter_logo"
             android:gravity="center_vertical"
             android:text="Donald J.Trump"
-            android:textSize="14sp"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tweetScreenName"
@@ -39,13 +39,13 @@
 
         <TextView
             android:id="@+id/tweetTime"
-            android:textSize="12sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
-            android:text="10h" />
+            android:text="10h"
+            android:textSize="12sp" />
 
     </RelativeLayout>
 
@@ -55,10 +55,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/titleArea"
         android:layout_marginTop="10dp"
+        android:ellipsize="end"
+        android:maxLines="5"
         android:text="@string/link_text_manual"
         android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:textColorLink="@color/twitter_border" />
+        android:textColorLink="@color/twitter_border"
+        android:textSize="16sp" />
 
     <RelativeLayout
         android:layout_width="match_parent"

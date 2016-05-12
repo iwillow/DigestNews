@@ -40,6 +40,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+
     public T getItem(int index) {
         return data.get(index);
     }
@@ -167,6 +168,10 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter {
             return data.size();
         }
         return 0;
+    }
+
+    public int getDataCount() {
+        return data == null ? 0 : data.size();
     }
 
     @Override

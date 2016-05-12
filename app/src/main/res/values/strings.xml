@@ -1,6 +1,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">DigestNews</string>
     <string name="action_settings">Settings</string>
+    <string name="settings">Settings</string>
+    <string name="send_feedback">send feedback</string>
     <string name="skip">跳过</string>
     <string name="page1_small_title">聚合资讯</string>
     <string name="page1_big_title">犀利点评</string>

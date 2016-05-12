@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -84,7 +85,8 @@ public class MediaPlayerActivity extends AppCompatActivity implements SurfaceHol
     private DemoPlayer player;
     private EventLogger eventLogger;
     private boolean playerNeedsPrepare;
-
+    private ImageButton replay;
+    private ImageButton play;
     private long playerPosition;
     private boolean enableBackgroundAudio;
 
@@ -92,7 +94,7 @@ public class MediaPlayerActivity extends AppCompatActivity implements SurfaceHol
     private int contentType;
     private String contentId;
     private String provider;
-
+    private boolean first;
     private AudioCapabilitiesReceiver audioCapabilitiesReceiver;
 
 
@@ -123,24 +125,44 @@ public class MediaPlayerActivity extends AppCompatActivity implements SurfaceHol
                 return mediaController.dispatchKeyEvent(event);
             }
         });
+        play = (ImageButton) findViewById(R.id.play);
+
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                play.setVisibility(View.GONE);
+                onShown();
+            }
+        });
+        replay = (ImageButton) findViewById(R.id.replay);
+        replay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replay.setVisibility(View.GONE);
+                play.setVisibility(View.GONE);
+                releasePlayer();
+                playerPosition = 0;
+                onShown();
+            }
+        });
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         stateText = (TextView) findViewById(R.id.stateText);
+        stateText.setText("click to play");
         videoFrame = (AspectRatioFrameLayout) findViewById(R.id.video_frame);
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         surfaceView.getHolder().addCallback(this);
 
         mediaController = new KeyCompatibleMediaController(this);
         mediaController.setAnchorView(root);
-
         CookieHandler currentHandler = CookieHandler.getDefault();
         if (currentHandler != defaultCookieManager) {
             CookieHandler.setDefault(defaultCookieManager);
         }
-
         audioCapabilitiesReceiver = new AudioCapabilitiesReceiver(this, this);
         audioCapabilitiesReceiver.register();
 
     }
+
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -164,6 +186,8 @@ public class MediaPlayerActivity extends AppCompatActivity implements SurfaceHol
         if (Util.SDK_INT <= 23 || player == null) {
             onShown();
         }
+
+
     }
 
     @Override
@@ -200,7 +224,10 @@ public class MediaPlayerActivity extends AppCompatActivity implements SurfaceHol
     }
 
     private void showControls() {
-        mediaController.show(0);
+        if (mediaController != null) {
+            mediaController.show(0);
+        }
+
     }
 
     private void onShown() {
@@ -226,7 +253,7 @@ public class MediaPlayerActivity extends AppCompatActivity implements SurfaceHol
         } else {
             player.setBackgrounded(true);
         }
-        progressBar.setVisibility(View.VISIBLE);
+        //play.setVisibility(View.VISIBLE);
     }
 
 
@@ -408,30 +435,30 @@ public class MediaPlayerActivity extends AppCompatActivity implements SurfaceHol
             case ExoPlayer.STATE_ENDED:
                 text += "ended";
                 progressBar.setVisibility(View.GONE);
-                stateText.setText("ended");
-                stateText.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        stateText.setVisibility(View.GONE);
-                    }
-                }, 1000);
+                stateText.setText("click to replay");
+                stateText.setVisibility(View.VISIBLE);
+                replay.setVisibility(View.VISIBLE);
                 break;
             case ExoPlayer.STATE_IDLE:
                 text += "idle";
                 progressBar.setVisibility(View.VISIBLE);
-                stateText.setText("idle");
+                stateText.setText("error occurred");
                 stateText.setVisibility(View.VISIBLE);
+                replay.setVisibility(View.GONE);
+
                 break;
             case ExoPlayer.STATE_PREPARING:
                 text += "preparing";
                 progressBar.setVisibility(View.VISIBLE);
                 stateText.setText("preparing");
                 stateText.setVisibility(View.VISIBLE);
+                replay.setVisibility(View.GONE);
                 break;
             case ExoPlayer.STATE_READY:
                 text += "ready";
                 progressBar.setVisibility(View.GONE);
                 stateText.setVisibility(View.GONE);
+                replay.setVisibility(View.GONE);
                 break;
             default:
                 text += "unknown";

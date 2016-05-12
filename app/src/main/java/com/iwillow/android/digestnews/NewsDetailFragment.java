@@ -13,17 +13,22 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.PopupMenu;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.exoplayer.util.Util;
@@ -56,16 +61,19 @@ import com.iwillow.android.digestnews.util.TweetTransformer;
 import com.iwillow.android.digestnews.util.URLSpanNoUnderline;
 import com.iwillow.android.lib.log.LogUtil;
 import com.iwillow.android.lib.util.DimensionUtil;
+import com.iwillow.android.lib.util.IntentUtil;
 import com.iwillow.android.lib.view.DonutProgress;
 import com.iwillow.android.lib.widget.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -76,7 +84,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by https://www.github.com/iwillow on 2016/5/3.
  * <p>
- * A simple {@link Fragment} subclass.
+ * A simple {@link BaseFragment} subclass.
  * Use the {@link NewsDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -132,11 +140,12 @@ public class NewsDetailFragment extends BaseFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param uuid  Parameter 1.
-     * @param color Parameter 2.
+     * @param uuid  news' uuid
+     * @param color news' color.
+     * @param index whether we jump to this page from extra news list. if its value is -1,it indicates we jump from  {@link ExtraNewsListActivity} page.
      * @return A new instance of fragment NewsDetailFragment.
      */
-    // TODO: Rename and change types and number of parameters
+
     public static NewsDetailFragment newInstance(String uuid, int color, int index) {
         NewsDetailFragment fragment = new NewsDetailFragment();
         Bundle args = new Bundle();
@@ -147,152 +156,6 @@ public class NewsDetailFragment extends BaseFragment {
         LogUtil.d(TAG, "uuid:" + uuid);
         return fragment;
     }
-
-    public Subscription loadFromDataBase() {
-
-
-        return realm.where(ItemRealm.class)
-                .equalTo("id", uuid)
-                .findAllSortedAsync("published")
-                .asObservable()
-                .onBackpressureBuffer()
-                .distinct()
-                .filter(new Func1<RealmResults<ItemRealm>, Boolean>() {
-                    @Override
-                    public Boolean call(RealmResults<ItemRealm> itemRealms) {
-                        boolean result = itemRealms != null && itemRealms.size() > 0;
-                        LogUtil.d(TAG, "result1:" + result);
-                        return result;
-                    }
-                })
-                .map(new Func1<RealmResults<ItemRealm>, ItemRealm>() {
-                    @Override
-                    public ItemRealm call(RealmResults<ItemRealm> itemRealms) {
-                        LogUtil.d(TAG, "result2:" + itemRealms.get(0));
-                        return itemRealms.get(0);
-                    }
-                })
-              /*  .filter(new Func1<ItemRealm, Boolean>() {
-                    @Override
-                    public Boolean call(ItemRealm itemRealm) {
-
-                        boolean result = itemRealm != null
-                                && itemRealm.getMultiSummary() != null
-                                && itemRealm.getMultiSummary().size() > 0;
-                        LogUtil.d(TAG, "result3:" + result);
-
-                        return result;
-                    }
-                })*/
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ItemRealm>() {
-                    @Override
-                    public void onCompleted() {
-                        LogUtil.d(TAG, "load news' UUID:" + uuid + " from database completed");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-
-                    }
-
-                    @Override
-                    public void onNext(ItemRealm itemRealm) {
-                        LogUtil.d(TAG, " onNext load news' UUID:" + uuid + " from database ");
-                        if (itemRealm != null && itemRealm.getMultiSummary() != null
-                                && itemRealm.getMultiSummary().size() > 0) {
-                            final ItemRealm item = itemRealm;
-                            // item.setChecked(true);
-                            cancelAsyncTransaction();
-                            asyncTransaction = realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-
-                                    //realm.copyToRealmOrUpdate(item);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    initItem(item);
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    error.printStackTrace();
-                                }
-                            });
-
-                        } else {
-                            subscription.unsubscribe();
-                            subscription = loadFromNetwork();
-                        }
-                    }
-                });
-    }
-
-    public Subscription loadFromNetwork() {
-
-        return RxNewsParser
-                .getNewsContent(uuid)
-                .onBackpressureBuffer()
-                .filter(new Func1<List<Item>, Boolean>() {
-                    @Override
-                    public Boolean call(List<Item> items) {
-                        return items != null && items.size() > 0;
-                    }
-                })
-                .map(new Func1<List<Item>, ItemRealm>() {
-                    @Override
-                    public ItemRealm call(List<Item> items) {
-                        return Item2ItemRealm.convert(items.get(0));
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ItemRealm>() {
-                    @Override
-                    public void onCompleted() {
-                        LogUtil.d(TAG, "load news' UUID:" + uuid + " from internet completed");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(ItemRealm itemRealm) {
-                        final ItemRealm item = itemRealm;
-                        if (item != null && item.getMultiSummary() != null && item.getMultiSummary().size() > 0) {
-                            // item.setChecked(true);
-                            cancelAsyncTransaction();
-                            asyncTransaction = realm.executeTransactionAsync(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-
-                                    realm.copyToRealmOrUpdate(item);
-                                }
-                            }, new Realm.Transaction.OnSuccess() {
-                                @Override
-                                public void onSuccess() {
-                                    initItem(item);
-                                }
-                            }, new Realm.Transaction.OnError() {
-                                @Override
-                                public void onError(Throwable error) {
-                                    error.printStackTrace();
-                                }
-                            });
-
-                        } else {
-                            LogUtil.d(TAG, "data is null");
-                        }
-
-                    }
-                });
-    }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -308,6 +171,7 @@ public class NewsDetailFragment extends BaseFragment {
 
     @Override
     protected int getLayoutId() {
+
         return R.layout.fragment_news_detail_page;
     }
 
@@ -335,6 +199,35 @@ public class NewsDetailFragment extends BaseFragment {
             }
         });
         menu = $(rootView, R.id.menu);
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(v.getContext(), v);
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.news_detail_menu, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        switch (item.getItemId()) {
+                            case R.id.send_feedback:
+                                sendEmail();
+                                return true;
+                            case R.id.settings:
+                                SettingsDialog settingsDialog = new SettingsDialog();
+                                settingsDialog.show(getChildFragmentManager(), "setting");
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+
+                popup.show();
+            }
+        });
+
+
         nestedScrollView = $(rootView, R.id.nestedScrollView);
         scrollView = $(rootView, R.id.scrollView);
         banner = $(rootView, R.id.banner);
@@ -384,29 +277,238 @@ public class NewsDetailFragment extends BaseFragment {
         // referCount.setTypeface(typefaceThin);
         singleImage = $(rootView, R.id.singleImage);
         gallery = $(rootView, R.id.gallery);
-        subscription = loadFromNetwork();
+        subscription = loadFromDataBase();
+    }
+
+    private void sendEmail() {
+
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+        String[] addresses = {"iwillow@163.com"};
+        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        String subject = "Please replace this text with your issues";
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Toast.makeText(getContext(), "Your Phone does not install email application.", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
-    private void initItem(ItemRealm itemRealm) {
+    public Subscription loadFromDataBase() {
 
+        return rx.Observable
+                .create(new rx.Observable.OnSubscribe<ItemRealm>() {
+
+                    @Override
+                    public void call(Subscriber<? super ItemRealm> subscriber) {
+                        ItemRealm itemRealm = realm.where(ItemRealm.class)
+                                .equalTo("id", uuid).findAll().first();
+                        if (itemRealm != null && itemRealm.getMultiSummary() != null && itemRealm.getMultiSummary().size() > 0) {
+                            subscriber.onNext(itemRealm);
+                            subscriber.onCompleted();
+                        } else {
+                            subscriber.onError(new Exception("news content is null"));
+                        }
+                    }
+                })
+                .onBackpressureBuffer()
+                .asObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ItemRealm>() {
+                    @Override
+                    public void onCompleted() {
+                        LogUtil.d(TAG, "  load news' UUID:" + uuid + " from database onCompleted called");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        LogUtil.d(TAG, "  load news' UUID:" + uuid + " from database onError called");
+                        e.printStackTrace();
+                        loadNetworkData();
+                    }
+
+                    @Override
+                    public void onNext(ItemRealm itemRealm) {
+                        LogUtil.d(TAG, "  load news' UUID:" + uuid + " from database onNext called");
+                        initItem(itemRealm);
+                    }
+                });
+
+    }
+
+    private void loadNetworkData() {
+        if (IntentUtil.isNetworkConnected(getActivity())) {
+            if (subscription != null && !subscription.isUnsubscribed()) {
+                subscription.unsubscribe();
+                subscription = null;
+            }
+            subscription = loadFromNetwork();
+        } else {
+            Toast.makeText(getActivity(), "please connect the network", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+
+    public Subscription loadFromNetwork() {
+
+        return RxNewsParser
+                .getNewsContent(uuid)
+                .onBackpressureBuffer()
+                .filter(new Func1<List<Item>, Boolean>() {
+                    @Override
+                    public Boolean call(List<Item> items) {
+                        return items != null && items.size() > 0;
+                    }
+                })
+                .map(new Func1<List<Item>, ItemRealm>() {
+                    @Override
+                    public ItemRealm call(List<Item> items) {
+                        return Item2ItemRealm.convert(items.get(0));
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ItemRealm>() {
+                    @Override
+                    public void onCompleted() {
+                        LogUtil.d(TAG, "load news' UUID:" + uuid + " from internet completed");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        LogUtil.d(TAG, "load news' UUID:" + uuid + " from internet onError");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(ItemRealm itemRealm) {
+                        final ItemRealm item = itemRealm;
+                        if (item != null && item.getMultiSummary() != null && item.getMultiSummary().size() > 0) {
+                            // item.setChecked(true);
+                            cancelAsyncTransaction();
+                            asyncTransaction = realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+
+                                    realm.copyToRealmOrUpdate(item);
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    initItem(item);
+                                }
+                            }, new Realm.Transaction.OnError() {
+                                @Override
+                                public void onError(Throwable error) {
+                                    error.printStackTrace();
+                                }
+                            });
+
+                        } else {
+                            LogUtil.d(TAG, "data is null");
+                        }
+
+                    }
+                });
+    }
+
+
+    private void activeItem() {
+
+        rx.Observable
+                .create(new rx.Observable.OnSubscribe<Boolean>() {
+
+                    @Override
+                    public void call(final Subscriber<? super Boolean> subscriber) {
+
+                        cancelAsyncTransaction();
+
+                        asyncTransaction = realm.executeTransactionAsync(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                ItemRealm itemRealm = realm.where(ItemRealm.class)
+                                        .equalTo("id", uuid).findAll().first();
+                                if (itemRealm != null) {
+                                    itemRealm.setChecked(true);
+                                    realm.copyToRealmOrUpdate(itemRealm);
+                                    subscriber.onNext(true);
+                                } else {
+                                    subscriber.onNext(false);
+                                }
+
+                            }
+                        }, new Realm.Transaction.OnSuccess() {
+                            @Override
+                            public void onSuccess() {
+                                subscriber.onCompleted();
+                            }
+                        }, new Realm.Transaction.OnError() {
+                            @Override
+                            public void onError(Throwable error) {
+                                subscriber.onError(error);
+                            }
+                        });
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            if (index != -1) {
+                                donutProgress.setInnerBackgroundColor(color);
+                                donutProgress.setTextColor(Color.WHITE);
+                                donutProgress.setVisibility(View.VISIBLE);
+                            } else {
+                                donutProgress.setVisibility(View.GONE);
+                            }
+                        } else {
+                            LogUtil.e(TAG, "active  the data failed");
+                        }
+                    }
+                });
+
+
+    }
+
+
+    private void initItem(ItemRealm itemRealm) {
 
         if (itemRealm != null && itemRealm != null && itemRealm.getMultiSummary() != null) {
 
             if (index != -1 && itemRealm.isChecked()) {
+                donutProgress.setVisibility(View.VISIBLE);
                 donutProgress.setInnerBackgroundColor(color);
                 donutProgress.setTextColor(Color.WHITE);
+            } else if (index == -1) {
+                donutProgress.setVisibility(View.GONE);
             }
 
             //label
             RealmList<Category> categories = itemRealm.getCategories();
             String labl = categories == null || categories.isEmpty() ? "World" : categories.get(0).getLabel();
             lable.setText(labl);
+            lable.setVisibility(View.VISIBLE);
             lable.setTag(ItemRealUtil.getPress(itemRealm));
             Glide.with(NewsDetailFragment.this).load(itemRealm.getImages().getUrl()).crossFade().into(banner);
             //title
             title.setText("" + itemRealm.getTitle());
             title.setTag("" + itemRealm.getLink());
+            title.setVisibility(View.VISIBLE);
 
             //quote
             addQuote(itemRealm);
@@ -441,9 +543,10 @@ public class NewsDetailFragment extends BaseFragment {
             //reference
             addReference(itemRealm);
 
-
+            if (!itemRealm.isChecked()) {
+                activeItem();
+            }
         }
-
 
     }
 
@@ -453,33 +556,34 @@ public class NewsDetailFragment extends BaseFragment {
         RealmList<Source> sources = itemRealm.getSources();
 
 
-        anchorArea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (references.getVisibility() == View.GONE) {
-                    references.setVisibility(View.VISIBLE);
-                    toggleImage.setImageResource(R.drawable.reference_open);
-                    DrawableCompat.setTint(toggleImage.getDrawable(), color);
-                    references.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            nestedScrollView.fullScroll(ScrollView.FOCUS_DOWN);
-                        }
-                    });
-                } else if (references.getVisibility() == View.VISIBLE) {
-                    references.setVisibility(View.GONE);
-                    toggleImage.setImageResource(R.drawable.reference_close);
-                    DrawableCompat.setTint(toggleImage.getDrawable(), color);
+        if (!sources.isEmpty() && sources.size() > 0) {
+            anchorArea.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (references.getVisibility() == View.GONE) {
+                        references.setVisibility(View.VISIBLE);
+                        toggleImage.setImageResource(R.drawable.reference_open);
+                        DrawableCompat.setTint(toggleImage.getDrawable(), color);
+                        references.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                nestedScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                            }
+                        });
+                    } else if (references.getVisibility() == View.VISIBLE) {
+                        references.setVisibility(View.GONE);
+                        toggleImage.setImageResource(R.drawable.reference_close);
+                        DrawableCompat.setTint(toggleImage.getDrawable(), color);
+                    }
+
                 }
-
-            }
-        });
-
-        if (sources == null || sources.size() == 0) {
+            });
+        } else {
             anchorArea.setVisibility(View.GONE);
             referCount.setVisibility(View.GONE);
-        } else if (sources.size() == 1) {
-
+        }
+        if (sources.size() == 1) {
+            anchorArea.setVisibility(View.VISIBLE);
             ShapeDrawable shapeDrawableAnchor = new ShapeDrawable(new OvalShape());
             shapeDrawableAnchor.getPaint().setColor(color);
             shapeDrawableAnchor.getPaint().setStyle(Paint.Style.STROKE);
@@ -522,6 +626,7 @@ public class NewsDetailFragment extends BaseFragment {
             references.addView(referencesItemView);
 
         } else {
+            anchorArea.setVisibility(View.VISIBLE);
             ShapeDrawable shapeDrawableAnchor = new ShapeDrawable(new OvalShape());
             shapeDrawableAnchor.getPaint().setColor(color);
             shapeDrawableAnchor.getPaint().setStyle(Paint.Style.STROKE);

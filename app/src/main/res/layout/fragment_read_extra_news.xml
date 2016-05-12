@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.iwillow.android.digestnews.view.CircularRevealView
+        android:id="@+id/revalView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <com.iwillow.android.lib.view.CircleLayout
+        android:id="@+id/circleLayout"
+        android:layout_width="270dp"
+        android:layout_height="270dp"
+        android:layout_centerInParent="true">
+
+    </com.iwillow.android.lib.view.CircleLayout>
+
+    <LinearLayout
+        android:id="@+id/readIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You've read" />
+
+        <TextView
+            android:id="@+id/read"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 of 7" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/know"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/bigTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="DONE."
+            android:textColor="@android:color/white"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/smallTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="Did you know...?"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/toggleButton"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:background="@android:color/transparent"
+        android:gravity="center"
+        android:paddingBottom="5dp"
+        android:text="Read more news" />
+
+</RelativeLayout>
