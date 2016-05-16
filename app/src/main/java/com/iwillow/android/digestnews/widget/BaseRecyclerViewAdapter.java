@@ -19,7 +19,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter {
     private View headerView;
     private View footerView;
     private List<T> data = new ArrayList<>();
-    private List<OnItemClickListener> onItemClickListenerList = new ArrayList<>();
+    protected List<OnItemClickListener> onItemClickListenerList = new ArrayList<>();
 
     private OnHeaderViewClickListener onHeaderViewClickListener;
     private OnFooterViewClickListener onFooterViewClickListener;
@@ -40,6 +40,9 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+    public List<T> getAllItems() {
+        return data;
+    }
 
     public T getItem(int index) {
         return data.get(index);
@@ -123,6 +126,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter {
             bindItemView(holder, pos);
 
         } else if (holder.getItemViewType() == TYPE_HEADER && headerView != null) {
+            bindHeaderView(holder, position);
             headerView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -132,6 +136,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter {
                 }
             });
         } else if (holder.getItemViewType() == TYPE_FOOTER && footerView != null) {
+            bindFooterView(holder, position);
             footerView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -155,6 +160,10 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter {
     public abstract RecyclerView.ViewHolder createItemViewHolder(ViewGroup parent, final int viewType);
 
     public abstract void bindItemView(RecyclerView.ViewHolder holder, int position);
+
+    public abstract void bindHeaderView(RecyclerView.ViewHolder holder, int position);
+
+    public abstract void bindFooterView(RecyclerView.ViewHolder holder, int position);
 
     @Override
     public int getItemCount() {

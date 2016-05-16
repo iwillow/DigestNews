@@ -13,4 +13,6 @@
     <color name="twitter_border">#FF95CEFB</color>
     <color name="news_detail_border">#77a7a6a6</color>
     <color name="default_color">#20000000</color>
+    <color name="default_color1">#008ffe</color>
+    <color name="logo_background">#5100ad</color>
 </resources>

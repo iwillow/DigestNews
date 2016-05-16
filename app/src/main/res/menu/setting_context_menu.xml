@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group
+        android:id="@+id/edition"
+        android:checkableBehavior="single"
+        >
+        <item
+            android:id="@+id/usa"
+            android:title="United States"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/uk"
+            android:title="United Kingdom"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/ca"
+            android:title="Canada"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/in"
+            android:checked="true"
+            android:title="international"
+            app:showAsAction="never"
+           />
+    </group>
+</menu>

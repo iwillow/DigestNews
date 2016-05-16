@@ -36,61 +36,41 @@ import rx.schedulers.Schedulers;
 /**
  * Created by https://www.github.com.com/iwillow on 2016/5/11.
  */
-public class ShareDialog extends DialogFragment {
-    public static final String LINK = "link";
-    public static final String TITLE = "title";
-    public static final String SOURCE = "source";
-    private String link;
-    private String title;
-    private String source;
-    private TextView tvTitle;
-    private TextView tvPress;
+public class ShareLogoDialog extends DialogFragment {
+
     private RecyclerView recyclerView;
     private AppInfoAdapter appInfoAdapter;
     private String shareContent;
 
-    public ShareDialog() {
+    public ShareLogoDialog() {
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        title = getArguments().getString(TITLE);
-        link = getArguments().getString(LINK);
-        source = getArguments().getString(SOURCE);
         setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
-
-        /*if (BuildConfig.DEBUG) {
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
-        }*/
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.share_dialog, container);
+        View rootView = inflater.inflate(R.layout.share_dialog_no_title, container);
         initView(rootView);
         return rootView;
     }
 
     private void initView(View rootView) {
-        Typeface typefaceLight = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Light.ttf");
-        tvTitle = (TextView) rootView.findViewById(R.id.title);
-        tvTitle.setTypeface(typefaceLight);
-        tvPress = (TextView) rootView.findViewById(R.id.press);
-        tvPress.setTypeface(typefaceLight);
+        Typeface typefaceThin = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Thin.ttf");
+        TextView appName = (TextView) rootView.findViewById(R.id.appName);
+        appName.setTypeface(typefaceThin);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(rootView.getContext(), 3));
-        //recyclerView.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
         appInfoAdapter = new AppInfoAdapter();
         View headerView = LayoutInflater.from(rootView.getContext()).inflate(R.layout.place_holder, recyclerView, false);
         appInfoAdapter.setHeaderView(headerView);
         recyclerView.setAdapter(appInfoAdapter);
-        tvTitle.setText("" + title);
-        tvPress.setText("" + source);
-        shareContent = title + " via Digest News\t\t\n" + link + "\t\n get the app and day's need to know news. https://github.com/iwillow/DigestNews ";
+        shareContent = " Get the app and day's need to know news. https://github.com/iwillow/DigestNews ";
         loadList(shareContent);
     }
 
@@ -178,10 +158,6 @@ public class ShareDialog extends DialogFragment {
         public void bindItemView(RecyclerView.ViewHolder src, int position) {
             final ResolveInfoHolder holder = (ResolveInfoHolder) src;
             holder.resolveInfo = getItem(position);
-            // holder.textView.setText("" + holder.resolveInfo.);
-            // holder.resolveInfo.
-
-            //  holder.resolveInfo.activityInfo.loadIcon(holder.icon.getContext().getPackageManager());
             loadIcon(holder.resolveInfo, holder.icon);
             loadLabel(holder.resolveInfo, holder.textView);
             holder.itemView.setOnClickListener(new View.OnClickListener() {

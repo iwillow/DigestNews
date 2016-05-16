@@ -13,7 +13,8 @@
         <com.iwillow.android.digestnews.view.CircularRevealView
             android:id="@+id/revalView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+          />
 
 
         <com.iwillow.android.lib.view.CircleLayout

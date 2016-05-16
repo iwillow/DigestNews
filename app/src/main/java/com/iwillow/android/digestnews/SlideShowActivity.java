@@ -76,6 +76,7 @@ public class SlideShowActivity extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), slideItems);
         // Set up the ViewPager with the sections adapter.;
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setOffscreenPageLimit(1);
         mViewPager.setCurrentItem(current_index);
         SlideItem slideItem = slideItems.get(current_index);
         press.setText("" + slideItem.getProvider_name());
@@ -178,7 +179,7 @@ public class SlideShowActivity extends AppCompatActivity {
             final View rootView = inflater.inflate(R.layout.fragment_slide_show, container, false);
             final ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
             PhotoView photoView = (PhotoView) rootView.findViewById(R.id.photoView);
-            Glide.with(PlaceholderFragment.this).load(slideItem.getUrl()).crossFade().into(new GlideDrawableImageViewTarget(photoView) {
+            Glide.with(rootView.getContext()).load(slideItem.getUrl()).crossFade().into(new GlideDrawableImageViewTarget(photoView) {
                 @Override
                 public void onLoadFailed(Exception e, Drawable errorDrawable) {
                     super.onLoadFailed(e, errorDrawable);

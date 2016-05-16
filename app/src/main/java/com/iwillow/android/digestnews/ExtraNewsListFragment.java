@@ -215,6 +215,16 @@ public class ExtraNewsListFragment extends BaseFragment {
             }
 
         }
+
+        @Override
+        public void bindHeaderView(RecyclerView.ViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public void bindFooterView(RecyclerView.ViewHolder holder, int position) {
+
+        }
     }
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder {

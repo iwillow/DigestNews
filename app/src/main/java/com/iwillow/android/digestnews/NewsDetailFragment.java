@@ -10,16 +10,16 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,6 +59,8 @@ import com.iwillow.android.digestnews.util.ItemRealUtil;
 import com.iwillow.android.digestnews.util.ReferenceUtil;
 import com.iwillow.android.digestnews.util.TweetTransformer;
 import com.iwillow.android.digestnews.util.URLSpanNoUnderline;
+import com.iwillow.android.digestnews.widget.BaseRecyclerViewAdapter;
+import com.iwillow.android.digestnews.widget.GalleryAdapter;
 import com.iwillow.android.lib.log.LogUtil;
 import com.iwillow.android.lib.util.DimensionUtil;
 import com.iwillow.android.lib.util.IntentUtil;
@@ -67,13 +69,10 @@ import com.iwillow.android.lib.widget.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 import io.realm.Realm;
 import io.realm.RealmAsyncTask;
 import io.realm.RealmList;
-import io.realm.RealmResults;
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -83,7 +82,7 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by https://www.github.com/iwillow on 2016/5/3.
- * <p>
+ * <p/>
  * A simple {@link BaseFragment} subclass.
  * Use the {@link NewsDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -95,6 +94,7 @@ public class NewsDetailFragment extends BaseFragment {
     private static final String COLOR = "color";
     private static final String INDEX = "index";
     private Subscription subscription;
+    private Subscription event;
     private String uuid;
     private int color;
     private int index;
@@ -107,6 +107,8 @@ public class NewsDetailFragment extends BaseFragment {
     private ImageButton menu;
     private ImageView banner;
     private DonutProgress donutProgress;
+    private TextView summaryEdition;
+    private View line;
     private TextView lable;
     private TextView title;
     private ViewGroup summary;
@@ -120,16 +122,19 @@ public class NewsDetailFragment extends BaseFragment {
     private ViewGroup tweets;
     private ViewGroup anchorArea;
     private ViewGroup references;
-    private ViewGroup gallery;
+    private RecyclerView gallery;
     private ImageView singleImage;
     private TextView referCount;
     private ImageView toggleImage;
     private ImageView anchor;
     private NestedScrollView nestedScrollView;
-    private ScrollView scrollView;
     private Typeface typefaceBold;
     private Typeface typefaceLight;
     private Typeface typefaceThin;
+    private GalleryAdapter galleryAdapter;
+    private TextView error;
+    //private Context mContext;
+    private Subscription updateIndexSubscription;
 
 
     public NewsDetailFragment() {
@@ -160,6 +165,7 @@ public class NewsDetailFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             uuid = getArguments().getString(UUID);
             color = getArguments().getInt(COLOR);
@@ -177,7 +183,7 @@ public class NewsDetailFragment extends BaseFragment {
 
     @Override
     protected void initView(View rootView) {
-
+        // mContext=rootView.getContext();
         back = $(rootView, R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,7 +235,6 @@ public class NewsDetailFragment extends BaseFragment {
 
 
         nestedScrollView = $(rootView, R.id.nestedScrollView);
-        scrollView = $(rootView, R.id.scrollView);
         banner = $(rootView, R.id.banner);
         donutProgress = $(rootView, R.id.index);
         if (index == -1) {
@@ -243,9 +248,9 @@ public class NewsDetailFragment extends BaseFragment {
         }
         lable = $(rootView, R.id.label);
         lable.setTextColor(color);
-        typefaceBold = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Bold.ttf");
-        typefaceLight = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Light.ttf");
-        typefaceThin = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Thin.ttf");
+        typefaceBold = Typeface.createFromAsset(rootView.getContext().getAssets(), "fonts/Roboto-Bold.ttf");
+        typefaceLight = Typeface.createFromAsset(rootView.getContext().getAssets(), "fonts/Roboto-Light.ttf");
+        typefaceThin = Typeface.createFromAsset(rootView.getContext().getAssets(), "fonts/Roboto-Thin.ttf");
         lable.setTypeface(typefaceBold);
         title = $(rootView, R.id.title);
         title.setTypeface(typefaceLight);
@@ -259,8 +264,6 @@ public class NewsDetailFragment extends BaseFragment {
         longreads.removeAllViews();
         locations = $(rootView, R.id.locations);
         locations.removeAllViews();
-        slideshow = $(rootView, R.id.slideshow);
-        slideshow.removeAllViews();
         videos = $(rootView, R.id.videos);
         videos.removeAllViews();
         wikis = $(rootView, R.id.wikis);
@@ -273,10 +276,18 @@ public class NewsDetailFragment extends BaseFragment {
         anchor = $(rootView, R.id.anchor);
         toggleImage = $(rootView, R.id.toggleImage);
         referCount = $(rootView, R.id.referCount);
-
+        summaryEdition = $(rootView, R.id.summaryEdition);
+        line = $(rootView, R.id.line);
         // referCount.setTypeface(typefaceThin);
         singleImage = $(rootView, R.id.singleImage);
+        error = $(rootView, R.id.error);
         gallery = $(rootView, R.id.gallery);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(rootView.getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        gallery.setLayoutManager(linearLayoutManager);
+        gallery.setItemViewCacheSize(2);
+        galleryAdapter = new GalleryAdapter();
+        gallery.setAdapter(galleryAdapter);
         subscription = loadFromDataBase();
     }
 
@@ -340,7 +351,7 @@ public class NewsDetailFragment extends BaseFragment {
 
     private void loadNetworkData() {
         if (IntentUtil.isNetworkConnected(getActivity())) {
-            if (subscription != null && !subscription.isUnsubscribed()) {
+            if (subscription != null) {
                 subscription.unsubscribe();
                 subscription = null;
             }
@@ -417,7 +428,7 @@ public class NewsDetailFragment extends BaseFragment {
     }
 
 
-    private void activeItem() {
+    public void activeItem() {
 
         rx.Observable
                 .create(new rx.Observable.OnSubscribe<Boolean>() {
@@ -496,6 +507,8 @@ public class NewsDetailFragment extends BaseFragment {
                 donutProgress.setTextColor(Color.WHITE);
             } else if (index == -1) {
                 donutProgress.setVisibility(View.GONE);
+            } else {
+                donutProgress.setVisibility(View.VISIBLE);
             }
 
             //label
@@ -504,7 +517,7 @@ public class NewsDetailFragment extends BaseFragment {
             lable.setText(labl);
             lable.setVisibility(View.VISIBLE);
             lable.setTag(ItemRealUtil.getPress(itemRealm));
-            Glide.with(NewsDetailFragment.this).load(itemRealm.getImages().getUrl()).crossFade().into(banner);
+            Glide.with(banner.getContext()).load(itemRealm.getImages().getUrl()).crossFade().into(banner);
             //title
             title.setText("" + itemRealm.getTitle());
             title.setTag("" + itemRealm.getLink());
@@ -512,6 +525,8 @@ public class NewsDetailFragment extends BaseFragment {
 
             //quote
             addQuote(itemRealm);
+
+            summaryEdition.setVisibility(View.VISIBLE);
 
             //statics
             addStatics(itemRealm);
@@ -542,10 +557,27 @@ public class NewsDetailFragment extends BaseFragment {
             addTweet(itemRealm);
             //reference
             addReference(itemRealm);
+            line.setVisibility(View.VISIBLE);
+            error.setVisibility(View.GONE);
+            if (!itemRealm.isChecked() && getActivity() instanceof NewsDetailActivity) {
 
-            if (!itemRealm.isChecked()) {
-                activeItem();
+                if (((NewsDetailActivity) getActivity()).getCurrentIndex() + 1 == index) {
+
+                }
             }
+            if (getActivity() instanceof NewsDetailActivity) {
+                int pageIndex = ((NewsDetailActivity) getActivity()).getCurrentIndex();
+                if (pageIndex == index - 1 && !itemRealm.isChecked()) {
+                   // LogUtil.e(TAG, "Fragment index:" + (index - 1) + ";viewpager index:" + pageIndex);
+                    activeItem();
+
+                }
+            }
+
+            event = getEvent(itemRealm);
+
+        } else {
+            error.setVisibility(View.VISIBLE);
         }
 
     }
@@ -955,7 +987,6 @@ public class NewsDetailFragment extends BaseFragment {
                 TextView statDetailDescription = $(staticItemView, R.id.statDetailDescription);
                 statDetailDescription.setText(stat.getDescription().getText());
                 statDetailDescription.setTypeface(typefaceLight);
-
                 statDetail.addView(staticItemView);
 
             }
@@ -1013,7 +1044,7 @@ public class NewsDetailFragment extends BaseFragment {
                 if (src != null && src.length() > 0) {
                     ImageView longreadImg = $(longReadItemView, R.id.longreadImg);
 
-                    Glide.with(NewsDetailFragment.this).load(src).centerCrop().crossFade().into(longreadImg);
+                    Glide.with(longreads.getContext()).load(src).centerCrop().crossFade().into(longreadImg);
                 }
 
 
@@ -1069,72 +1100,88 @@ public class NewsDetailFragment extends BaseFragment {
 
     private void addSlideShow(ItemRealm itemRealm) {
         Slideshow slideshow1 = itemRealm.getSlideshow();
-        if (slideshow1 != null && slideshow1.getPhotos() != null && slideshow1.getPhotos().size() > 0) {
-            RealmList<Photo> photos = slideshow1.getPhotos();
-            if (photos.size() == 1) {
-                singleImage.setVisibility(View.VISIBLE);
-                String src = photos.get(0).getImages().getUrl();
-                Glide.with(NewsDetailFragment.this).load(src).centerCrop().crossFade().into(singleImage);
-                gallery.setVisibility(View.GONE);
-                final ArrayList<SlideItem> slideItems = new ArrayList<SlideItem>();
-                SlideItem slideItem = new SlideItem();
-                slideItem.caption = photos.get(0).getCaption();
-                slideItem.headline = photos.get(0).getHeadline();
-                slideItem.provider_name = photos.get(0).getProvider_name();
-                slideItem.url = src;
-                slideItems.add(slideItem);
-                singleImage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(v.getContext(), SlideShowActivity.class);
-                        intent.putParcelableArrayListExtra(SlideShowActivity.DATA, slideItems);
-                        intent.putExtra(SlideShowActivity.CURRENT_INDEX, 0);
-                        startActivity(intent);
-                    }
-                });
-
-            } else {
-                singleImage.setVisibility(View.GONE);
-                slideshow.removeAllViews();
-
-                final ArrayList<SlideItem> slideItems = new ArrayList<SlideItem>();
-                for (Photo photo : photos) {
-                    SlideItem slideItem = new SlideItem();
-                    slideItem.caption = photos.get(0).getCaption();
-                    slideItem.headline = photos.get(0).getHeadline();
-                    slideItem.provider_name = photos.get(0).getProvider_name();
-                    slideItem.url = photo.getImages().getUrl();
-                    slideItems.add(slideItem);
+        RealmList<Photo> photos = slideshow1.getPhotos();
+        final ArrayList<SlideItem> slideItems = new ArrayList<SlideItem>();
+        for (Photo photo : photos) {
+            SlideItem slideItem = new SlideItem();
+            slideItem.caption = photos.get(0).getCaption();
+            slideItem.headline = photos.get(0).getHeadline();
+            slideItem.provider_name = photos.get(0).getProvider_name();
+            slideItem.url = photo.getImages().getUrl();
+            slideItems.add(slideItem);
+            galleryAdapter.addItem(slideItem);
+        }
+        if (slideItems.isEmpty()) {
+            singleImage.setVisibility(View.GONE);
+            gallery.setVisibility(View.GONE);
+        } else if (slideItems.size() == 1) {
+            singleImage.setVisibility(View.VISIBLE);
+            gallery.setVisibility(View.GONE);
+            String src = photos.get(0).getImages().getUrl();
+            Glide.with(singleImage.getContext()).load(src).centerCrop().crossFade().into(singleImage);
+            singleImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), SlideShowActivity.class);
+                    intent.putParcelableArrayListExtra(SlideShowActivity.DATA, slideItems);
+                    intent.putExtra(SlideShowActivity.CURRENT_INDEX, 0);
+                    startActivity(intent);
                 }
-                int currentItem = 0;
-                for (Photo photo : photos) {
+            });
 
-                    View photoItemView =
-                            LayoutInflater.from(slideshow.getContext()).inflate(R.layout.item_image, slideshow, false);
-
-                    ImageView imageView = $(photoItemView, R.id.photo);
-                    final int index = currentItem;
-                    imageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(v.getContext(), SlideShowActivity.class);
-                            intent.putParcelableArrayListExtra(SlideShowActivity.DATA, slideItems);
-                            intent.putExtra(SlideShowActivity.CURRENT_INDEX, index);
-                            startActivity(intent);
-                        }
-                    });
-
-                    //  String src = getImageSource(photo.getImages());
-                    String src = photo.getImages().getUrl();
-                    Glide.with(NewsDetailFragment.this).load(src).centerCrop().crossFade().into(imageView);
-
-                    slideshow.addView(photoItemView);
-                    currentItem++;
+        } else {
+            singleImage.setVisibility(View.GONE);
+            gallery.setVisibility(View.VISIBLE);
+            galleryAdapter.addItemClickListenr(new BaseRecyclerViewAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(RecyclerView.ViewHolder holder, int position) {
+                    Intent intent = new Intent(gallery.getContext(), SlideShowActivity.class);
+                    intent.putParcelableArrayListExtra(SlideShowActivity.DATA, slideItems);
+                    intent.putExtra(SlideShowActivity.CURRENT_INDEX, position);
+                    startActivity(intent);
                 }
-            }
+            });
+
 
         }
+
+
     }
+
+    private Subscription getEvent(final ItemRealm itemRealm) {
+        if (getActivity() instanceof NewsDetailActivity) {
+            return ((NewsDetailActivity) getActivity())
+                    .getRxBus()
+                    .toObserverable(Integer.class)
+                    .onBackpressureBuffer()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Integer>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Integer integer) {
+                            if (index - 1 == integer) {
+                                // LogUtil.e(TAG, "Fragment index:" + (index - 1) + ";viewpager index:" + integer);
+                                if (!itemRealm.isChecked()) {
+                                    activeItem();
+                                }
+                            }
+
+                        }
+                    })
+                    ;
+        }
+        return null;
+    }
+
 
     private String getImageSource(Image image) {
 
@@ -1169,9 +1216,17 @@ public class NewsDetailFragment extends BaseFragment {
         super.onDestroy();
         realm.close();
         cancelAsyncTransaction();
-        if (subscription != null
-                && !subscription.isUnsubscribed()) {
+        if (subscription != null) {
             subscription.unsubscribe();
+            subscription = null;
+        }
+        if (updateIndexSubscription != null) {
+            updateIndexSubscription.isUnsubscribed();
+            updateIndexSubscription = null;
+        }
+        if (event != null) {
+            event.unsubscribe();
+            event = null;
         }
     }
 }

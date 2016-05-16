@@ -29,25 +29,30 @@
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7" />
 
-
-            <LinearLayout
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_gravity="bottom"
-                android:background="@drawable/triangle"
+                android:scaleType="fitXY"
+                android:src="@mipmap/morning_triangle_background" />
+
+            <LinearLayout
+                android:id="@+id/triangle"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="bottom"
                 android:gravity="bottom"
-                android:orientation="horizontal"
-                android:tint="@android:color/white">
+                android:orientation="horizontal">
 
 
                 <com.iwillow.android.lib.view.DonutProgress
-                    android:visibility="gone"
                     android:id="@+id/index"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="10dp"
+                    android:visibility="gone"
                     app:donut_background_color="@android:color/transparent"
                     app:donut_finished_color="#ff0000"
                     app:donut_finished_stroke_width="1dp"
@@ -60,14 +65,14 @@
 
                 <TextView
                     android:id="@+id/label"
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_toRightOf="@id/index"
                     android:text="politics"
                     android:textColor="#ff0000"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:visibility="gone" />
 
             </LinearLayout>
 

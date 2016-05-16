@@ -11,30 +11,55 @@
     android:paddingRight="20dp"
     android:paddingTop="80dp">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/darker_gray"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="10dp"
-        android:text="Hey 'America,' Budweiser's rebranding to remind you it's an election year"
-        android:textColor="@android:color/black"
-        android:textSize="18sp" />
+    <!-- <TextView
+         android:id="@+id/title"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:background="@android:color/darker_gray"
+         android:paddingLeft="20dp"
+         android:paddingRight="20dp"
+         android:paddingTop="10dp"
+         android:text="Hey 'America,' Budweiser's rebranding to remind you it's an election year"
+         android:textColor="@android:color/black"
+         android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/press"
+     <TextView
+         android:id="@+id/press"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:background="@android:color/darker_gray"
+         android:paddingBottom="5dp"
+         android:paddingLeft="20dp"
+         android:paddingRight="20dp"
+         android:paddingTop="10dp"
+         android:text="Returns,CNN + 1 more"
+         android:textColor="@android:color/black"
+         android:textSize="10sp" />
+ -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/darker_gray"
-        android:paddingBottom="5dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="10dp"
-        android:text="Returns,CNN + 1 more"
-        android:textColor="@android:color/black"
-        android:textSize="10sp" />
+        android:background="@color/logo_background"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/setting_atom" />
+
+        <TextView
+            android:id="@+id/appName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableTop="@mipmap/yahoo_logo_white"
+            android:gravity="center"
+            android:text="NEWS DIGEST"
+            android:textColor="@android:color/white"
+            android:textSize="10sp" />
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -108,7 +133,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
         </android.support.v7.widget.RecyclerView>
 
         <com.iwillow.android.lib.view.TriangleViewLayout
@@ -116,7 +140,7 @@
             android:layout_height="50dp"
             android:layout_gravity="top"
             android:background="@android:color/transparent"
-            app:triangleViewSolidColor="@android:color/darker_gray"
+            app:triangleViewSolidColor="@color/logo_background"
             app:triangleViewType="down" />
 
     </FrameLayout>

@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recyclerView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    app:layoutManager="LinearLayoutManager"
-    app:spanCount="1"
-    tools:context=".NewsListFragment"
-    tools:listitem="@layout/news_item">
+    android:layout_height="match_parent">
 
-</android.support.v7.widget.RecyclerView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:fitsSystemWindows="true"
+        app:layoutManager="LinearLayoutManager"
+        app:spanCount="1"
+        tools:context=".NewsListFragment"
+        tools:listitem="@layout/news_item">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <ImageButton
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|top"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/menu_drawable" />
+</android.support.design.widget.CoordinatorLayout>

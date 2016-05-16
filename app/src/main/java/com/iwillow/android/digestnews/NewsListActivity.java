@@ -1,13 +1,8 @@
 package com.iwillow.android.digestnews;
 
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.iwillow.android.digestnews.api.RequestAddress;
@@ -16,11 +11,9 @@ import com.iwillow.android.digestnews.entity.Item;
 import com.iwillow.android.digestnews.entity.ItemRealm;
 import com.iwillow.android.digestnews.http.RxNewsParser;
 import com.iwillow.android.digestnews.util.StatusBarCompat;
-import com.iwillow.android.lib.log.Log;
 import com.iwillow.android.lib.log.LogUtil;
 import com.iwillow.android.lib.util.DateUtil;
 import com.iwillow.android.lib.util.IntentUtil;
-import com.jaeger.library.StatusBarUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -29,14 +22,11 @@ import io.realm.Realm;
 import io.realm.RealmAsyncTask;
 import io.realm.RealmList;
 import io.realm.RealmResults;
-import rx.Observable;
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 
 public class NewsListActivity extends AppCompatActivity {
@@ -47,21 +37,18 @@ public class NewsListActivity extends AppCompatActivity {
     private Realm realm;
     private RealmAsyncTask asyncTransaction;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         StatusBarCompat.showSystemUI(this);
-      /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }*/
         realm = Realm.getDefaultInstance();
         setContentView(R.layout.activity_news_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        StatusBarUtil.setTransparent(this);
         subscription = checkDataBase();
-
+        if (BuildConfig.DEBUG) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
+        }
     }
 
 
@@ -72,6 +59,7 @@ public class NewsListActivity extends AppCompatActivity {
                     @Override
                     public Boolean call(Realm realm) {
                         String preDate = DateUtil.format(DateUtil.getPreDay(new Date()), "yyyy-MM-dd");
+                        // String preDate = DateUtil.format(new Date(), "yyyy-MM-dd");
                         RealmResults<ItemRealm> list = realm.where(ItemRealm.class).contains("published", preDate).findAll();
                         return list != null && list.size() > 0;
                     }
@@ -115,87 +103,6 @@ public class NewsListActivity extends AppCompatActivity {
                     }
                 });
 
-
-      /*  return rx.Observable
-                .create(new Observable.OnSubscribe<Boolean>() {
-                    @Override
-                    public void call(Subscriber<? super Boolean> subscriber) {
-                        try {
-
-                            RealmResults<ItemRealm> list = realm.where(ItemRealm.class).contains("published", "2016-05-11").findAll();
-                            if (list != null && list.size() > 0) {
-                                subscriber.onNext(true);
-                            } else {
-                                subscriber.onNext(false);
-                            }
-                            subscriber.onCompleted();
-                        } catch (Exception e) {
-                            subscriber.onError(e);
-                        }
-                    }
-                })
-                .onBackpressureBuffer()
-                .asObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-                        LogUtil.d(TAG, "  checkDataBase from database onCompleted called");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        LogUtil.d(TAG, "  checkDataBase from database onError called");
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        LogUtil.d(TAG, "  checkDataBase from database onNext called");
-                        if (!aBoolean) {
-                            if (subscription != null && !subscription.isUnsubscribed()) {
-                                subscription.unsubscribe();
-                                subscription = null;
-                            }
-
-                            if (IntentUtil.isNetworkConnected(NewsListActivity.this)) {
-                                subscription = newsListSubscription();
-                            } else {
-                                Toast.makeText(NewsListActivity.this, "please connect the network", Toast.LENGTH_SHORT).show();
-                            }
-
-                        } else {
-
-                            getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .add(R.id.container, new NewsListFragment(), "list")
-                                    .commit();
-                        }
-                    }
-                });*/
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_news_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
 

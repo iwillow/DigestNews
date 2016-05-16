@@ -1,132 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp">
+    android:layout_height="wrap_content">
 
+    <FrameLayout
+        android:id="@+id/imgArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/cntainer1"
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:background="@android:color/darker_gray"
+            android:scaleType="centerCrop" />
+
+        <ImageView
+
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:scaleType="fitXY"
+            android:src="@mipmap/morning_triangle_background" />
+    </FrameLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="5dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
-        <com.iwillow.android.lib.view.DonutProgress
-            android:id="@+id/index"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            app:donut_background_color="@android:color/transparent"
-            app:donut_finished_color="#ff0000"
-            app:donut_finished_stroke_width="1dp"
-            app:donut_progress="90"
-            app:donut_text="10"
-            app:donut_text_color="#ff0000"
-            app:donut_text_size="13sp"
-            app:donut_unfinished_color="#0000ff"
-            app:donut_unfinished_stroke_width="1dp" />
+        <View
+            android:id="@+id/placeHolder"
+            android:layout_width="match_parent"
+            android:layout_height="310dp" />
+
+        <LinearLayout
+            android:id="@+id/cntainer1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/placeHolder"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.iwillow.android.lib.view.DonutProgress
+                android:id="@+id/index"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                app:donut_background_color="@android:color/transparent"
+                app:donut_finished_color="#ff0000"
+                app:donut_finished_stroke_width="1dp"
+                app:donut_progress="90"
+                app:donut_text="10"
+                app:donut_text_color="#ff0000"
+                app:donut_text_size="13sp"
+                app:donut_unfinished_color="#0000ff"
+                app:donut_unfinished_stroke_width="1dp" />
+
+            <TextView
+                android:id="@+id/label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/index"
+                android:text="politics"
+                android:textColor="#ff0000"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
 
         <TextView
-            android:id="@+id/label"
-            android:layout_width="wrap_content"
+            android:id="@+id/title"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@id/index"
-            android:text="politics"
-            android:textColor="#ff0000"
-            android:textSize="18sp" />
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/cntainer1"
+            android:layout_marginLeft="35dp"
+            android:text="news title"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/sources"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/title"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="5dp"
+            android:text="cnn,bbc"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:id="@+id/images"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sources"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/wikipedia_atom_icon" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/map_atom_icon" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/video_atom_icon" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/images_atom_icon" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/diagram_atom_icon" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/twitter_atom_icon" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/stats_atom_icon" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/images"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray" />
+    </RelativeLayout>
+
+</FrameLayout>
 
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/cntainer1"
-        android:layout_marginLeft="35dp"
-        android:text="news title"
-        android:textColor="@android:color/black"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/sources"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/title"
-        android:layout_marginLeft="35dp"
-        android:layout_marginTop="5dp"
-        android:text="cnn,bbc"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="15sp" />
-
-    <LinearLayout
-        android:id="@+id/images"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/sources"
-        android:layout_marginLeft="35dp"
-        android:layout_marginTop="5dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/wikipedia_atom_icon" />
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/map_atom_icon" />
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/video_atom_icon" />
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/images_atom_icon" />
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/diagram_atom_icon" />
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/twitter_atom_icon" />
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/stats_atom_icon" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@+id/images"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/darker_gray" />
-</RelativeLayout>

@@ -12,7 +12,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.iwillow.android.digestnews.util.RxBus;
 import com.iwillow.android.digestnews.util.StatusBarCompat;
+import com.iwillow.android.lib.log.LogUtil;
 import com.iwillow.android.lib.widget.BaseFragment;
 
 import java.io.Serializable;
@@ -20,14 +22,16 @@ import java.util.ArrayList;
 
 public class NewsDetailActivity extends AppCompatActivity {
 
-
+    public static String TAG = "NewsDetailActivity";
     public static final String INDEX = "index";
     public static final String DATA = "data";
 
     private ArrayList<DetailItem> data;
     private ViewPager viewPager;
-
+    private NewsDetailAdapter adapter;
     private int index;
+    private RxBus rxBus;
+    private int currentIndex = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +39,51 @@ public class NewsDetailActivity extends AppCompatActivity {
         StatusBarCompat.showSystemUI(this);
         setContentView(R.layout.activity_news_detail);
         Intent intent = getIntent();
+        rxBus = new RxBus();
         index = intent.getIntExtra(INDEX, -1);
         data = intent.getParcelableArrayListExtra(DATA);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        viewPager.setAdapter(new NewsDetailAdapter(getSupportFragmentManager(), data));
+        adapter = new NewsDetailAdapter(getSupportFragmentManager(), data);
+        viewPager.setAdapter(adapter);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setCurrentItem(index);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            //int preIndex = -1;
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (currentIndex != position) {
+                    currentIndex = position;
+                  //  LogUtil.e(TAG, "onPageScrolled position:" + currentIndex);
+                    rxBus.post(Integer.valueOf(currentIndex));
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                //  LogUtil.d(TAG,"onPageSelected");
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+               /* if (state == ViewPager.SCROLL_STATE_IDLE) {
+                    LogUtil.e(TAG, "onPageScrollStateChanged");
+                }*/
+
+            }
+        });
+
 
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
         }
 
+    }
+
+    public RxBus getRxBus() {
+        return rxBus;
     }
 
     public static class NewsDetailAdapter extends FragmentPagerAdapter {
@@ -60,9 +97,9 @@ public class NewsDetailActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if (detailItemArrayList != null && !detailItemArrayList.isEmpty()) {
-                if (position < detailItemArrayList.size()) {
-                    DetailItem item = detailItemArrayList.get(position);
-                    return NewsDetailFragment.newInstance(item.uuid, item.color, position+1);
+                if ((position % getCount()) < detailItemArrayList.size()) {
+                    DetailItem item = detailItemArrayList.get(position % getCount());
+                    return NewsDetailFragment.newInstance(item.uuid, item.color, (position + 1) % getCount());
                 } else {
                     return new ExtraFragment();
                 }
@@ -135,5 +172,12 @@ public class NewsDetailActivity extends AppCompatActivity {
         }
     }
 
+    public int getCurrentIndex() {
+        return currentIndex;
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

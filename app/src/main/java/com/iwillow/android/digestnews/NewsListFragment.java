@@ -1,30 +1,26 @@
 package com.iwillow.android.digestnews;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.iwillow.android.digestnews.entity.Color;
 import com.iwillow.android.digestnews.entity.ItemRealm;
-import com.iwillow.android.digestnews.view.CircularRevealView;
 import com.iwillow.android.digestnews.widget.NewsAdapter;
 import com.iwillow.android.lib.util.DateUtil;
-import com.iwillow.android.lib.view.CircleLayout;
 import com.iwillow.android.lib.widget.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -37,12 +33,16 @@ import rx.functions.Func1;
  * Created by https://www.github.com/iwillow on 2016/4/29.
  */
 public class NewsListFragment extends BaseFragment {
-
+    private final String TAG = "NewsListFragment";
     private NewsAdapter adapter;
     private Realm realm;
     private Subscription subscription;
     private RecyclerView recyclerView;
+    private ImageButton menu;
+    private boolean initFooterView = false;
     private ArrayList<NewsDetailActivity.DetailItem> list = new ArrayList<>();
+    private RealmResults<ItemRealm> mItemRealms;
+    //private CircleLayout circleLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,9 +57,48 @@ public class NewsListFragment extends BaseFragment {
         return R.layout.fragment_news_list;
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (initFooterView) {
+            updateFooterView();
+        }
+    }
+
     @Override
     protected void initView(final View rootView) {
+
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        menu = (ImageButton) rootView.findViewById(R.id.menu);
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                PopupMenu popup = new PopupMenu(v.getContext(), v);
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.news_list_menu, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.more_digest:
+                                moreDigest();
+                                return true;
+                            case R.id.send_feedback:
+                                sendEmail();
+                                return true;
+                            case R.id.settings:
+                                setting();
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+                popup.show();
+            }
+        });
         recyclerView.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
         adapter = new NewsAdapter();
         recyclerView.setAdapter(adapter);
@@ -74,7 +113,55 @@ public class NewsListFragment extends BaseFragment {
 
             }
         });
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                final int firstCompletelyVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+                if (firstCompletelyVisibleItemPosition > 1) {
+                    if (menu.getVisibility() == View.VISIBLE) {
+                        menu.setVisibility(View.GONE);
+                    }
+                } else {
+                    if (menu.getVisibility() == View.GONE) {
+                        menu.setVisibility(View.VISIBLE);
+                    }
+                }
+
+            }
+        });
         subscription = load();
+    }
+
+    private void moreDigest() {
+        MoreDigestDialog moreDigestDialog = new MoreDigestDialog();
+        moreDigestDialog.show(getChildFragmentManager(), "moreDigest");
+    }
+
+    private void setting() {
+        SettingsDialog settingsDialog = new SettingsDialog();
+        settingsDialog.show(getChildFragmentManager(), "setting");
+    }
+
+    private void sendEmail() {
+
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+        String[] addresses = {"iwillow@163.com"};
+        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        String subject = "Please replace this text with your issues";
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Toast.makeText(getContext(), "Your Phone does not install email application.", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private Subscription load() {
@@ -85,6 +172,7 @@ public class NewsListFragment extends BaseFragment {
                     @Override
                     public RealmResults<ItemRealm> call(Realm realm) {
                         String preDate = DateUtil.format(DateUtil.getPreDay(new Date()), "yyyy-MM-dd");
+                        // String preDate = DateUtil.format(new Date(), "yyyy-MM-dd");
                         return realm.where(ItemRealm.class).contains("published", preDate).findAllSorted("published");
                     }
                 })
@@ -106,6 +194,7 @@ public class NewsListFragment extends BaseFragment {
 
                         if (adapter != null) {
                             adapter.clear();
+                            mItemRealms = itemRealms;
                             for (ItemRealm itemRealm : itemRealms) {
                                 NewsDetailActivity.DetailItem detailItem = new NewsDetailActivity.DetailItem();
                                 int stateColor = android.graphics.Color.parseColor(itemRealm.getColors().get(0).getHexcode());
@@ -115,6 +204,7 @@ public class NewsListFragment extends BaseFragment {
                                 adapter.addItem(itemRealm);
                             }
                             addFooterView(itemRealms);
+
                         }
 
 
@@ -126,7 +216,7 @@ public class NewsListFragment extends BaseFragment {
 
     private void addFooterView(RealmResults<ItemRealm> itemRealms) {
         View footer = LayoutInflater.from(recyclerView.getContext()).inflate(R.layout.news_list_footer_view, recyclerView, false);
-        final CircleLayout circleLayout = (CircleLayout) footer.findViewById(R.id.circleLayout);
+ /*       final CircleLayout circleLayout = (CircleLayout) footer.findViewById(R.id.circleLayout);
         final CircularRevealView revealView = (CircularRevealView) footer.findViewById(R.id.revalView);
         final TextView textView = (TextView) footer.findViewById(R.id.read);
         final TextView bigTitle = (TextView) footer.findViewById(R.id.bigTitle);
@@ -150,6 +240,12 @@ public class NewsListFragment extends BaseFragment {
             int activeColor = android.graphics.Color.parseColor(color.getHexcode());
             circleLayout.addItem("" + index, activeColor);
             index++;
+        }
+
+        for (int i = 0; i < count; i++) {
+            if (itemRealms.get(i).isChecked()) {
+                circleLayout.activeItem(i);
+            }
         }
         circleLayout.setOnChildViewClickListener(new CircleLayout.OnChildViewClickListener() {
             @Override
@@ -201,9 +297,32 @@ public class NewsListFragment extends BaseFragment {
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.move_in, R.anim.move_out);
             }
-        });
+        });*/
         adapter.setFooterView(footer);
+        View toggleButton = adapter.getFooterView().findViewById(R.id.toggleButton);
+        toggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                extraNews();
+            }
+        });
+
+        initFooterView = true;
     }
+
+    private void updateFooterView() {
+        if (adapter != null) {
+
+        }
+
+    }
+
+    public void extraNews() {
+        Intent intent = new Intent(getContext(), ExtraNewsListActivity.class);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.move_in, R.anim.move_out);
+    }
+
 
     @Override
     public void onDestroy() {
@@ -212,6 +331,8 @@ public class NewsListFragment extends BaseFragment {
         if (subscription != null) {
             subscription.unsubscribe();
         }
+
     }
+
 
 }
