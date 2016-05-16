@@ -4,7 +4,10 @@
     <declare-styleable name="DonutProgress">
         <attr name="donut_progress" format="integer" />
         <attr name="donut_max" format="integer" />
-
+        <attr name="donut_direction" format="enum">
+            <enum name="clockwise" value="0" />
+            <enum name="anticlockwise" value="1" />
+        </attr>
         <attr name="donut_unfinished_color" format="color" />
         <attr name="donut_finished_color" format="color" />
 
@@ -47,5 +50,16 @@
         </attr>
         <attr name="radius" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="TriangleViewLayout">
+        <attr name="triangleViewSolidColor" format="color" />
+        <attr name="triangleViewStrokeColor" format="color" />
+        <attr name="triangleViewStrokeWidth" format="dimension" />
+        <attr name="triangleViewType" format="enum">
+            <enum name="down" value="1" />
+            <enum name="up" value="0" />
+        </attr>
+    </declare-styleable>
+
 
 </resources>

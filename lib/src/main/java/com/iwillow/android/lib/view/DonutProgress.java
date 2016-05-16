@@ -49,18 +49,23 @@ public class DonutProgress extends View {
     private String innerBottomText;
     private float innerBottomTextHeight;
 
+    private final int DIRECTION_CLOCKWISE = 0;
+    private final int DIRECTION_ANTI_CLOCKWISE = 1;
     private final float default_stroke_width;
     private final int default_finished_color = Color.rgb(66, 145, 241);
     private final int default_unfinished_color = Color.rgb(204, 204, 204);
     private final int default_text_color = Color.rgb(66, 145, 241);
     private final int default_inner_bottom_text_color = Color.rgb(66, 145, 241);
+    private final int default_direction = DIRECTION_CLOCKWISE;
     private final int default_inner_background_color = Color.TRANSPARENT;
     private final int default_max = 100;
     private final int default_startingDegree = 0;
     private final float default_text_size;
     private final float default_inner_bottom_text_size;
     private final int min_size;
+    private int direction;
 
+    private static final String INSTANCE_DIRECTION = "direction";
     private static final String INSTANCE_STATE = "saved_instance";
     private static final String INSTANCE_TEXT_COLOR = "text_color";
     private static final String INSTANCE_TEXT_SIZE = "text_size";
@@ -110,7 +115,7 @@ public class DonutProgress extends View {
         unfinishedStrokeColor = attributes.getColor(R.styleable.DonutProgress_donut_unfinished_color, default_unfinished_color);
         textColor = attributes.getColor(R.styleable.DonutProgress_donut_text_color, default_text_color);
         textSize = attributes.getDimension(R.styleable.DonutProgress_donut_text_size, default_text_size);
-
+        direction = attributes.getInt(R.styleable.DonutProgress_donut_direction, default_direction);
         setMax(attributes.getInt(R.styleable.DonutProgress_donut_max, default_max));
         setProgress(attributes.getInt(R.styleable.DonutProgress_donut_progress, 0));
         finishedStrokeWidth = attributes.getDimension(R.styleable.DonutProgress_donut_finished_stroke_width, default_stroke_width);
@@ -183,8 +188,18 @@ public class DonutProgress extends View {
                 getHeight() - delta);
         float innerCircleRadius = (getWidth() - Math.min(finishedStrokeWidth, unfinishedStrokeWidth) + Math.abs(finishedStrokeWidth - unfinishedStrokeWidth)) / 2f;
         canvas.drawCircle(getWidth() / 2.0f, getHeight() / 2.0f, innerCircleRadius, innerCirclePaint);
-        canvas.drawArc(finishedOuterRect, getStartingDegree(), getProgressAngle(), false, finishedPaint);
-        canvas.drawArc(unfinishedOuterRect, getStartingDegree() + getProgressAngle(), 360 - getProgressAngle(), false, unfinishedPaint);
+        if (direction == DIRECTION_ANTI_CLOCKWISE) {
+
+            canvas.drawArc(finishedOuterRect, getStartingDegree(), -getProgressAngle(), false, finishedPaint);
+            canvas.drawArc(unfinishedOuterRect, getStartingDegree() - getProgressAngle(), -360 + getProgressAngle(), false, unfinishedPaint);
+
+
+        } else {
+
+            canvas.drawArc(finishedOuterRect, getStartingDegree(), getProgressAngle(), false, finishedPaint);
+            canvas.drawArc(unfinishedOuterRect, getStartingDegree() + getProgressAngle(), 360 - getProgressAngle(), false, unfinishedPaint);
+
+        }
 
         String text = this.text != null ? this.text : prefixText + progress + suffixText;
         if (!TextUtils.isEmpty(text)) {

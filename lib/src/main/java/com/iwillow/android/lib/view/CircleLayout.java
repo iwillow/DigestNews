@@ -261,14 +261,41 @@ public class CircleLayout extends ViewGroup {
         }
     }
 
-    private Handler mHandler;
+    private Handler mHandler = new Handler() {
+        int index = 0;
+
+        @Override
+        public void handleMessage(Message msg) {
+
+            switch (msg.what) {
+                case 0x110:
+                    if (!isAllActived()) {
+                        activeItem(index);
+                        index++;
+                        sendEmptyMessageDelayed(0x110, 150);
+                    } else {
+                        removeMessages(0x110);
+                        index = 0;
+                        if (mCircleLayoutAnimationListener != null) {
+                            mCircleLayoutAnimationListener.onAnimationMarqueeEnd();
+                        }
+                        shrink();
+                        Log.d(TAG, "all the items have been actived");
+                    }
+                    break;
+                default:
+                    break;
+
+            }
+        }
+    };
+
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        LogUtil.d(TAG, "onAttachedToWindow");
         if (mHandler == null) {
-
-            
             mHandler = new Handler() {
                 int index = 0;
 
@@ -305,6 +332,7 @@ public class CircleLayout extends ViewGroup {
 
     @Override
     protected void onDetachedFromWindow() {
+        LogUtil.d(TAG, "onDetachedFromWindow");
         if (mHandler != null && mHandler.hasMessages(0x110)) {
             mHandler.removeMessages(0x110);
         }
