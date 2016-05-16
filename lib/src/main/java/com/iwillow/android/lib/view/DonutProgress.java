@@ -364,6 +364,14 @@ public class DonutProgress extends View {
         this.invalidate();
     }
 
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
+        this.invalidate();
+    }
 
     public float getInnerBottomTextSize() {
         return innerBottomTextSize;
@@ -415,6 +423,7 @@ public class DonutProgress extends View {
         bundle.putFloat(INSTANCE_FINISHED_STROKE_WIDTH, getFinishedStrokeWidth());
         bundle.putFloat(INSTANCE_UNFINISHED_STROKE_WIDTH, getUnfinishedStrokeWidth());
         bundle.putInt(INSTANCE_BACKGROUND_COLOR, getInnerBackgroundColor());
+        bundle.putInt(INSTANCE_DIRECTION, getDirection());
         return bundle;
     }
 
@@ -439,6 +448,7 @@ public class DonutProgress extends View {
             prefixText = bundle.getString(INSTANCE_PREFIX);
             suffixText = bundle.getString(INSTANCE_SUFFIX);
             text = bundle.getString(INSTANCE_TEXT);
+            direction = bundle.getInt(INSTANCE_DIRECTION);
             super.onRestoreInstanceState(bundle.getParcelable(INSTANCE_STATE));
             return;
         }
