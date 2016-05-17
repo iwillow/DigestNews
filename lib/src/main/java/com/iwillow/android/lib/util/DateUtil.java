@@ -19,6 +19,15 @@ public class DateUtil {
         return presentDate;
     }
 
+
+    public static Date getPreNDay(Date presentDate, int n) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(presentDate);
+        calendar.add(Calendar.DAY_OF_MONTH, -n);
+        presentDate = calendar.getTime();
+        return presentDate;
+    }
+
     public static Date getNextDay(Date presentDate) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(presentDate);

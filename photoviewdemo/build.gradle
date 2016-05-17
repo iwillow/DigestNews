@@ -26,4 +26,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
     compile 'com.github.chrisbanes.photoview:library:1.2.4'
+    compile project(':lib')
 }
