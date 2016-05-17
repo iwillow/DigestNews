@@ -1,6 +1,7 @@
 package com.iwillow.android.digestnews;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,24 +16,31 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.iwillow.android.digestnews.entity.ItemRealm;
+import com.iwillow.android.digestnews.util.Helper;
+import com.iwillow.android.digestnews.util.RxBus;
 import com.iwillow.android.digestnews.widget.NewsAdapter;
 import com.iwillow.android.lib.util.DateUtil;
 import com.iwillow.android.lib.widget.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by https://www.github.com/iwillow on 2016/4/29.
  */
-public class NewsListFragment extends BaseFragment {
+public class NewsListFragment extends BaseFragment implements MoreDigestDialog.NoticeDialogListener {
     private final String TAG = "NewsListFragment";
     private NewsAdapter adapter;
     private Realm realm;
@@ -42,15 +50,89 @@ public class NewsListFragment extends BaseFragment {
     private boolean initFooterView = false;
     private ArrayList<NewsDetailActivity.DetailItem> list = new ArrayList<>();
     private RealmResults<ItemRealm> mItemRealms;
-    //private CircleLayout circleLayout;
+    private int mSection;
+    private int mEdition;
+    private String mDate;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         realm = Realm.getDefaultInstance();
-
     }
 
+ /*   private void getConfg() {
+
+        Observable
+                .create(new Observable.OnSubscribe<Map<String, String>>() {
+
+                    @Override
+                    public void call(Subscriber<? super Map<String, String>> subscriber) {
+                        {
+                       try {
+                                SharedPreferences spf = getContext().getSharedPreferences(EditionDialog.PREFS_NAME, 0);
+                                int selectedSection = spf.getInt(EditionDialog.SECTION_SELECTED, MoreDigestDialog.SECTION_MORNING);
+                                String dateSection = spf.getString(EditionDialog.DATE_SELECTED, Helper.format(new Date()));
+                                Map<String, String> map = new HashMap<String, String>();
+                                map.put(EditionDialog.SECTION_SELECTED, String.valueOf(selectedSection));
+                                map.put(EditionDialog.DATE_SELECTED, dateSection);
+                                subscriber.onNext(map);
+                                subscriber.onCompleted();
+                            } catch (Exception e) {
+                                subscriber.onError(e);
+                            }
+                        }
+
+
+                    );
+
+
+
+    }*/
+
+
+    private void getConfg() {
+        Observable
+                .create(new Observable.OnSubscribe<Map<String, String>>() {
+                    @Override
+                    public void call(Subscriber<? super Map<String, String>> subscriber) {
+                        try {
+                            SharedPreferences spf = getContext().getSharedPreferences(EditionDialog.PREFS_NAME, 0);
+                            int selectedSection = spf.getInt(EditionDialog.SECTION_SELECTED, MoreDigestDialog.SECTION_MORNING);
+                            String dateSection = spf.getString(EditionDialog.DATE_SELECTED, Helper.format(new Date()));
+                            int edition = spf.getInt(EditionDialog.EDITION, EditionDialog.EDITION_INTERNATIONAL);
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put(EditionDialog.SECTION_SELECTED, String.valueOf(selectedSection));
+                            map.put(EditionDialog.DATE_SELECTED, dateSection);
+                            map.put(EditionDialog.EDITION, String.valueOf(edition));
+                            subscriber.onNext(map);
+                            subscriber.onCompleted();
+                        } catch (Exception e) {
+                            subscriber.onError(e);
+                        }
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Map<String, String>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Map<String, String> map) {
+                        mEdition = Integer.parseInt(map.get(EditionDialog.EDITION));
+                        mDate = map.get(EditionDialog.SECTION_SELECTED);
+                        mSection = Integer.parseInt(map.get(EditionDialog.SECTION_SELECTED));
+                        adapter.resetArea(mEdition, mSection, mDate);
+                    }
+                });
+    }
 
     @Override
     protected int getLayoutId() {
@@ -63,6 +145,7 @@ public class NewsListFragment extends BaseFragment {
         super.onResume();
         if (initFooterView) {
             updateFooterView();
+            getConfg();
         }
     }
 
@@ -140,6 +223,9 @@ public class NewsListFragment extends BaseFragment {
 
     private void moreDigest() {
         MoreDigestDialog moreDigestDialog = new MoreDigestDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString(MoreDigestDialog.DATE_SELECTED, mDate);
+        bundle.putInt(MoreDigestDialog.SECTION_SELECTED, mSection);
         moreDigestDialog.show(getChildFragmentManager(), "moreDigest");
     }
 
@@ -171,8 +257,8 @@ public class NewsListFragment extends BaseFragment {
                 .map(new Func1<Realm, RealmResults<ItemRealm>>() {
                     @Override
                     public RealmResults<ItemRealm> call(Realm realm) {
-                        String preDate = DateUtil.format(DateUtil.getPreDay(new Date()), "yyyy-MM-dd");
-                        // String preDate = DateUtil.format(new Date(), "yyyy-MM-dd");
+                        //String preDate = DateUtil.format(DateUtil.getPreDay(new Date()), "yyyy-MM-dd");
+                        String preDate = DateUtil.format(new Date(), "yyyy-MM-dd");
                         return realm.where(ItemRealm.class).contains("published", preDate).findAllSorted("published");
                     }
                 })
@@ -195,6 +281,7 @@ public class NewsListFragment extends BaseFragment {
                         if (adapter != null) {
                             adapter.clear();
                             mItemRealms = itemRealms;
+                            list.clear();
                             for (ItemRealm itemRealm : itemRealms) {
                                 NewsDetailActivity.DetailItem detailItem = new NewsDetailActivity.DetailItem();
                                 int stateColor = android.graphics.Color.parseColor(itemRealm.getColors().get(0).getHexcode());
@@ -204,7 +291,7 @@ public class NewsListFragment extends BaseFragment {
                                 adapter.addItem(itemRealm);
                             }
                             addFooterView(itemRealms);
-
+                            getConfg();
                         }
 
 
@@ -331,8 +418,43 @@ public class NewsListFragment extends BaseFragment {
         if (subscription != null) {
             subscription.unsubscribe();
         }
-
     }
 
 
+    @Override
+    public void onItemclick(int section, String date) {
+        mSection = section;
+        mDate = date;
+        Observable
+                .create(new Observable.OnSubscribe<Boolean>() {
+                    @Override
+                    public void call(Subscriber<? super Boolean> subscriber) {
+                        try {
+                            SharedPreferences settings = getActivity().getSharedPreferences(EditionDialog.PREFS_NAME, 0);
+                            SharedPreferences.Editor editor = settings.edit();
+                            editor.putInt(EditionDialog.SECTION_SELECTED, mSection);
+                            editor.putString(EditionDialog.DATE_SELECTED, mDate);
+                            subscriber.onNext(editor.commit());
+                            subscriber.onCompleted();
+                        } catch (Exception e) {
+                            subscriber.onError(e);
+                        }
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        if (aBoolean) {
+                            adapter.resetArea(mEdition, mSection, mDate);
+                            Toast.makeText(getContext(), "success", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), "fail", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+
+    }
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    android:paddingLeft="10dp"
+    android:paddingTop="10dp">
+
+    <TextView
+        android:id="@+id/newsDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="05/16"
+        android:textColor="@android:color/black"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/newsDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mon"
+        android:textSize="13sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/divider"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:src="@mipmap/countdown_divider_black" />
+
+        <ImageView
+            android:id="@+id/daytime"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/count_dows_drawable"
+            android:src="@mipmap/countdown_day_sun" />
+
+        <ImageView
+            android:id="@+id/night"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/count_dows_drawable"
+            android:src="@mipmap/countdown_day_moon" />
+
+    </LinearLayout>
+</LinearLayout>

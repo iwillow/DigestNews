@@ -17,7 +17,10 @@ import com.iwillow.android.digestnews.entity.Color;
 import com.iwillow.android.digestnews.entity.ItemRealm;
 import com.iwillow.android.digestnews.entity.Source;
 import com.iwillow.android.digestnews.widget.BaseRecyclerViewAdapter;
+import com.iwillow.android.lib.util.DateUtil;
 import com.iwillow.android.lib.widget.BaseFragment;
+
+import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -72,7 +75,8 @@ public class ExtraNewsListFragment extends BaseFragment {
                 .map(new Func1<Realm, RealmResults<ItemRealm>>() {
                     @Override
                     public RealmResults<ItemRealm> call(Realm realm) {
-                        return realm.where(ItemRealm.class).contains("published", "2016-05-08").findAllSorted("published");
+                        String preDate = DateUtil.format(DateUtil.getPreDay(new Date()), "yyyy-MM-dd");
+                        return realm.where(ItemRealm.class).contains("published",preDate).findAllSorted("published");
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())

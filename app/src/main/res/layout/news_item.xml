@@ -23,6 +23,8 @@
             android:layout_gravity="bottom"
             android:scaleType="fitXY"
             android:src="@mipmap/morning_triangle_background" />
+
+
     </FrameLayout>
 
     <RelativeLayout
@@ -161,6 +163,30 @@
             android:background="@android:color/darker_gray" />
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/sectionArea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp">
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="50sp" />
+
+        <TextView
+            android:id="@+id/section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/date"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
+
+
+    </RelativeLayout>
 </FrameLayout>
 
 

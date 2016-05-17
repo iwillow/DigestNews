@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.iwillow.android.digestnews.NewsDetailFragment">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="350dp">
+
+                <ImageView
+                    android:id="@+id/banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/darker_gray"
+                    android:scaleType="centerCrop" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="bottom"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/morning_triangle_background" />
+
+                <LinearLayout
+                    android:id="@+id/triangle"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="bottom"
+                    android:gravity="bottom"
+                    android:orientation="horizontal">
+
+
+                    <com.iwillow.android.lib.view.DonutProgress
+                        android:id="@+id/index"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="10dp"
+                        android:visibility="gone"
+                        app:donut_background_color="@android:color/transparent"
+                        app:donut_finished_color="#ff0000"
+                        app:donut_finished_stroke_width="1dp"
+                        app:donut_progress="90"
+                        app:donut_text="10"
+                        app:donut_text_color="#ff0000"
+                        app:donut_text_size="13sp"
+                        app:donut_unfinished_color="#0000ff"
+                        app:donut_unfinished_stroke_width="1dp" />
+
+                    <TextView
+                        android:id="@+id/label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@id/index"
+                        android:text="politics"
+                        android:textColor="#ff0000"
+                        android:textSize="18sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp">
+
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="news title"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+
+                <LinearLayout
+                    android:id="@+id/summary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/item_summary" />
+
+                    <include layout="@layout/item_summary" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/summaryEdition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:drawableRight="@mipmap/yahoo"
+                    android:gravity="center"
+                    android:text="summarized by"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
+
+
+                <LinearLayout
+                    android:id="@+id/statDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/item_statics" />
+
+                    <include layout="@layout/item_statics" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/infographs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/item_infograph" />
+
+                    <include layout="@layout/item_infograph" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/longreads"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/item_topic_in_depth" />
+
+                    <include layout="@layout/item_topic_in_depth" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/locations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/item_location" />
+
+                    <include layout="@layout/item_location" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/singleImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@android:color/darker_gray"
+                    android:visibility="gone" />
+
+                <!--     <HorizontalScrollView
+                         android:id="@+id/galleryView"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:layout_marginTop="10dp">
+
+                         <LinearLayout
+                             android:id="@+id/slideshow"
+                             android:layout_width="match_parent"
+                             android:layout_height="wrap_content"
+                             android:orientation="horizontal">
+
+                             <include layout="@layout/item_image" />
+
+                             <include layout="@layout/item_image" />
+
+                             <include layout="@layout/item_image" />
+
+                         </LinearLayout>
+
+                     </HorizontalScrollView>-->
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/gallery"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    app:layoutManager="LinearLayoutManager">
+
+                </android.support.v7.widget.RecyclerView>
+
+
+                <LinearLayout
+                    android:id="@+id/videos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/item_video" />
+
+                    <include layout="@layout/item_video" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/wikis"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/item_wiki" />
+
+                    <include layout="@layout/item_wiki" />
+                </LinearLayout>
+
+
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/tweets"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <include layout="@layout/item_twitter" />
+
+                        <include layout="@layout/item_twitter" />
+
+                        <include layout="@layout/item_twitter" />
+
+                        <include layout="@layout/item_twitter" />
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+                <RelativeLayout
+                    android:id="@+id/anchorArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/anchor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/circle_stroke_drawable"
+                        android:padding="5dp"
+                        android:tint="@android:color/darker_gray"
+                        app:srcCompat="@drawable/anchor" />
+
+                    <TextView
+                        android:id="@+id/referCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@id/anchor"
+                        android:text="4 References"
+                        android:textColor="@android:color/black"
+                        android:textSize="22sp" />
+
+                    <ImageView
+                        android:id="@+id/toggleImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:padding="5dp"
+                        android:tint="@android:color/darker_gray"
+                        app:srcCompat="@drawable/reference_close" />
+                </RelativeLayout>
+
+                <View
+                    android:id="@+id/line"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@android:color/darker_gray"
+                    android:visibility="gone" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:background="@android:color/transparent" />
+
+                <LinearLayout
+                    android:id="@+id/sources"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:orientation="vertical"
+                    android:paddingBottom="10dp"
+                    android:visibility="gone">
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/error"
+                    android:gravity="center"
+                    android:text="Error"
+                    android:textColor="@android:color/black"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <RelativeLayout
+        android:id="@+id/functionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:gravity="center_vertical">
+
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/back_drawable" />
+
+        <ImageButton
+            android:id="@+id/menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/menu_drawable" />
+
+        <ImageButton
+            android:id="@+id/share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/menu"
+            android:background="@android:color/transparent"
+            android:src="@drawable/share_drawable" />
+
+    </RelativeLayout>
+
+</FrameLayout>

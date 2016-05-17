@@ -4,32 +4,53 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.iwillow.android.digestnews.util.Helper;
+import com.iwillow.android.lib.log.Log;
 import com.iwillow.android.lib.log.LogUtil;
+import com.iwillow.android.lib.util.DateUtil;
 import com.iwillow.android.lib.view.DonutProgress;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by https://www.github.com.com/digest on 2016/5/16.
  */
 public class MoreDigestDialog extends DialogFragment {
+
+    public static final String PREFS_NAME = EditionDialog.PREFS_NAME;
     private DonutProgress donutProgress;
     private ValueAnimator valueAnimator;
     private static final String TAG = "MoreDigestDialog";
@@ -38,12 +59,27 @@ public class MoreDigestDialog extends DialogFragment {
     private ImageView img;
     private TextView tvHour, tvMinute, tvSecond, infoType;
     private View layoutContainer;
-    private static final int SECTION_MORNING = 1;
-    private static final int SECTION_EVENING = 2;
+    public static final int SECTION_MORNING = 1;
+    public static final int SECTION_EVENING = 2;
     private int section;
     private int mHour;
     private int mMinute;
     private int mSecond;
+    private Subscription subscription;
+    private LinearLayout linearLayout;
+    public static final String SECTION_SELECTED = EditionDialog.SECTION_SELECTED;
+    public static final String DATE_SELECTED = EditionDialog.DATE_SELECTED;
+    private NoticeDialogListener mNoticeDialogListener;
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (getParentFragment() instanceof NewsListFragment) {
+            mNoticeDialogListener = (NoticeDialogListener) getParentFragment();
+        }
+    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,7 +92,7 @@ public class MoreDigestDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.more_digest_dialog, container);
-
+        linearLayout = (LinearLayout) rootView.findViewById(R.id.newsChooser);
         Typeface typefaceLight = Typeface.createFromAsset(rootView.getContext().getAssets(), "fonts/Roboto-Light.ttf");
         donutProgress = (DonutProgress) rootView.findViewById(R.id.progress);
         donutProgress.setMax(100);
@@ -78,7 +114,7 @@ public class MoreDigestDialog extends DialogFragment {
         next.setTypeface(typefaceLight);
         infoType = (TextView) rootView.findViewById(R.id.infoType);
         infoType.setTypeface(typefaceLight);
-        mHandler=initHandler();
+        mHandler = initHandler();
         return rootView;
     }
 
@@ -97,10 +133,51 @@ public class MoreDigestDialog extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        if(mHandler!=null){
+        if (mHandler != null) {
             mHandler.removeMessages(0x110);
         }
     }
+
+    private Subscription getSelected(final int newsSection) {
+        return rx.Observable
+                .create(new Observable.OnSubscribe<Map<String, String>>() {
+                    @Override
+                    public void call(Subscriber<? super Map<String, String>> subscriber) {
+                        try {
+                            SharedPreferences spf = getContext().getSharedPreferences(PREFS_NAME, 0);
+                            int selectedSection = spf.getInt(SECTION_SELECTED, newsSection);
+                            String dateSection = spf.getString(DATE_SELECTED, Helper.format(new Date()));
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put(SECTION_SELECTED, String.valueOf(selectedSection));
+                            map.put(DATE_SELECTED, dateSection);
+                            subscriber.onNext(map);
+                            subscriber.onCompleted();
+                        } catch (Exception e) {
+                            subscriber.onError(e);
+                        }
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Map<String, String>>() {
+                    @Override
+                    public void onCompleted() {
+                        LogUtil.e(TAG, "onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Map<String, String> map) {
+                        LogUtil.e(TAG, "onNext " + map);
+                        initChooseItem(map);
+                    }
+                });
+    }
+
 
     private void progressAnimation() {
         next.setVisibility(View.VISIBLE);
@@ -116,6 +193,7 @@ public class MoreDigestDialog extends DialogFragment {
         startValue.second = 0;
         startValue.progress = 0;
         DeltaValue endValue = calculateProgress();
+
         valueAnimator = ValueAnimator.ofObject(new MyTypeEvaluator(), startValue, endValue);
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -160,7 +238,10 @@ public class MoreDigestDialog extends DialogFragment {
 
         valueAnimator.setDuration(1000);
         valueAnimator.start();
-
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
+        subscription = getSelected(section);
     }
 
 
@@ -221,11 +302,99 @@ public class MoreDigestDialog extends DialogFragment {
         return deltaValue;
     }
 
+    private void initChooseItem(Map<String, String> map) {
+        LogUtil.d(TAG, "initChooseItem" + map);
+        linearLayout.removeAllViews();
+        for (int i = 5; i >= 0; i--) {
+            Date date = DateUtil.getPreNDay(new Date(), i);
+            final String str = Helper.format(date);
+            View item = LayoutInflater.from(getContext()).inflate(R.layout.news_chooser_item, linearLayout, false);
+            TextView newsDate = (TextView) item.findViewById(R.id.newsDate);
+            ImageView divider = (ImageView) item.findViewById(R.id.divider);
+            newsDate.setText(str.substring(4, 9));
+            TextView newsDay = (TextView) item.findViewById(R.id.newsDay);
+            newsDay.setText(str.substring(0, 3));
+            ImageView daytime = (ImageView) item.findViewById(R.id.daytime);
+            daytime.setTag(str);
+            daytime.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    // Toast.makeText(v.getContext(), "daytime:" + str, Toast.LENGTH_SHORT).show();
+                    if (mNoticeDialogListener != null) {
+                        mNoticeDialogListener.onItemclick(SECTION_MORNING, str);
+                    }
+                    dismiss();
+                }
+            });
+            ImageView night = (ImageView) item.findViewById(R.id.night);
+            night.setTag(str);
+            night.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Toast.makeText(v.getContext(), "night:" + str, Toast.LENGTH_SHORT).show();
+                    if (mNoticeDialogListener != null) {
+                        mNoticeDialogListener.onItemclick(SECTION_EVENING, str);
+                    }
+                    dismiss();
+                }
+            });
+            if (section == SECTION_MORNING) {
+                if (i == 5) {
+                    daytime.setVisibility(View.GONE);
+                    divider.setVisibility(View.INVISIBLE);
+                    newsDate.setVisibility(View.INVISIBLE);
+                    newsDay.setVisibility(View.INVISIBLE);
+                } else if (i == 0) {
+                    night.setVisibility(View.GONE);
+                }
+            } else if (section == SECTION_EVENING) {
+                if (i == 5) {
+                    item.setVisibility(View.GONE);
+                } else if (i == 0) {
+
+
+                }
+            }
+            int sectionSelected = Integer.parseInt(map.get(SECTION_SELECTED));
+            String dateSelected = map.get(DATE_SELECTED);
+            if (sectionSelected == SECTION_MORNING && str.equals(dateSelected)) {
+                daytime.setBackgroundResource(R.drawable.count_down_check_drawable);
+                daytime.setImageResource(R.mipmap.countdown_day_sun_w);
+            } else if (sectionSelected == SECTION_EVENING && str.equals(dateSelected)) {
+                night.setBackgroundResource(R.drawable.count_down_check_drawable);
+                night.setImageResource(R.mipmap.countdown_day_moon_w);
+            }
+
+            linearLayout.addView(item);
+        }
+
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (subscription != null) {
+            subscription.unsubscribe();
+        }
+    }
+/*
+    public static String format(Date date) {
+        SimpleDateFormat myFmt1 = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss EEE");
+        String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        return String.valueOf(days[day - 1] + " " + myFmt1.format(date));
+
+    }*/
+
     private Handler mHandler;
 
 
-    private Handler initHandler(){
-     return  new Handler() {
+    private Handler initHandler() {
+        return new Handler() {
 
             @Override
             public void handleMessage(Message msg) {
@@ -242,6 +411,13 @@ public class MoreDigestDialog extends DialogFragment {
                             } else {
                                 mMinute = 59;
                                 mSecond--;
+                                if (mHour == 0) {
+                                    progressAnimation();
+                                    return;
+                                } else {
+                                    mHour--;
+                                }
+
                             }
                         }
                         if (tvHour != null && tvMinute != null && tvSecond != null) {
@@ -313,5 +489,8 @@ public class MoreDigestDialog extends DialogFragment {
         }
     }
 
+    public interface NoticeDialogListener {
+        public void onItemclick(int section, String date);
+    }
 
 }

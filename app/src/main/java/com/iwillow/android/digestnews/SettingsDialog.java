@@ -28,6 +28,7 @@ import rx.schedulers.Schedulers;
  * Created by https://www.github.com/iwillow on 2016/5/12.
  */
 public class SettingsDialog extends DialogFragment {
+
     private View notifications;
     private View edition;
     private View share;

@@ -10,12 +10,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import com.iwillow.android.digestnews.util.RxBus;
 import com.iwillow.android.digestnews.util.StatusBarCompat;
-import com.iwillow.android.lib.log.LogUtil;
-import com.iwillow.android.lib.widget.BaseFragment;
+import com.iwillow.android.lib.log.Log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -55,7 +53,7 @@ public class NewsDetailActivity extends AppCompatActivity {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 if (currentIndex != position) {
                     currentIndex = position;
-                  //  LogUtil.e(TAG, "onPageScrolled position:" + currentIndex);
+                    //  LogUtil.e(TAG, "onPageScrolled position:" + currentIndex);
                     rxBus.post(Integer.valueOf(currentIndex));
                 }
             }
@@ -96,15 +94,20 @@ public class NewsDetailActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
+            Log.d(TAG, "NewsDetailAdapter getItem :" + position);
             if (detailItemArrayList != null && !detailItemArrayList.isEmpty()) {
-                if ((position % getCount()) < detailItemArrayList.size()) {
-                    DetailItem item = detailItemArrayList.get(position % getCount());
-                    return NewsDetailFragment.newInstance(item.uuid, item.color, (position + 1) % getCount());
+                if (position < getCount() - 1) {
+                    DetailItem item = detailItemArrayList.get(position);
+                    return NewsDetailFragment.newInstance(item.uuid, item.color, position + 1);
                 } else {
-                    return new ExtraFragment();
+                    Fragment fragment = new ExtraFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList("data", detailItemArrayList);
+                    fragment.setArguments(bundle);
+                    return fragment;
                 }
             } else {
-                return new ExtraFragment();
+                return null;
             }
         }
 
@@ -117,7 +120,7 @@ public class NewsDetailActivity extends AppCompatActivity {
 
     public static class DetailItem implements Serializable, Parcelable {
         public int color;
-        // public int index;
+        public boolean checked;
         public String uuid;
 
         public DetailItem() {
@@ -127,6 +130,9 @@ public class NewsDetailActivity extends AppCompatActivity {
         public DetailItem(Parcel source) {
             color = source.readInt();
             // index = source.readInt();
+            boolean value[] = new boolean[1];
+            source.readBooleanArray(value);
+            checked = value[0];
             uuid = source.readString();
         }
 
@@ -138,7 +144,8 @@ public class NewsDetailActivity extends AppCompatActivity {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(color);
-            // dest.writeInt(index);
+            boolean value[] = {checked};
+            dest.writeBooleanArray(value);
             dest.writeString(uuid);
         }
 
@@ -157,20 +164,6 @@ public class NewsDetailActivity extends AppCompatActivity {
         };
     }
 
-    public static class ExtraFragment extends BaseFragment {
-        public ExtraFragment() {
-        }
-
-        @Override
-        protected int getLayoutId() {
-            return R.layout.fragment_read_extra_news;
-        }
-
-        @Override
-        protected void initView(View rootView) {
-
-        }
-    }
 
     public int getCurrentIndex() {
         return currentIndex;

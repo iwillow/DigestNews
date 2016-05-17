@@ -39,8 +39,8 @@ dependencies {
     compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
     compile 'com.github.chrisbanes.photoview:library:1.2.4'
     compile 'com.jaeger.statusbaruitl:library:1.0.0'
-    compile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
-    //debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
-    //  releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
-    // testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    //compile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
 }

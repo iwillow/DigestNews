@@ -128,6 +128,7 @@ public class NewsDetailFragment extends BaseFragment {
     private ImageView toggleImage;
     private ImageView anchor;
     private NestedScrollView nestedScrollView;
+    private View functionBar;
     private Typeface typefaceBold;
     private Typeface typefaceLight;
     private Typeface typefaceThin;
@@ -135,7 +136,7 @@ public class NewsDetailFragment extends BaseFragment {
     private TextView error;
     //private Context mContext;
     private Subscription updateIndexSubscription;
-
+    private int distance;
 
     public NewsDetailFragment() {
         // Required empty public constructor
@@ -165,7 +166,7 @@ public class NewsDetailFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        distance = (int) DimensionUtil.dp2px(getResources(), 300);
         if (getArguments() != null) {
             uuid = getArguments().getString(UUID);
             color = getArguments().getInt(COLOR);
@@ -177,8 +178,8 @@ public class NewsDetailFragment extends BaseFragment {
 
     @Override
     protected int getLayoutId() {
-
-        return R.layout.fragment_news_detail_page;
+        return R.layout.fragment_detail_news;
+        //  return R.layout.fragment_news_detail_page;
     }
 
     @Override
@@ -233,8 +234,8 @@ public class NewsDetailFragment extends BaseFragment {
             }
         });
 
-
         nestedScrollView = $(rootView, R.id.nestedScrollView);
+        functionBar = $(rootView, R.id.functionBar);
         banner = $(rootView, R.id.banner);
         donutProgress = $(rootView, R.id.index);
         if (index == -1) {
@@ -288,6 +289,28 @@ public class NewsDetailFragment extends BaseFragment {
         gallery.setItemViewCacheSize(2);
         galleryAdapter = new GalleryAdapter();
         gallery.setAdapter(galleryAdapter);
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                float fraction = 1.0f * scrollY / distance;
+
+                if (fraction <= 1.0f) {
+                    banner.setTranslationY(0.65f * fraction * scrollY);
+
+                }
+
+                if (fraction < 0.8f) {
+                    if (functionBar.getVisibility() == View.GONE) {
+                        functionBar.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (functionBar.getVisibility() == View.VISIBLE) {
+                        functionBar.setVisibility(View.GONE);
+                    }
+                }
+
+            }
+        });
         subscription = loadFromDataBase();
     }
 
@@ -568,7 +591,7 @@ public class NewsDetailFragment extends BaseFragment {
             if (getActivity() instanceof NewsDetailActivity) {
                 int pageIndex = ((NewsDetailActivity) getActivity()).getCurrentIndex();
                 if (pageIndex == index - 1 && !itemRealm.isChecked()) {
-                   // LogUtil.e(TAG, "Fragment index:" + (index - 1) + ";viewpager index:" + pageIndex);
+                    // LogUtil.e(TAG, "Fragment index:" + (index - 1) + ";viewpager index:" + pageIndex);
                     activeItem();
 
                 }

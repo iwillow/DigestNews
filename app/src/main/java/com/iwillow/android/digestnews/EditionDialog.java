@@ -1,8 +1,6 @@
 package com.iwillow.android.digestnews;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -13,11 +11,9 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.iwillow.android.digestnews.util.RxBus;
-import com.iwillow.android.lib.log.LogUtil;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -35,6 +31,8 @@ public class EditionDialog extends DialogFragment implements View.OnClickListene
     public static final String PAGE = "page";
     public static final String PAGE_NOTICE = "notice";
     public static final String PAGE_ABOUT = "about";
+    public static final String SECTION_SELECTED = "sectionSelected";
+    public static final String DATE_SELECTED = "dateSelected";
     public static final int EDITION_INTERNATIONAL = 0;
     public static final int EDITION_USA = 1;
     public static final int EDITION_UK = 2;
@@ -51,6 +49,7 @@ public class EditionDialog extends DialogFragment implements View.OnClickListene
     private View termOfService;
     private View privacyPolicy;
     private View credits;
+    
 
 
     private Subscription subscription;

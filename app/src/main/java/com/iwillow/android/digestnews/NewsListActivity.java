@@ -58,8 +58,8 @@ public class NewsListActivity extends AppCompatActivity {
                 .map(new Func1<Realm, Boolean>() {
                     @Override
                     public Boolean call(Realm realm) {
-                        String preDate = DateUtil.format(DateUtil.getPreDay(new Date()), "yyyy-MM-dd");
-                        // String preDate = DateUtil.format(new Date(), "yyyy-MM-dd");
+                        //String preDate = DateUtil.format(DateUtil.getPreDay(new Date()), "yyyy-MM-dd");
+                        String preDate = DateUtil.format(new Date(), "yyyy-MM-dd");
                         RealmResults<ItemRealm> list = realm.where(ItemRealm.class).contains("published", preDate).findAll();
                         return list != null && list.size() > 0;
                     }

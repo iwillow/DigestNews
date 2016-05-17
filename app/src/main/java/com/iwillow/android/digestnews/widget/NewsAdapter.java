@@ -20,7 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.iwillow.android.digestnews.EditionDialog;
 import com.iwillow.android.digestnews.ExtraNewsListActivity;
+import com.iwillow.android.digestnews.MoreDigestDialog;
 import com.iwillow.android.digestnews.R;
 import com.iwillow.android.digestnews.entity.Color;
 import com.iwillow.android.digestnews.entity.ItemRealm;
@@ -37,6 +39,11 @@ import io.realm.RealmList;
  * Created by https://www.githhub.com/iwillow on 2016/5/3.
  */
 public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
+
+    private int editon;
+    private int section;
+    private String date;
+
     private OnItemClickListener onItemClickListener;
 
 
@@ -77,18 +84,51 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
                 holder.imgArea.setVisibility(View.VISIBLE);
                 holder.img.setVisibility(View.VISIBLE);
                 holder.placeHolder.setVisibility(View.VISIBLE);
+                holder.section.setVisibility(View.VISIBLE);
+                holder.date.setVisibility(View.VISIBLE);
+                holder.sectionArea.setVisibility(View.VISIBLE);
                 if (holder.itemRealm.getImages() != null && !TextUtils.isEmpty(holder.itemRealm.getImages().getUrl())) {
                     final String url = holder.itemRealm.getImages().getUrl();
                     Glide.with((holder.itemView.getContext())).load(url).crossFade().into(holder.img);
                 }
 
+                if (!TextUtils.isEmpty(date) && date.length() > 32) {
+                    holder.date.setText(date.substring(27, 31) + "" + date.substring(7, 9));
+                    String ed;
+                    if (editon == EditionDialog.EDITION_CANADA) {
+                        ed = "Canada";
+
+                    } else if (editon == EditionDialog.EDITION_UK) {
+                        ed = "UK";
+
+                    } else if (editon == EditionDialog.EDITION_USA) {
+                        ed = "US";
+
+                    } else {
+                        ed = "Intl.";
+
+                    }
+                    String sec = date.substring(31) +
+                            (section == MoreDigestDialog.SECTION_MORNING ? " morning" : " evening")
+                            + "|" + ed;
+                    holder.section.setText(sec);
+
+
+                }
             } else {
                 holder.imgArea.setVisibility(View.GONE);
                 holder.img.setVisibility(View.GONE);
                 holder.placeHolder.setVisibility(View.GONE);
+                holder.section.setVisibility(View.GONE);
+                holder.date.setVisibility(View.GONE);
+                holder.sectionArea.setVisibility(View.GONE);
             }
-
-
+            holder.section.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(), "Tast", Toast.LENGTH_SHORT).show();
+                }
+            });
             //index
             holder.donutProgress.setText("" + (position + 1));
             //label
@@ -208,6 +248,7 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
 
         int index = 1;
 
+
         for (int i = 0; i < count; i++) {
             Color color = getItem(i).getColors().get(0);
             int activeColor = android.graphics.Color.parseColor(color.getHexcode());
@@ -314,6 +355,9 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
         final ImageView img;
         final TextView sources;
         final LinearLayout images;
+        final View sectionArea;
+        final TextView date;
+        final TextView section;
         public ItemRealm itemRealm;
 
         public ViewHolder(View itemView) {
@@ -327,6 +371,9 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
             title = (TextView) itemView.findViewById(R.id.title);
             sources = (TextView) itemView.findViewById(R.id.sources);
             images = (LinearLayout) itemView.findViewById(R.id.images);
+            sectionArea = itemView.findViewById(R.id.sectionArea);
+            date = (TextView) itemView.findViewById(R.id.date);
+            section = (TextView) itemView.findViewById(R.id.section);
         }
 
     }
@@ -360,6 +407,13 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
 
     public interface OnItemClickListener {
         void onItemClick(ViewHolder holder, int position);
+    }
+
+    public void resetArea(int edition, int section, String date) {
+        this.editon = edition;
+        this.section = section;
+        this.date = date;
+        notifyDataSetChanged();
     }
 
 }

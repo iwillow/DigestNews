@@ -130,9 +130,20 @@
 
     <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@android:color/holo_green_dark">
+        android:layout_height="180dp"
+        android:background="@android:color/white"
+        android:scrollbars="none">
 
+        <LinearLayout
+            android:id="@+id/newsChooser"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingRight="10dp">
+
+
+        </LinearLayout>
 
     </HorizontalScrollView>
 
