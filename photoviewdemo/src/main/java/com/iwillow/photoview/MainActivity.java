@@ -1,7 +1,5 @@
 package com.iwillow.photoview;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -22,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private float distance;
     private ImageView pic;
     private ImageView imageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +69,14 @@ public class MainActivity extends AppCompatActivity {
                         menu.setAlpha(1.0f);
                     }
                 }
+            }
+        });
+        Button blur = (Button) findViewById(R.id.blur);
+        blur.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), PathTypeActivity.class);
+                startActivity(intent);
             }
         });
     }

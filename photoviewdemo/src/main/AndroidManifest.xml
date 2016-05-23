@@ -26,7 +26,19 @@
         <activity
             android:name=".ScrollingActivity"
             android:label="@string/title_activity_scrolling"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".BulrAcitivty"
+            android:label="@string/title_activity_blur"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CellViewActivity"
+            android:label="@string/title_activity_cell"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".PathTypeActivity"
+            android:label="@string/title_activity_path_type"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

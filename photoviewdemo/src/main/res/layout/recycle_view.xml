@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@id/tvErrorTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/error_text_margin_left"
+            android:text="@string/error_title"
+            android:textColor="@color/black"
+            android:textSize="@dimen/error_view_title_text_size" />
+
+        <TextView
+            android:id="@id/tvErrorMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvErrorTitle"
+            android:layout_marginLeft="@dimen/error_text_margin_left"
+            android:layout_marginTop="5.0dip"
+            android:text="@string/error_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/error_view_message_text_size" />
+
+        <com.iwillow.photoview.ErrorGridView
+            android:id="@id/gvExclamation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvErrorMessage"
+            android:layout_marginLeft="@dimen/error_reload_margin_left"
+            android:layout_marginRight="@dimen/error_reload_margin_right"
+            android:layout_marginTop="@dimen/error_grid_margin_top"
+            android:horizontalSpacing="@dimen/error_grid_horizontal_space"
+            android:importantForAccessibility="no"
+            android:isScrollContainer="false"
+            android:numColumns="@integer/error_view_grid_view_columns1"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="@dimen/error_grid_vertical_space" />
+
+        <Button
+            android:id="@id/btReloadButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/error_reload_button_height"
+            android:layout_below="@id/gvExclamation"
+            android:layout_marginLeft="@dimen/error_reload_margin_left"
+            android:layout_marginRight="@dimen/error_reload_margin_right"
+            android:layout_marginTop="@dimen/error_reload_margin_top"
+            android:background="@drawable/green_button_background"
+            android:text="@string/reload"
+            android:textColor="@color/white"
+            android:textSize="@dimen/error_reload_button_text_size" />
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/error_footnote_height"
+            android:layout_alignParentBottom="true"
+            android:background="@color/countdown_error_footnote_background"
+            android:gravity="center"
+            android:text="@string/error_footnote_network_error"
+            android:textColor="@color/white"
+            android:textSize="@dimen/error_footnote_text_size" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.iwillow.photoview.LoadingView
+            android:id="@+id/loadingView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </com.iwillow.photoview.LoadingView>
+
+    </FrameLayout>
+
+</FrameLayout>
