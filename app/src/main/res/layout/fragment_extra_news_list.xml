@@ -9,12 +9,13 @@
     <TextView
         android:id="@+id/back"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="@android:color/transparent"
-        android:drawableBottom="@mipmap/extranews_arrow_up"
+        android:background="@android:color/white"
+        android:drawablePadding="10dp"
         android:gravity="center"
-        android:paddingBottom="10dp"
+        android:paddingBottom="20dp"
+        android:paddingTop="50dp"
         android:text="Read more news" />
 
     <View
@@ -27,9 +28,10 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/line"
         android:layout_marginTop="5dp"
+        android:background="@color/extra_news_color"
         app:layoutManager="LinearLayoutManager"
         app:spanCount="1">
 

@@ -31,15 +31,19 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/uread"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="You've read" />
+                android:text="You've read"
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:id="@+id/read"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0 of 7" />
+                android:text="0 of 7"
+                android:textColor="@android:color/black"
+                android:textSize="35sp" />
 
         </LinearLayout>
 
@@ -83,7 +87,8 @@
             android:drawableBottom="@mipmap/extranews_arrow_down"
             android:gravity="center"
             android:paddingBottom="5dp"
-            android:text="Read more news" />
+            android:text="Read more news"
+            android:textColor="@android:color/black" />
 
     </RelativeLayout>
 

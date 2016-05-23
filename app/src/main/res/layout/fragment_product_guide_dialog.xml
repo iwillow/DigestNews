@@ -21,7 +21,7 @@
         android:layout_gravity="top|right"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
-        android:text="@string/skip"
+        android:text="skip"
         android:textColor="@drawable/skip_selector"
         android:textSize="18sp" />
 
@@ -44,6 +44,5 @@
         android:id="@+id/revalView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        />
+        android:layout_gravity="center" />
 </FrameLayout>

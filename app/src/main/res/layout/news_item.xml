@@ -101,7 +101,7 @@
             android:textSize="15sp" />
 
         <LinearLayout
-            android:id="@+id/images"
+            android:id="@+id/order"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/sources"
@@ -111,43 +111,49 @@
             android:orientation="horizontal">
 
             <ImageView
-
+                android:id="@+id/wiki"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/wikipedia_atom_icon" />
 
             <ImageView
+                android:id="@+id/map"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/map_atom_icon" />
 
             <ImageView
+                android:id="@+id/video"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/video_atom_icon" />
 
             <ImageView
+                android:id="@+id/images"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/images_atom_icon" />
 
             <ImageView
+                android:id="@+id/diagram"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/diagram_atom_icon" />
 
             <ImageView
+                android:id="@+id/twitter"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/twitter_atom_icon" />
 
             <ImageView
+                android:id="@+id/stats"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:scaleType="centerCrop"
@@ -158,7 +164,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_below="@+id/images"
+            android:layout_below="@+id/order"
             android:layout_marginTop="10dp"
             android:background="@android:color/darker_gray" />
     </RelativeLayout>

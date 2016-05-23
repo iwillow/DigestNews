@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="80dp"
-        android:layout_marginTop="330dp"
+        android:layout_marginTop="320dp"
         android:alpha="0"
         android:src="@mipmap/onboarding_1_atom_sound" />
 
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="120dp"
         android:src="@mipmap/onboarding_1_mainbox" />
 
     <ImageView
@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="85dp"
-        android:layout_marginTop="95dp"
+        android:layout_marginTop="85dp"
         android:alpha="0"
         android:src="@mipmap/onboarding_1_atom_video" />
 
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:layout_marginRight="78dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="190dp"
         android:alpha="0"
         android:src="@mipmap/onboarding_1_atom_map" />
 
@@ -64,8 +64,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:layout_marginRight="60dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginTop="90dp"
         android:alpha="0"
         android:src="@mipmap/onboarding_1_atom_quote" />
 
@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:layout_marginRight="60dp"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="290dp"
         android:alpha="0"
         android:src="@mipmap/onboarding_1_atom_wikipedia" />
 
@@ -83,7 +83,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="120dp"
+        android:layout_marginBottom="100dp"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -92,14 +92,26 @@
             style="@style/guide_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/page1_small_title" />
+            android:gravity="center"
+            android:text="Comprehensive" />
 
         <TextView
-            style="@style/guide_text"
+            android:id="@+id/descptTitle1"
+            style="@style/guide_small_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="We collect the best pieces from around " />
+
+        <TextView
+            android:id="@+id/descptTitle2"
+            style="@style/guide_small_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/page1_big_title" />
+            android:gravity="center"
+            android:text="the web and combine them into a story." />
 
     </LinearLayout>
 

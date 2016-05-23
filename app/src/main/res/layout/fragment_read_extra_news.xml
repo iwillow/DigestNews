@@ -27,15 +27,19 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/uread"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You've read" />
+            android:text="You've read"
+            android:textColor="@android:color/black" />
 
         <TextView
             android:id="@+id/read"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 of 7" />
+            android:text="0 of 7"
+            android:textColor="@android:color/black"
+            android:textSize="35sp" />
 
     </LinearLayout>
 

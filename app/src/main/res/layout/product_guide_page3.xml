@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="120dp"
+        android:layout_marginBottom="100dp"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -25,14 +25,26 @@
             style="@style/guide_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/page3_big_title" />
+            android:gravity="center"
+            android:text="Definitive" />
 
         <TextView
-            style="@style/guide_text"
+            android:id="@+id/descptTitle1"
+            style="@style/guide_small_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="We surface the most important" />
+
+        <TextView
+            android:id="@+id/descptTitle2"
+            style="@style/guide_small_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/page3_small_title" />
+            android:gravity="center"
+            android:text="need-to-know news" />
     </LinearLayout>
 
 
@@ -45,10 +57,9 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:background="@drawable/page3_btn_selector"
-        android:text="@string/learn"
+        android:text="Got it!"
         android:textColor="@android:color/white"
         android:textSize="20sp" />
-
 
 
 </FrameLayout>

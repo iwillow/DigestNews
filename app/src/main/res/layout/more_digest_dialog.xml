@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#caffffff"
+    android:background="#ddffffff"
     android:orientation="vertical">
 
     <FrameLayout
@@ -21,7 +21,7 @@
             app:donut_background_color="@android:color/transparent"
             app:donut_circle_starting_degree="-90"
             app:donut_direction="anticlockwise"
-            app:donut_finished_color="#0000ff"
+            app:donut_finished_color="@color/donut_finished_color"
             app:donut_finished_stroke_width="2dp"
             app:donut_max="100"
             app:donut_text=""

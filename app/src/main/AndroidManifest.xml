@@ -60,7 +60,12 @@
         <activity
             android:name=".SlideShowActivity"
             android:label="@string/title_activity_slide_show"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+
+        <service
+            android:name=".widget.BatchLoadNewsIntentService"
+            android:exported="false" />
+
     </application>
 
 </manifest>
