@@ -100,7 +100,7 @@ public class NewsItemView extends ViewGroup {
         mLabel = (TextView) mItemView.findViewById(R.id.label);
         mTitle = (TextView) mItemView.findViewById(R.id.title);
         mSources = (TextView) mItemView.findViewById(R.id.sources);
-        images = (LinearLayout) mItemView.findViewById(R.id.images);
+        images = (LinearLayout) mItemView.findViewById(R.id.order);
         addView(mItemView);
     }
 

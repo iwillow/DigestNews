@@ -5,36 +5,28 @@ import android.animation.AnimatorListenerAdapter;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.iwillow.android.digestnews.entity.ItemRealm;
-import com.iwillow.android.digestnews.util.RxBus;
+import com.iwillow.android.digestnews.entity.DetailItem;
 import com.iwillow.android.digestnews.view.CircularRevealView;
-import com.iwillow.android.lib.log.Log;
 import com.iwillow.android.lib.log.LogUtil;
 import com.iwillow.android.lib.view.CircleLayout;
 import com.iwillow.android.lib.widget.BaseFragment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
-import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
- * Created by Administrator on 2016/5/17.
+ * Created by https://www.github.com/iwillow on 2016/5/17.
  */
 public class ExtraFragment extends BaseFragment {
     private String TAG = "ExtraFragment";
@@ -46,20 +38,20 @@ public class ExtraFragment extends BaseFragment {
     private LinearLayout know;
     private TextView bigTitle;
     private TextView smallTitle;
-    ArrayList<NewsDetailActivity.DetailItem> detailItemArrayList;
+    ArrayList<DetailItem> detailItemArrayList;
+    private boolean allChecked;
     private Realm realm;
-    private List<Subscription> subscriptions = new ArrayList<>();
+    private Subscription subscription;
+    private Handler mHandler;
 
     public ExtraFragment() {
     }
 
-    public RxBus rxBus;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         realm = Realm.getDefaultInstance();
-        rxBus = new RxBus();
         detailItemArrayList = getArguments().getParcelableArrayList("data");
     }
 
@@ -71,7 +63,15 @@ public class ExtraFragment extends BaseFragment {
     @Override
     protected void initView(View rootView) {
         Typeface typeface = Typeface.createFromAsset(rootView.getContext().getAssets(), "fonts/Roboto-Thin.ttf");
+        final int readColor = getResources().getColor(R.color.read_color);
         toggleButton = $(rootView, R.id.toggleButton);
+        toggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().setResult(0x110);
+                getActivity().finish();
+            }
+        });
         circularRevealView = $(rootView, R.id.revalView);
         readIndicator = $(rootView, R.id.readIndicator);
         circleLayout = $(rootView, R.id.circleLayout);
@@ -81,6 +81,10 @@ public class ExtraFragment extends BaseFragment {
         smallTitle.setTypeface(typeface);
         read = $(rootView, R.id.read);
         know = $(rootView, R.id.know);
+        TextView urd = $(rootView, R.id.uread);
+        Typeface ty = Typeface.createFromAsset(rootView.getContext().getAssets(), "fonts/Roboto-Light.ttf");
+        urd.setTypeface(ty);
+        read.setTypeface(ty);
         read.setText("");
         if (detailItemArrayList != null && detailItemArrayList.size() > 0) {
             read.setText(circleLayout.getActiveCount() + " of " + detailItemArrayList.size());
@@ -88,14 +92,15 @@ public class ExtraFragment extends BaseFragment {
                 int activeColor = detailItemArrayList.get(i).color;
                 circleLayout.addItem("" + (i + 1), activeColor);
             }
-  /*          for (int i = 0; i < detailItemArrayList.size(); i++) {
-                if (detailItemArrayList.get(i).checked) {
+            for (int i = 0; i < detailItemArrayList.size(); i++) {
+                if (detailItemArrayList.get(i).checked && !circleLayout.isItemActive(i)) {
                     circleLayout.activeItem(i);
-                    LogUtil.e("ExtraFragment", "active " + i);
+                    read.setText(circleLayout.getActiveCount() + " of " + detailItemArrayList.size());
                 }
-            }*/
-            if (circleLayout.getActiveCount() == detailItemArrayList.size()) {
+            }
 
+            if (circleLayout.getActiveCount() == detailItemArrayList.size()) {
+                toggleButton.setTextColor(android.graphics.Color.WHITE);
                 readIndicator.setVisibility(View.GONE);
                 circleLayout.setVisibility(View.GONE);
                 toggleButton.setTextColor(android.graphics.Color.WHITE);
@@ -104,7 +109,7 @@ public class ExtraFragment extends BaseFragment {
                 know.setVisibility(View.VISIBLE);
                 circleLayout.setClickable(false);
                 circleLayout.setEnabled(false);
-                circularRevealView.setBackgroundColor(android.graphics.Color.parseColor("#00AA00"));
+                circularRevealView.setBackgroundColor(readColor);
 
             } else {
 
@@ -113,7 +118,10 @@ public class ExtraFragment extends BaseFragment {
                 circleLayout.setOnChildViewClickListener(new CircleLayout.OnChildViewClickListener() {
                     @Override
                     public void onChildViewClick(View childView, int index) {
-                        circleLayout.activeItem(index);
+                        // circleLayout.activeItem(index);
+                        if (getActivity() instanceof NewsDetailActivity) {
+                            ((NewsDetailActivity) getActivity()).setCurrentPosition(index);
+                        }
                     }
                 });
 
@@ -135,133 +143,104 @@ public class ExtraFragment extends BaseFragment {
 
                     @Override
                     public void onAnimationShrinkEnd(Animator animation) {
-                        final int cl = android.graphics.Color.parseColor("#00AA00");
                         readIndicator.setVisibility(View.GONE);
                         circleLayout.setVisibility(View.GONE);
                         circleLayout.setClickable(false);
                         circleLayout.setEnabled(false);
-                        circularRevealView.reveal(circularRevealView.getMeasuredWidth() / 2 - 10, circularRevealView.getMeasuredHeight() / 2 - 10, cl, 20, 500, new AnimatorListenerAdapter() {
+                        circularRevealView.reveal(circularRevealView.getMeasuredWidth() / 2 - 10, circularRevealView.getMeasuredHeight() / 2 - 10, readColor, 20, 500, new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
-
                                 toggleButton.setTextColor(android.graphics.Color.WHITE);
                                 Drawable bottom = readIndicator.getContext().getResources().getDrawable(R.mipmap.extranews_arrow_down_w);
                                 toggleButton.setCompoundDrawablesWithIntrinsicBounds(null, null, null, bottom);
                                 know.setVisibility(View.VISIBLE);
                             }
                         });
+                        allChecked = true;
                     }
                 });
             }
-
-
         }
+        initHandler();
+        subscription = update();
     }
 
     @Override
     public void onResume() {
-        LogUtil.e(TAG, "onResume ");
-        Toast.makeText(getContext(), "context onResumess", Toast.LENGTH_SHORT).show();
         super.onResume();
-        update();
     }
 
-    private void update() {
-        if (detailItemArrayList != null && !detailItemArrayList.isEmpty()) {
-            for (Subscription sub : subscriptions) {
-                if (sub != null) {
-                    sub.unsubscribe();
-                }
-            }
-            subscriptions.clear();
-            for (int i = 0; i < detailItemArrayList.size(); i++) {
-                subscriptions.add(updateIndex(i, detailItemArrayList.get(i).uuid));
-            }
-        } else {
-            LogUtil.e(TAG, "no data ");
-        }
-    }
+    private void initHandler() {
+        if (mHandler == null) {
 
-    public Subscription updateIndex(final int index, final String uuid) {
+            mHandler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
 
-        return realm.asObservable()
-                .map(new Func1<Realm, Boolean>() {
-                    @Override
-                    public Boolean call(Realm realm) {
-                        try {
-                            LogUtil.e(TAG, "begin search ");
-                            ItemRealm itemRealm = realm.where(ItemRealm.class)
-                                    .equalTo("id", uuid).findAll().first();
-                            if (itemRealm == null) {
-                                LogUtil.e(TAG, "itemRealm==null ");
-                                return false;
-
-                            }
-                            LogUtil.e(TAG, "itemRealm!=null ");
-                            return itemRealm.isChecked();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return false;
-                        }
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        LogUtil.e(TAG, "onNext == " + aBoolean);
-                        if (aBoolean) {
+                    switch (msg.what) {
+                        case 0x110:
+                            int index = (int) msg.obj;
                             circleLayout.activeItem(index);
-                            LogUtil.e(TAG, "update " + index);
-                        }
+                            read.setText(circleLayout.getActiveCount() + " of " + detailItemArrayList.size());
+                            break;
+                        default:
+                            break;
+
                     }
-                })
-                ;
-    }
-
-    private void query(final int index, final String uuid) {
-        realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                ItemRealm itemRealm = realm.where(ItemRealm.class)
-                        .equalTo("id", uuid).findAll().first();
-                Map<String, Object> map = new HashMap<String, Object>();
-                if (itemRealm == null) {
-                    map.put("checked", false);
-                }else{
-                    map.put("checked", itemRealm.isChecked());
                 }
-                map.put("index", index);
-                rxBus.post(map);
-            }
-        });
-    }
-   public  void getEvent(){
+            };
+        }
 
-   }
+    }
+
+
+    private Subscription update() {
+        if (getActivity() instanceof NewsDetailActivity) {
+            return ((NewsDetailActivity) getActivity())
+                    .getRxBus()
+                    .toObserverable(ArrayList.class)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<ArrayList>() {
+                        @Override
+                        public void onCompleted() {
+                            LogUtil.e(TAG, "onCompleted ");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            LogUtil.e(TAG, "onError ");
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(ArrayList arrayList) {
+                            if (arrayList != null && !allChecked) {
+                                detailItemArrayList = arrayList;
+                                for (int i = 0; i < detailItemArrayList.size(); i++) {
+                                    if (detailItemArrayList.get(i).checked && !circleLayout.isItemActive(i)) {
+                                        Message msg = mHandler.obtainMessage(0x110, i);
+                                        mHandler.sendMessageDelayed(msg, 500);
+                                    }
+                                }
+                            }
+                        }
+                    });
+        }
+        return null;
+    }
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         realm.close();
-        if (!subscriptions.isEmpty()) {
-            for (Subscription sub : subscriptions) {
-                if (sub != null) {
-                    sub.unsubscribe();
-                }
-            }
-            subscriptions.clear();
+        if (mHandler != null) {
+            mHandler.removeMessages(0x110);
+        }
+        if (subscription != null) {
+            subscription.unsubscribe();
+            subscription = null;
         }
     }
 }

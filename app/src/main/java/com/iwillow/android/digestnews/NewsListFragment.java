@@ -15,9 +15,10 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.iwillow.android.digestnews.db.EntityHelper;
+import com.iwillow.android.digestnews.entity.DetailItem;
 import com.iwillow.android.digestnews.entity.ItemRealm;
 import com.iwillow.android.digestnews.util.Helper;
-import com.iwillow.android.digestnews.util.RxBus;
 import com.iwillow.android.digestnews.widget.NewsAdapter;
 import com.iwillow.android.lib.util.DateUtil;
 import com.iwillow.android.lib.widget.BaseFragment;
@@ -48,8 +49,7 @@ public class NewsListFragment extends BaseFragment implements MoreDigestDialog.N
     private RecyclerView recyclerView;
     private ImageButton menu;
     private boolean initFooterView = false;
-    private ArrayList<NewsDetailActivity.DetailItem> list = new ArrayList<>();
-    private RealmResults<ItemRealm> mItemRealms;
+    private ArrayList<DetailItem> list = new ArrayList<>();
     private int mSection;
     private int mEdition;
     private String mDate;
@@ -59,36 +59,6 @@ public class NewsListFragment extends BaseFragment implements MoreDigestDialog.N
         super.onCreate(savedInstanceState);
         realm = Realm.getDefaultInstance();
     }
-
- /*   private void getConfg() {
-
-        Observable
-                .create(new Observable.OnSubscribe<Map<String, String>>() {
-
-                    @Override
-                    public void call(Subscriber<? super Map<String, String>> subscriber) {
-                        {
-                       try {
-                                SharedPreferences spf = getContext().getSharedPreferences(EditionDialog.PREFS_NAME, 0);
-                                int selectedSection = spf.getInt(EditionDialog.SECTION_SELECTED, MoreDigestDialog.SECTION_MORNING);
-                                String dateSection = spf.getString(EditionDialog.DATE_SELECTED, Helper.format(new Date()));
-                                Map<String, String> map = new HashMap<String, String>();
-                                map.put(EditionDialog.SECTION_SELECTED, String.valueOf(selectedSection));
-                                map.put(EditionDialog.DATE_SELECTED, dateSection);
-                                subscriber.onNext(map);
-                                subscriber.onCompleted();
-                            } catch (Exception e) {
-                                subscriber.onError(e);
-                            }
-                        }
-
-
-                    );
-
-
-
-    }*/
-
 
     private void getConfg() {
         Observable
@@ -191,8 +161,9 @@ public class NewsListFragment extends BaseFragment implements MoreDigestDialog.N
 
                 Intent intent = new Intent(rootView.getContext(), NewsDetailActivity.class);
                 intent.putExtra(NewsDetailActivity.INDEX, position);
+                intent.putExtra(NewsDetailActivity.MORE, true);
                 intent.putParcelableArrayListExtra(NewsDetailActivity.DATA, list);
-                startActivity(intent);
+                startActivityForResult(intent, 0x110);
 
             }
         });
@@ -254,16 +225,26 @@ public class NewsListFragment extends BaseFragment implements MoreDigestDialog.N
 
         return realm.asObservable()
                 .onBackpressureBuffer()
-                .map(new Func1<Realm, RealmResults<ItemRealm>>() {
+                .map(new Func1<Realm, ArrayList<DetailItem>>() {
                     @Override
-                    public RealmResults<ItemRealm> call(Realm realm) {
-                        //String preDate = DateUtil.format(DateUtil.getPreDay(new Date()), "yyyy-MM-dd");
-                        String preDate = DateUtil.format(new Date(), "yyyy-MM-dd");
-                        return realm.where(ItemRealm.class).contains("published", preDate).findAllSorted("published");
+                    public ArrayList<DetailItem> call(Realm realm) {
+                        ArrayList<DetailItem> list = new ArrayList<DetailItem>();
+                        Date date=new Date();
+                        String str = DateUtil.format(date, "yyyy-MM-dd");
+                        int section=  DateUtil.getTimeSection();
+                        if(section==DateUtil.SECTION_EVENING_YESTERDAY||section==DateUtil.SECTION_MORNING_TODAY){
+                            str=DateUtil.format(DateUtil.getPreDay(date), "yyyy-MM-dd");
+                        }
+                        RealmResults<ItemRealm> data = realm.where(ItemRealm.class).contains("published", str).findAllSorted("published");
+                        for (ItemRealm itemRealm : data) {
+                            DetailItem detailItem = EntityHelper.ItemRealm2DetailItem(itemRealm);
+                            list.add(detailItem);
+                        }
+                        return list;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<RealmResults<ItemRealm>>() {
+                .subscribe(new Subscriber<ArrayList<DetailItem>>() {
                     @Override
                     public void onCompleted() {
                         Toast.makeText(getContext(), "onCompleted", Toast.LENGTH_SHORT).show();
@@ -276,18 +257,13 @@ public class NewsListFragment extends BaseFragment implements MoreDigestDialog.N
                     }
 
                     @Override
-                    public void onNext(RealmResults<ItemRealm> itemRealms) {
+                    public void onNext(ArrayList<DetailItem> itemRealms) {
 
                         if (adapter != null) {
                             adapter.clear();
-                            mItemRealms = itemRealms;
                             list.clear();
-                            for (ItemRealm itemRealm : itemRealms) {
-                                NewsDetailActivity.DetailItem detailItem = new NewsDetailActivity.DetailItem();
-                                int stateColor = android.graphics.Color.parseColor(itemRealm.getColors().get(0).getHexcode());
-                                detailItem.color = stateColor;
-                                detailItem.uuid = itemRealm.getId();
-                                list.add(detailItem);
+                            list.addAll(itemRealms);
+                            for (DetailItem itemRealm : itemRealms) {
                                 adapter.addItem(itemRealm);
                             }
                             addFooterView(itemRealms);
@@ -301,90 +277,8 @@ public class NewsListFragment extends BaseFragment implements MoreDigestDialog.N
 
     }
 
-    private void addFooterView(RealmResults<ItemRealm> itemRealms) {
+    private void addFooterView(ArrayList<DetailItem> itemRealms) {
         View footer = LayoutInflater.from(recyclerView.getContext()).inflate(R.layout.news_list_footer_view, recyclerView, false);
- /*       final CircleLayout circleLayout = (CircleLayout) footer.findViewById(R.id.circleLayout);
-        final CircularRevealView revealView = (CircularRevealView) footer.findViewById(R.id.revalView);
-        final TextView textView = (TextView) footer.findViewById(R.id.read);
-        final TextView bigTitle = (TextView) footer.findViewById(R.id.bigTitle);
-        final TextView smallTitle = (TextView) footer.findViewById(R.id.smallTitle);
-        final View readIndicator = footer.findViewById(R.id.readIndicator);
-        final View doYouKnow = footer.findViewById(R.id.know);
-        final TextView toggleButton = (TextView) footer.findViewById(R.id.toggleButton);
-        readIndicator.setVisibility(View.VISIBLE);
-        doYouKnow.setVisibility(View.INVISIBLE);
-        Typeface typeface = Typeface.createFromAsset(recyclerView.getContext().getAssets(), "fonts/Roboto-Thin.ttf");
-        bigTitle.setTypeface(typeface);
-        smallTitle.setTypeface(typeface);
-        final int count = itemRealms.size();
-
-        textView.setText(circleLayout.getActiveCount() + " of " + count);
-
-        int index = 1;
-
-        for (int i = 0; i < count; i++) {
-            Color color = itemRealms.get(i).getColors().get(0);
-            int activeColor = android.graphics.Color.parseColor(color.getHexcode());
-            circleLayout.addItem("" + index, activeColor);
-            index++;
-        }
-
-        for (int i = 0; i < count; i++) {
-            if (itemRealms.get(i).isChecked()) {
-                circleLayout.activeItem(i);
-            }
-        }
-        circleLayout.setOnChildViewClickListener(new CircleLayout.OnChildViewClickListener() {
-            @Override
-            public void onChildViewClick(View childView, int index) {
-                circleLayout.activeItem(index);
-                textView.setText(circleLayout.getActiveCount() + " of " + count);
-            }
-        });
-        circleLayout.setCircleLayoutAnimationListener(new CircleLayout.CircleLayoutAnimationListener() {
-            @Override
-            public void onAnimationMarqueeStart() {
-
-            }
-
-            @Override
-            public void onAnimationMarqueeEnd() {
-
-            }
-
-            @Override
-            public void onAnimationShrinkStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationShrinkEnd(Animator animation) {
-                final int cl = android.graphics.Color.parseColor("#00AA00");
-                readIndicator.setVisibility(View.GONE);
-                circleLayout.setVisibility(View.GONE);
-                circleLayout.setClickable(false);
-                circleLayout.setEnabled(false);
-                revealView.reveal(revealView.getMeasuredWidth() / 2 - 10, revealView.getMeasuredHeight() / 2 - 10, cl, 20, 500, new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-
-                        toggleButton.setTextColor(android.graphics.Color.WHITE);
-                        Drawable bottom = getResources().getDrawable(R.mipmap.extranews_arrow_down_w);
-                        toggleButton.setCompoundDrawablesWithIntrinsicBounds(null, null, null, bottom);
-                        doYouKnow.setVisibility(View.VISIBLE);
-                    }
-                });
-            }
-        });
-        toggleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), ExtraNewsListActivity.class);
-                startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.move_in, R.anim.move_out);
-            }
-        });*/
         adapter.setFooterView(footer);
         View toggleButton = adapter.getFooterView().findViewById(R.id.toggleButton);
         toggleButton.setOnClickListener(new View.OnClickListener() {
@@ -406,6 +300,7 @@ public class NewsListFragment extends BaseFragment implements MoreDigestDialog.N
 
     public void extraNews() {
         Intent intent = new Intent(getContext(), ExtraNewsListActivity.class);
+        intent.putExtra(ExtraNewsListActivity.ALL_CHECKED, adapter.isAllChecked());
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.move_in, R.anim.move_out);
     }
@@ -455,6 +350,18 @@ public class NewsListFragment extends BaseFragment implements MoreDigestDialog.N
                     }
                 });
 
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0x110 && resultCode == 0x110) {
+            recyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    extraNews();
+                }
+            }, 300);
+        }
     }
 }

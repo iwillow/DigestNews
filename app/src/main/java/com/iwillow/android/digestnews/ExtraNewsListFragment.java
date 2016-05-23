@@ -1,7 +1,9 @@
 package com.iwillow.android.digestnews;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,17 +15,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.iwillow.android.digestnews.entity.Color;
+import com.iwillow.android.digestnews.db.EntityHelper;
+import com.iwillow.android.digestnews.entity.DetailItem;
 import com.iwillow.android.digestnews.entity.ItemRealm;
-import com.iwillow.android.digestnews.entity.Source;
 import com.iwillow.android.digestnews.widget.BaseRecyclerViewAdapter;
+import com.iwillow.android.lib.log.LogUtil;
 import com.iwillow.android.lib.util.DateUtil;
 import com.iwillow.android.lib.widget.BaseFragment;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 import rx.Subscriber;
 import rx.Subscription;
@@ -34,16 +37,21 @@ import rx.functions.Func1;
  * Created by https://www.github.com/iwillow on 2016/4/29.
  */
 public class ExtraNewsListFragment extends BaseFragment {
+    private final String TAG = "ExtraNewsListFragment";
     private Realm realm;
     private Subscription subscription;
     private RecyclerView recyclerView;
     private ExtraNewsAdapter adapter;
+    private boolean allChecked;
+    private ArrayList<DetailItem> list = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         realm = Realm.getDefaultInstance();
         subscription = load();
+        allChecked = getArguments().getBoolean(ExtraNewsListActivity.ALL_CHECKED, false);
+
     }
 
     @Override
@@ -55,6 +63,17 @@ public class ExtraNewsListFragment extends BaseFragment {
     protected void initView(View rootView) {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         TextView back = (TextView) rootView.findViewById(R.id.back);
+        if (allChecked) {
+            back.setTextColor(android.graphics.Color.WHITE);
+            back.setBackgroundColor(getResources().getColor(R.color.read_color));
+            Drawable bottom = getResources().getDrawable(R.mipmap.extranews_arrow_down_w);
+            back.setCompoundDrawablesWithIntrinsicBounds(null, null, null, bottom);
+        } else {
+            back.setTextColor(android.graphics.Color.BLACK);
+            back.setBackgroundColor(android.graphics.Color.WHITE);
+            Drawable bottom = getResources().getDrawable(R.mipmap.extranews_arrow_down);
+            back.setCompoundDrawablesWithIntrinsicBounds(null, null, null, bottom);
+        }
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,8 +81,22 @@ public class ExtraNewsListFragment extends BaseFragment {
             }
         });
         View headerView = LayoutInflater.from(rootView.getContext()).inflate(R.layout.extra_news_header_view, recyclerView, false);
+        TextView textView = (TextView) headerView.findViewById(R.id.extra);
+        Typeface typeFaceLabel = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Light.ttf");
+        textView.setTypeface(typeFaceLabel);
         adapter = new ExtraNewsAdapter();
         adapter.setHeaderView(headerView);
+        adapter.addItemClickListenr(new BaseRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(RecyclerView.ViewHolder holder, int position) {
+                Intent intent = new Intent(getContext(), NewsDetailActivity.class);
+                intent.putExtra(NewsDetailActivity.INDEX, position);
+                LogUtil.d(TAG, "position:" + position);
+                intent.putExtra(NewsDetailActivity.MORE, false);
+                intent.putParcelableArrayListExtra(NewsDetailActivity.DATA, list);
+                startActivity(intent);
+            }
+        });
         recyclerView.setAdapter(adapter);
 
     }
@@ -72,15 +105,22 @@ public class ExtraNewsListFragment extends BaseFragment {
 
         return realm.asObservable()
                 .onBackpressureBuffer()
-                .map(new Func1<Realm, RealmResults<ItemRealm>>() {
+                .map(new Func1<Realm, ArrayList<DetailItem>>() {
                     @Override
-                    public RealmResults<ItemRealm> call(Realm realm) {
+                    public ArrayList<DetailItem> call(Realm realm) {
+
+                        ArrayList<DetailItem> list = new ArrayList<DetailItem>();
                         String preDate = DateUtil.format(DateUtil.getPreDay(new Date()), "yyyy-MM-dd");
-                        return realm.where(ItemRealm.class).contains("published",preDate).findAllSorted("published");
+                        RealmResults<ItemRealm> data = realm.where(ItemRealm.class).contains("published", preDate).findAllSorted("published");
+                        for (ItemRealm itemRealm : data) {
+                            DetailItem detailItem = EntityHelper.ItemRealm2DetailItem(itemRealm);
+                            list.add(detailItem);
+                        }
+                        return list;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<RealmResults<ItemRealm>>() {
+                .subscribe(new Subscriber<ArrayList<DetailItem>>() {
                     @Override
                     public void onCompleted() {
                         Toast.makeText(getContext(), "onCompleted", Toast.LENGTH_SHORT).show();
@@ -92,15 +132,16 @@ public class ExtraNewsListFragment extends BaseFragment {
                     }
 
                     @Override
-                    public void onNext(RealmResults<ItemRealm> itemRealms) {
-                        int size = itemRealms == null ? -1 : itemRealms.size();
+                    public void onNext(ArrayList<DetailItem> itemRealms) {
                         if (adapter != null) {
-                            for (ItemRealm itemRealm : itemRealms) {
+                            list.clear();
+                            list.addAll(itemRealms);
+                            for (DetailItem itemRealm : itemRealms) {
                                 adapter.addItem(itemRealm);
                             }
                             addFooterView();
                         }
-                        Toast.makeText(getContext(), "onNext" + size, Toast.LENGTH_SHORT).show();
+
 
                     }
                 });
@@ -123,7 +164,7 @@ public class ExtraNewsListFragment extends BaseFragment {
     }
 
 
-    public class ExtraNewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
+    public class ExtraNewsAdapter extends BaseRecyclerViewAdapter<DetailItem> {
 
         public ExtraNewsAdapter() {
         }
@@ -146,19 +187,14 @@ public class ExtraNewsListFragment extends BaseFragment {
         }
 
         @Override
-        public void bindItemView(RecyclerView.ViewHolder srcHolder, int position) {
-            ItemViewHolder holder = (ItemViewHolder) srcHolder;
+        public void bindItemView(RecyclerView.ViewHolder srcHolder, final int position) {
+            final ItemViewHolder holder = (ItemViewHolder) srcHolder;
             holder.itemRealm = getItem(position);
             if (holder.itemRealm != null) {
 
                 Typeface typeFaceLabel = Typeface.createFromAsset(holder.itemView.getContext().getAssets(), "fonts/Roboto-Bold.ttf");
                 holder.label.setTypeface(typeFaceLabel);
-                if (holder.itemRealm.getCategories() != null && holder.itemRealm.getCategories().size() > 0) {
-                    holder.label.setText("" + holder.itemRealm.getCategories().get(0).getLabel());
-                } else {
-                    holder.label.setText("World");
-                }
-
+                holder.label.setText("" + holder.itemRealm.label);
                 //title
                 Typeface typeFaceTitle = Typeface.createFromAsset(holder.itemView.getContext().getAssets(), "fonts/Roboto-Light.ttf");
                 holder.title.setTypeface(typeFaceTitle);
@@ -166,54 +202,31 @@ public class ExtraNewsListFragment extends BaseFragment {
 
 
                 //press
-                Typeface typeFacePress = Typeface.createFromAsset(holder.itemView.getContext().getAssets(), "fonts/Roboto-Thin.ttf");
+                Typeface typeFacePress = Typeface.createFromAsset(holder.itemView.getContext().getAssets(), "fonts/Roboto-Light.ttf");
                 holder.sources.setTypeface(typeFacePress);
-                RealmList<Source> presses = holder.itemRealm.getSources();
+                holder.sources.setText(holder.itemRealm.getPress());
+                holder.label.setTextColor(holder.itemRealm.getColor());
 
-                if (presses != null && presses.size() > 0) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 
-                    StringBuilder sb = new StringBuilder();
-                    if (presses.size() == 1) {
-                        sb.append(presses.get(0).getPublisher());
-                    } else if (presses.size() == 2) {
-                        sb.append(presses.get(0).getPublisher()).append(",").append(presses.get(1).getPublisher());
-                    } else if (presses.size() == 3) {
-                        sb.append(presses.get(0).getPublisher()).append(",").append(presses.get(1).getPublisher());
-                        sb.append(" + 1 more");
-                    } else if (presses.size() == 4) {
-                        sb.append(presses.get(0).getPublisher()).append(",").append(presses.get(1).getPublisher());
-                        sb.append(" + 2 more");
-                    } else {
-                        sb.append(presses.get(0).getPublisher()).append(",").append(presses.get(1).getPublisher());
-                        sb.append(" + 3 more");
-                    }
-                    holder.sources.setText("" + sb.toString());
-                } else {
-                    holder.sources.setText("Yahoo News");
-                }
+                    StateListDrawable stateListDrawable = new StateListDrawable();
+                    stateListDrawable.addState(new int[]{android.R.attr.state_empty},
+                            new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    int cl = android.graphics.Color.parseColor("#55" + holder.itemRealm.hexCode.substring(1));
+                    stateListDrawable.addState(new int[]{android.R.attr.state_pressed},
+                            new ColorDrawable(cl));
+                    holder.itemView.setBackground(stateListDrawable);
 
-                if (holder.itemRealm.getColors() != null && holder.itemRealm.getColors().size() > 0) {
-
-                    Color color = holder.itemRealm.getColors().get(0);
-                    int stateColor = android.graphics.Color.parseColor(color.getHexcode());
-                    holder.label.setTextColor(stateColor);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-
-                        StateListDrawable stateListDrawable = new StateListDrawable();
-                        stateListDrawable.addState(new int[]{android.R.attr.state_empty},
-                                new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                        int cl = android.graphics.Color.parseColor("#55" + color.getHexcode().substring(1));
-                        stateListDrawable.addState(new int[]{android.R.attr.state_pressed},
-                                new ColorDrawable(cl));
-                        holder.itemView.setBackground(stateListDrawable);
-
-                    }
                 }
                 final int index = position;
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(v.getContext(), "index:" + index, Toast.LENGTH_SHORT).show();
+                        if (onItemClickListenerList != null) {
+                            for (OnItemClickListener onItemClickListener : onItemClickListenerList) {
+                                onItemClickListener.onItemClick(holder, index);
+                            }
+                        }
                     }
                 });
             }
@@ -254,7 +267,7 @@ public class ExtraNewsListFragment extends BaseFragment {
         public final TextView label;
         public final TextView title;
         public final TextView sources;
-        public ItemRealm itemRealm;
+        public DetailItem itemRealm;
 
         public ItemViewHolder(View itemView) {
             super(itemView);

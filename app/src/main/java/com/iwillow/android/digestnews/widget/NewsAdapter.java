@@ -2,8 +2,6 @@ package com.iwillow.android.digestnews.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -21,28 +19,22 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.iwillow.android.digestnews.EditionDialog;
-import com.iwillow.android.digestnews.ExtraNewsListActivity;
 import com.iwillow.android.digestnews.MoreDigestDialog;
 import com.iwillow.android.digestnews.R;
-import com.iwillow.android.digestnews.entity.Color;
-import com.iwillow.android.digestnews.entity.ItemRealm;
-import com.iwillow.android.digestnews.entity.Source;
-import com.iwillow.android.digestnews.entity.Summary;
-import com.iwillow.android.digestnews.util.ItemRealUtil;
+import com.iwillow.android.digestnews.entity.DetailItem;
 import com.iwillow.android.digestnews.view.CircularRevealView;
 import com.iwillow.android.lib.view.CircleLayout;
 import com.iwillow.android.lib.view.DonutProgress;
 
-import io.realm.RealmList;
-
 /**
  * Created by https://www.githhub.com/iwillow on 2016/5/3.
  */
-public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
+public class NewsAdapter extends BaseRecyclerViewAdapter<DetailItem> {
 
     private int editon;
     private int section;
     private String date;
+    private boolean allChecked;
 
     private OnItemClickListener onItemClickListener;
 
@@ -87,11 +79,7 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
                 holder.section.setVisibility(View.VISIBLE);
                 holder.date.setVisibility(View.VISIBLE);
                 holder.sectionArea.setVisibility(View.VISIBLE);
-                if (holder.itemRealm.getImages() != null && !TextUtils.isEmpty(holder.itemRealm.getImages().getUrl())) {
-                    final String url = holder.itemRealm.getImages().getUrl();
-                    Glide.with((holder.itemView.getContext())).load(url).crossFade().into(holder.img);
-                }
-
+                Glide.with((holder.itemView.getContext())).load(holder.itemRealm.img).crossFade().into(holder.img);
                 if (!TextUtils.isEmpty(date) && date.length() > 32) {
                     holder.date.setText(date.substring(27, 31) + "" + date.substring(7, 9));
                     String ed;
@@ -134,12 +122,7 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
             //label
             Typeface typeFaceLabel = Typeface.createFromAsset(holder.view.getContext().getAssets(), "fonts/Roboto-Bold.ttf");
             holder.label.setTypeface(typeFaceLabel);
-            if (holder.itemRealm.getCategories() != null && holder.itemRealm.getCategories().size() > 0) {
-                holder.label.setText("" + holder.itemRealm.getCategories().get(0).getLabel());
-            } else {
-                holder.label.setText("World");
-            }
-
+            holder.label.setText(holder.itemRealm.label);
 
             //title
             Typeface typeFaceTitle = Typeface.createFromAsset(holder.view.getContext().getAssets(), "fonts/Roboto-Light.ttf");
@@ -150,29 +133,7 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
             //press
             Typeface typeFacePress = Typeface.createFromAsset(holder.view.getContext().getAssets(), "fonts/Roboto-Light.ttf");
             holder.sources.setTypeface(typeFacePress);
- /*           RealmList<Source> presses = holder.itemRealm.getSources();
-            if (presses != null && presses.size() > 0) {
-
-                StringBuilder sb = new StringBuilder();
-                if (presses.size() == 1) {
-                    sb.append(presses.get(0).getPublisher());
-                } else if (presses.size() == 2) {
-                    sb.append(presses.get(0).getPublisher()).append(",").append(presses.get(1).getPublisher());
-                } else if (presses.size() == 3) {
-                    sb.append(presses.get(0).getPublisher()).append(",").append(presses.get(1).getPublisher());
-                    sb.append(" + 1 more");
-                } else if (presses.size() == 4) {
-                    sb.append(presses.get(0).getPublisher()).append(",").append(presses.get(1).getPublisher());
-                    sb.append(" + 2 more");
-                } else {
-                    sb.append(presses.get(0).getPublisher()).append(",").append(presses.get(1).getPublisher());
-                    sb.append(" + 3 more");
-                }
-                holder.sources.setText("" + sb.toString());
-            } else {
-                holder.sources.setText("Yahoo News");
-            }*/
-            holder.sources.setText(ItemRealUtil.getPress(holder.itemRealm));
+            holder.sources.setText(holder.itemRealm.press);
             final ViewHolder holder1 = holder;
             final int position1 = position;
             holder.view.setOnClickListener(new View.OnClickListener() {
@@ -187,41 +148,56 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
             });
 
 
-            if (holder.itemRealm.getColors() != null && holder.itemRealm.getColors().size() > 0) {
+            int stateColor = holder.itemRealm.color;
+            //index
+            if (holder.itemRealm.isChecked()) {
+                holder.donutProgress.setFinishedStrokeColor(stateColor);
+                holder.donutProgress.setUnfinishedStrokeColor(stateColor);
+                holder.donutProgress.setInnerBackgroundColor(stateColor);
+                holder.donutProgress.setTextColor(android.graphics.Color.WHITE);
 
-                Color color = holder.itemRealm.getColors().get(0);
-                int stateColor = android.graphics.Color.parseColor(color.getHexcode());
+            } else {
+                holder.donutProgress.setFinishedStrokeColor(stateColor);
+                holder.donutProgress.setUnfinishedStrokeColor(stateColor);
+                holder.donutProgress.setTextColor(stateColor);
+                holder.donutProgress.setInnerBackgroundColor(android.graphics.Color.TRANSPARENT);
+            }
 
-                //index
+            //label
+            holder.label.setTextColor(stateColor);
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 
-                if (holder.itemRealm.isChecked()) {
-                    holder.donutProgress.setFinishedStrokeColor(stateColor);
-                    holder.donutProgress.setUnfinishedStrokeColor(stateColor);
-                    holder.donutProgress.setInnerBackgroundColor(stateColor);
-                    holder.donutProgress.setTextColor(android.graphics.Color.WHITE);
-
-                } else {
-                    holder.donutProgress.setFinishedStrokeColor(stateColor);
-                    holder.donutProgress.setUnfinishedStrokeColor(stateColor);
-                    holder.donutProgress.setTextColor(stateColor);
-                    holder.donutProgress.setInnerBackgroundColor(android.graphics.Color.TRANSPARENT);
+                StateListDrawable stateListDrawable = new StateListDrawable();
+                stateListDrawable.addState(new int[]{android.R.attr.state_empty},
+                        new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                int cl = android.graphics.Color.parseColor("#55" + holder.itemRealm.getHexCode().substring(1));
+                stateListDrawable.addState(new int[]{android.R.attr.state_pressed},
+                        new ColorDrawable(cl));
+                holder.view.setBackground(stateListDrawable);
+            }
+            if (holder.itemRealm.order != null) {
+                if (!holder.itemRealm.order.contains("wiki")) {
+                    holder.images.findViewById(R.id.wiki).setVisibility(View.GONE);
                 }
-
-                //label
-                holder.label.setTextColor(stateColor);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-
-                    StateListDrawable stateListDrawable = new StateListDrawable();
-                    stateListDrawable.addState(new int[]{android.R.attr.state_empty},
-                            new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                    int cl = android.graphics.Color.parseColor("#55" + color.getHexcode().substring(1));
-                    stateListDrawable.addState(new int[]{android.R.attr.state_pressed},
-                            new ColorDrawable(cl));
-                    holder.view.setBackground(stateListDrawable);
+                if (!holder.itemRealm.order.contains("location")) {
+                    holder.images.findViewById(R.id.map).setVisibility(View.GONE);
                 }
-
+                if (!holder.itemRealm.order.contains("video")) {
+                    holder.images.findViewById(R.id.video).setVisibility(View.GONE);
+                }
+                if (!holder.itemRealm.order.contains("slideshow")) {
+                    holder.images.findViewById(R.id.images).setVisibility(View.GONE);
+                }
+                if (!holder.itemRealm.order.contains("statDetail")) {
+                    holder.images.findViewById(R.id.stats).setVisibility(View.GONE);
+                }
+                if (!holder.itemRealm.order.contains("infograph")) {
+                    holder.images.findViewById(R.id.diagram).setVisibility(View.GONE);
+                }
+                if (!holder.itemRealm.order.contains("tweetKeyword")) {
+                    holder.images.findViewById(R.id.twitter).setVisibility(View.GONE);
+                }
             }
 
 
@@ -238,31 +214,34 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
     public void bindFooterView(RecyclerView.ViewHolder footViewHolder, int position) {
 
         final FooterViewHolder holder = (FooterViewHolder) footViewHolder;
-
+        final int readColor = holder.revealView.getContext().getResources().getColor(R.color.read_color);
         Typeface typeface = Typeface.createFromAsset(holder.itemView.getContext().getAssets(), "fonts/Roboto-Thin.ttf");
+        Typeface ty = Typeface.createFromAsset(holder.itemView.getContext().getAssets(), "fonts/Roboto-Light.ttf");
         holder.bigTitle.setTypeface(typeface);
         holder.smallTitle.setTypeface(typeface);
+        holder.urd.setTypeface(ty);
+        holder.textView.setTypeface(ty);
         final int count = getAllItems().size();
 
         holder.textView.setText(holder.circleLayout.getActiveCount() + " of " + count);
 
         int index = 1;
+        if (!allChecked) {
+            for (int i = 0; i < count; i++) {
+                int activeColor = getItem(i).color;
+                holder.circleLayout.addItem("" + index, activeColor);
+                index++;
+            }
 
-
-        for (int i = 0; i < count; i++) {
-            Color color = getItem(i).getColors().get(0);
-            int activeColor = android.graphics.Color.parseColor(color.getHexcode());
-            holder.circleLayout.addItem("" + index, activeColor);
-            index++;
-        }
-
-        for (int i = 0; i < count; i++) {
-            if (getItem(i).isChecked()) {
-                holder.circleLayout.activeItem(i);
+            for (int i = 0; i < count; i++) {
+                if (getItem(i).isChecked()) {
+                    holder.circleLayout.activeItem(i);
+                }
             }
         }
         if (holder.circleLayout.getActiveCount() == count) {
-
+            allChecked = true;
+            holder.toggleButton.setTextColor(android.graphics.Color.WHITE);
             holder.readIndicator.setVisibility(View.GONE);
             holder.circleLayout.setVisibility(View.GONE);
             holder.toggleButton.setTextColor(android.graphics.Color.WHITE);
@@ -271,7 +250,7 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
             holder.doYouKnow.setVisibility(View.VISIBLE);
             holder.circleLayout.setClickable(false);
             holder.circleLayout.setEnabled(false);
-            holder.revealView.setBackgroundColor(android.graphics.Color.parseColor("#00AA00"));
+            holder.revealView.setBackgroundColor(readColor);
 
         } else {
 
@@ -306,12 +285,12 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
 
                 @Override
                 public void onAnimationShrinkEnd(Animator animation) {
-                    final int cl = android.graphics.Color.parseColor("#00AA00");
+                    //final int cl = android.graphics.Color.parseColor("#00AA00");
                     holder.readIndicator.setVisibility(View.GONE);
                     holder.circleLayout.setVisibility(View.GONE);
                     holder.circleLayout.setClickable(false);
                     holder.circleLayout.setEnabled(false);
-                    holder.revealView.reveal(holder.revealView.getMeasuredWidth() / 2 - 10, holder.revealView.getMeasuredHeight() / 2 - 10, cl, 20, 500, new AnimatorListenerAdapter() {
+                    holder.revealView.reveal(holder.revealView.getMeasuredWidth() / 2 - 10, holder.revealView.getMeasuredHeight() / 2 - 10, readColor, 20, 500, new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
@@ -320,6 +299,7 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
                             Drawable bottom = holder.readIndicator.getContext().getResources().getDrawable(R.mipmap.extranews_arrow_down_w);
                             holder.toggleButton.setCompoundDrawablesWithIntrinsicBounds(null, null, null, bottom);
                             holder.doYouKnow.setVisibility(View.VISIBLE);
+                            allChecked = true;
                         }
                     });
                 }
@@ -358,7 +338,7 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
         final View sectionArea;
         final TextView date;
         final TextView section;
-        public ItemRealm itemRealm;
+        public DetailItem itemRealm;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -370,7 +350,7 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
             label = (TextView) itemView.findViewById(R.id.label);
             title = (TextView) itemView.findViewById(R.id.title);
             sources = (TextView) itemView.findViewById(R.id.sources);
-            images = (LinearLayout) itemView.findViewById(R.id.images);
+            images = (LinearLayout) itemView.findViewById(R.id.order);
             sectionArea = itemView.findViewById(R.id.sectionArea);
             date = (TextView) itemView.findViewById(R.id.date);
             section = (TextView) itemView.findViewById(R.id.section);
@@ -388,6 +368,7 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
         final View readIndicator;
         final View doYouKnow;
         final TextView toggleButton;
+        final TextView urd;
 
         public FooterViewHolder(View itemView) {
             super(itemView);
@@ -400,6 +381,7 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
             this.readIndicator = itemView.findViewById(R.id.readIndicator);
             this.doYouKnow = itemView.findViewById(R.id.know);
             this.toggleButton = (TextView) itemView.findViewById(R.id.toggleButton);
+            this.urd = (TextView) itemView.findViewById(R.id.uread);
 
         }
     }
@@ -416,4 +398,7 @@ public class NewsAdapter extends BaseRecyclerViewAdapter<ItemRealm> {
         notifyDataSetChanged();
     }
 
+    public boolean isAllChecked() {
+        return allChecked;
+    }
 }

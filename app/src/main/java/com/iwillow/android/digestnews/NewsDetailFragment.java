@@ -32,7 +32,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.exoplayer.util.Util;
-import com.iwillow.android.digestnews.db.Item2ItemRealm;
+import com.iwillow.android.digestnews.db.EntityHelper;
 import com.iwillow.android.digestnews.entity.Category;
 import com.iwillow.android.digestnews.entity.Image;
 import com.iwillow.android.digestnews.entity.ImageAsset;
@@ -166,7 +166,7 @@ public class NewsDetailFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        distance = (int) DimensionUtil.dp2px(getResources(), 300);
+        distance = (int) DimensionUtil.dp2px(getResources(), 350);
         if (getArguments() != null) {
             uuid = getArguments().getString(UUID);
             color = getArguments().getInt(COLOR);
@@ -241,7 +241,7 @@ public class NewsDetailFragment extends BaseFragment {
         if (index == -1) {
             donutProgress.setVisibility(View.GONE);
         } else {
-            donutProgress.setText("" + index);
+            donutProgress.setText("" + (index + 1));
             donutProgress.setTextColor(color);
             donutProgress.setInnerBackgroundColor(Color.TRANSPARENT);
             donutProgress.setFinishedStrokeColor(color);
@@ -294,11 +294,11 @@ public class NewsDetailFragment extends BaseFragment {
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 float fraction = 1.0f * scrollY / distance;
 
-                if (fraction <= 1.0f) {
-                    banner.setTranslationY(0.65f * fraction * scrollY);
-
+                if (0.75f * fraction <= 1.0f) {
+                    banner.setTranslationY(0.75f * fraction * scrollY);
+                } else {
+                    banner.setTranslationY(distance);
                 }
-
                 if (fraction < 0.8f) {
                     if (functionBar.getVisibility() == View.GONE) {
                         functionBar.setVisibility(View.VISIBLE);
@@ -401,7 +401,7 @@ public class NewsDetailFragment extends BaseFragment {
                 .map(new Func1<List<Item>, ItemRealm>() {
                     @Override
                     public ItemRealm call(List<Item> items) {
-                        return Item2ItemRealm.convert(items.get(0));
+                        return EntityHelper.convert(items.get(0));
                     }
                 })
                 .subscribeOn(Schedulers.io())
@@ -504,9 +504,13 @@ public class NewsDetailFragment extends BaseFragment {
                     public void onNext(Boolean aBoolean) {
                         if (aBoolean) {
                             if (index != -1) {
+
                                 donutProgress.setInnerBackgroundColor(color);
                                 donutProgress.setTextColor(Color.WHITE);
                                 donutProgress.setVisibility(View.VISIBLE);
+                                if (getActivity() instanceof NewsDetailActivity) {
+                                    ((NewsDetailActivity) getActivity()).updateIndex(index);
+                                }
                             } else {
                                 donutProgress.setVisibility(View.GONE);
                             }
@@ -540,7 +544,7 @@ public class NewsDetailFragment extends BaseFragment {
             lable.setText(labl);
             lable.setVisibility(View.VISIBLE);
             lable.setTag(ItemRealUtil.getPress(itemRealm));
-            Glide.with(banner.getContext()).load(itemRealm.getImages().getUrl()).crossFade().into(banner);
+            Glide.with(banner.getContext()).load(EntityHelper.getImageSrc(itemRealm.getImages())).crossFade().into(banner);
             //title
             title.setText("" + itemRealm.getTitle());
             title.setTag("" + itemRealm.getLink());
@@ -582,23 +586,16 @@ public class NewsDetailFragment extends BaseFragment {
             addReference(itemRealm);
             line.setVisibility(View.VISIBLE);
             error.setVisibility(View.GONE);
-            if (!itemRealm.isChecked() && getActivity() instanceof NewsDetailActivity) {
-
-                if (((NewsDetailActivity) getActivity()).getCurrentIndex() + 1 == index) {
-
-                }
-            }
             if (getActivity() instanceof NewsDetailActivity) {
                 int pageIndex = ((NewsDetailActivity) getActivity()).getCurrentIndex();
-                if (pageIndex == index - 1 && !itemRealm.isChecked()) {
+                if (pageIndex == index && !itemRealm.isChecked()) {
                     // LogUtil.e(TAG, "Fragment index:" + (index - 1) + ";viewpager index:" + pageIndex);
                     activeItem();
-
                 }
             }
-
-            event = getEvent(itemRealm);
-
+            if (index != -1) {
+                event = getEvent(itemRealm);
+            }
         } else {
             error.setVisibility(View.VISIBLE);
         }
@@ -611,7 +608,7 @@ public class NewsDetailFragment extends BaseFragment {
         RealmList<Source> sources = itemRealm.getSources();
 
 
-        if (!sources.isEmpty() && sources.size() > 0) {
+        if (sources != null && sources.size() > 0) {
             anchorArea.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -795,15 +792,17 @@ public class NewsDetailFragment extends BaseFragment {
                 URLSpanNoUnderline.stripUnderlines(tweetScreenName);
 
                 TextView tweetTime = $(tweetItemView, R.id.tweetTime);
-                tweetTime.setText("11h");
-                // tweetTime.setTypeface(typefaceBold);
+                String d=TweetTransformer.twitterTime(tweetItemRealm.getCreated_at());
+                tweetTime.setText(d);
+
 
                 TextView tweetText = $(tweetItemView, R.id.tweetText);
                 tweetText.setTypeface(typefaceLight);
                 String text = tweetItemRealm.getText();
                 Spanned s = Html.fromHtml(TweetTransformer.convert(text));
                 tweetText.setText(s);
-                tweetText.setLinkTextColor(Color.parseColor("#FF95CEFB"));
+
+                tweetText.setLinkTextColor(getResources().getColor(R.color.twitter_border));
                 tweetText.setMovementMethod(LinkMovementMethod.getInstance());
                 URLSpanNoUnderline.stripUnderlines(tweetText);
 
@@ -841,7 +840,6 @@ public class NewsDetailFragment extends BaseFragment {
                             startActivity(intent);
                         }
                     });
-
 
                 }
 
@@ -922,7 +920,7 @@ public class NewsDetailFragment extends BaseFragment {
                 }
 
                 ImageView imageView = $(videoItemView, R.id.thumbnail);
-                Glide.with(NewsDetailFragment.this).load(video.getThumbnail()).centerCrop().crossFade().into(imageView);
+                Glide.with(imageView.getContext()).load(video.getThumbnail()).centerCrop().crossFade().into(imageView);
                 RealmList<Stream> streams = video.getStreams();
                 if (streams != null && streams.size() > 0) {
                     String url = null;
@@ -977,8 +975,8 @@ public class NewsDetailFragment extends BaseFragment {
 
                 ImageView infographImg = $(infographItemView, R.id.infographImg);
 
-                String src = getImageSource(infograph.getImages());
-                Glide.with(NewsDetailFragment.this).load(src).crossFade().into(infographImg);
+                String src = EntityHelper.getImageSrc(infograph.getImages());
+                Glide.with(infographImg.getContext()).load(src).crossFade().into(infographImg);
 
                 infographs.addView(infographItemView);
             }
@@ -1127,10 +1125,10 @@ public class NewsDetailFragment extends BaseFragment {
         final ArrayList<SlideItem> slideItems = new ArrayList<SlideItem>();
         for (Photo photo : photos) {
             SlideItem slideItem = new SlideItem();
-            slideItem.caption = photos.get(0).getCaption();
-            slideItem.headline = photos.get(0).getHeadline();
-            slideItem.provider_name = photos.get(0).getProvider_name();
-            slideItem.url = photo.getImages().getUrl();
+            slideItem.caption = photo.getCaption();
+            slideItem.headline = photo.getHeadline();
+            slideItem.provider_name = photo.getProvider_name();
+            slideItem.url = EntityHelper.getImageSrc(photo.getImages());
             slideItems.add(slideItem);
             galleryAdapter.addItem(slideItem);
         }
@@ -1140,7 +1138,7 @@ public class NewsDetailFragment extends BaseFragment {
         } else if (slideItems.size() == 1) {
             singleImage.setVisibility(View.VISIBLE);
             gallery.setVisibility(View.GONE);
-            String src = photos.get(0).getImages().getUrl();
+            String src = EntityHelper.getImageSrc(photos.get(0).getImages());
             Glide.with(singleImage.getContext()).load(src).centerCrop().crossFade().into(singleImage);
             singleImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1191,7 +1189,7 @@ public class NewsDetailFragment extends BaseFragment {
 
                         @Override
                         public void onNext(Integer integer) {
-                            if (index - 1 == integer) {
+                            if (index == integer) {
                                 // LogUtil.e(TAG, "Fragment index:" + (index - 1) + ";viewpager index:" + integer);
                                 if (!itemRealm.isChecked()) {
                                     activeItem();

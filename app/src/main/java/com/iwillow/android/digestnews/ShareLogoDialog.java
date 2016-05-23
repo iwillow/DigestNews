@@ -6,24 +6,18 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.iwillow.android.digestnews.entity.Image;
 import com.iwillow.android.digestnews.widget.BaseRecyclerViewAdapter;
-import com.iwillow.android.lib.log.LogUtil;
 import com.iwillow.android.lib.util.IntentUtil;
 
 import java.util.List;

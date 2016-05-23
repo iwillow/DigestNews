@@ -1,5 +1,11 @@
 package com.iwillow.android.digestnews.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by https://www.github.com/iwillow on 2016/5/4.
  */
@@ -38,6 +44,27 @@ public class TweetTransformer {
    
         return sb.toString();
     }
+    public static String twitterTime(String createdTime) {
+        String result = "1d";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+        try {
+            Date date = sdf.parse(createdTime);
+            long t2 = date.getTime();
+            long t1 = System.currentTimeMillis();
+            Long delta = Long.valueOf(TimeUnit.MILLISECONDS.toHours(Long.valueOf(t1 - t2).longValue()));
+            if (delta.longValue() < 1L) {
+                return "1h";
+            }
+            if (delta.longValue() < 24L) {
+                return delta.longValue() + "h";
+            }
+            return delta.longValue() / 24 + "d";
 
+        } catch (ParseException e) {
+
+            e.printStackTrace();
+        }
+        return result;
+    }
 
 }

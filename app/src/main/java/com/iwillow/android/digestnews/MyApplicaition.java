@@ -2,7 +2,6 @@ package com.iwillow.android.digestnews;
 
 import android.app.Application;
 
-import com.iwillow.android.digestnews.util.RxBus;
 import com.squareup.leakcanary.LeakCanary;
 
 import io.realm.Realm;

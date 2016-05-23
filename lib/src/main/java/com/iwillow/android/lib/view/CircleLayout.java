@@ -290,6 +290,12 @@ public class CircleLayout extends ViewGroup {
         }
     };
 
+    public boolean isItemActive(int index) {
+        if (mData != null && index >= 0 && index < mData.size()) {
+            return mData.get(index).activation;
+        }
+        return false;
+    }
 
     @Override
     protected void onAttachedToWindow() {

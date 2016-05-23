@@ -27,6 +27,7 @@ import rx.schedulers.Schedulers;
 public class EditionDialog extends DialogFragment implements View.OnClickListener {
 
     public static final String PREFS_NAME = "NEWS_EDITION";
+    public static final String OPENED = "first_time";
     public static final String EDITION = "edition";
     public static final String PAGE = "page";
     public static final String PAGE_NOTICE = "notice";
@@ -49,7 +50,6 @@ public class EditionDialog extends DialogFragment implements View.OnClickListene
     private View termOfService;
     private View privacyPolicy;
     private View credits;
-    
 
 
     private Subscription subscription;

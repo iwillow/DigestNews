@@ -37,10 +37,6 @@ public class ProductGuideDialog extends DialogFragment {
     private final String TAG = ProductGuideDialog.class.getSimpleName();
     private CirclePageIndicator mCirclePageIndicator;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private ViewPager mViewPager;
     private boolean mViewPagerScrollingLeft;
     private float mPreviousPositionOffset;
@@ -49,9 +45,7 @@ public class ProductGuideDialog extends DialogFragment {
     private int mViewPagerScrollState = ViewPager.SCROLL_STATE_SETTLING;
     private CircleView mCircleView;
     private TextView mSkip;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
     private FragmentPagerAdapter adapter;
 
     private CircularRevealView mCircularRevealView;
@@ -61,32 +55,13 @@ public class ProductGuideDialog extends DialogFragment {
 
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProductGuideDialog.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProductGuideDialog newInstance(String param1, String param2) {
-        ProductGuideDialog fragment = new ProductGuideDialog();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Black_NoTitleBar);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
     }
 
@@ -99,7 +74,7 @@ public class ProductGuideDialog extends DialogFragment {
         mViewPager = (ViewPager) root.findViewById(R.id.viewPager);
         mSkip = (TextView) root.findViewById(R.id.skip);
         mCircularRevealView = (CircularRevealView) root.findViewById(R.id.revalView);
-        Typeface typeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Thin.ttf");
+        Typeface typeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Light.ttf");
         mSkip.setTypeface(typeFace);
         mSkip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -297,7 +272,7 @@ public class ProductGuideDialog extends DialogFragment {
         circleView.setOnStateChangedListener(new CircleView.OnStateChangedListener() {
             @Override
             public void onRadicalMoveOver() {
-                final int color = Color.parseColor("#F0F8FF");
+                final int color = Color.parseColor("#FFFAF0");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     mCircularRevealView.setBackgroundColor(color);
                     mCircularRevealView.setVisibility(View.INVISIBLE);
@@ -402,6 +377,11 @@ public class ProductGuideDialog extends DialogFragment {
 
             final Button start = $(rootView, R.id.start);
             final CircleView circleView = $(rootView, R.id.circleView);
+            final TextView textView1 = $(rootView, R.id.descptTitle1);
+            final TextView textView2 = $(rootView, R.id.descptTitle2);
+            Typeface typeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Light.ttf");
+            textView1.setTypeface(typeFace);
+            textView2.setTypeface(typeFace);
             if (start != null && circleView != null) {
 
                 start.setOnClickListener(new View.OnClickListener() {
