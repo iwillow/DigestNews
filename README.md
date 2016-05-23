@@ -1,8 +1,10 @@
 # Digest News
+
 This app is the open source edition for [yahoo news digest](https://play.google.com/store/apps/details?id=com.yahoo.mobile.client.android.atom). so do not make this app for commercial usage. This application's  http   response interfaces and images  are Copyright (c) 2014, Yahoo Inc. All Rights Reserved.This application uses open source components. You can find the source code of their open source projects along with license information below.  I am  very grateful to these developers for their contributions to open sources.
 
 #Download
-you can directly download the apk from [here](https://github.com/iwillow/DigestNews/blob/master/screenshots/DigestNew_v1.01.apk) or scan the following QR code images. 
+
+You can directly download the apk from [here](https://github.com/iwillow/DigestNews/blob/master/screenshots/DigestNew_v1.01.apk) or scan the following QR code images. 
 
 ###百度手机助手
 ![Digest News](http://d.hiphotos.bdimg.com/wisegame/pic/item/aa3d70cf3bc79f3dc30bcce5bda1cd11738b2978.jpg)
