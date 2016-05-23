@@ -22,6 +22,12 @@ You can directly download the apk from [here](https://github.com/iwillow/DigestN
 ![](https://github.com/iwillow/DigestNews/blob/master/screenshots/img1.png)
 ![](https://github.com/iwillow/DigestNews/blob/master/screenshots/img2.png)
 
+
+#Developer
+
+* iwillow -[iwillow@163.com](mailto:iwillow@163.com)
+
+
 #Contributors
 
 * [gson](https://github.com/google/gson) by [google](https://github.com/google)
@@ -36,5 +42,22 @@ You can directly download the apk from [here](https://github.com/iwillow/DigestN
 * [ViewPagerIndicator](https://github.com/JakeWharton/ViewPagerIndicator) by [Jake Wharton](https://github.com/JakeWharton)
 * [CircleProgress](https://github.com/lzyzsd/CircleProgress) by [lzyzsd](https://github.com/lzyzsd)
 
+
+License
+=======
+
+    Copyright 2016 https://www.github.com/iwillow
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 
