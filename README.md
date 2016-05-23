@@ -4,9 +4,12 @@ This app is the open source edition for [yahoo news digest](https://play.google.
 #Screenshots
 news list page
 ![yahoo news digest](https://github.com/iwillow/DigestNews/blob/master/screenshots/MI_20160522_191031.png)
+
 news detail information page
 ![news detail information page](https://github.com/iwillow/DigestNews/blob/master/screenshots/MI_20160522_191124.png)
+
 new image gallery page
 ![news image gallery page](https://github.com/iwillow/DigestNews/blob/master/screenshots/MI_20160522_191139.png)
+
 
 
