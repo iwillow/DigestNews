@@ -22,5 +22,19 @@ You can directly download the apk from [here](https://github.com/iwillow/DigestN
 ![](https://github.com/iwillow/DigestNews/blob/master/screenshots/img1.png)
 ![](https://github.com/iwillow/DigestNews/blob/master/screenshots/img2.png)
 
+#Contributors
+
+* [gson](https://github.com/google/gson) by [google](https://github.com/google)
+* [ExoPlayer](https://github.com/google/ExoPlayer) by [google](https://github.com/google)
+* [okhttp3](https://github.com/square/okhttp) by [square](https://github.com/square/)
+* [LeakCanary](https://github.com/square/leakcanary) by [square](https://github.com/square/)
+* [RxJava](https://github.com/ReactiveX/RxJava) by [ReactiveX](https://github.com/ReactiveX)
+* [RxAndroid](https://github.com/ReactiveX/RxAndroid) by [ReactiveX](https://github.com/ReactiveX)
+* [Realm](https://github.com/realm/realm-java) 
+* [glide](https://github.com/bumptech/glide) by [bumptech](https://github.com/bumptech)
+* [jsoup](https://github.com/jhy/jsoup) by [jhy](https://github.com/jhy)
+* [ViewPagerIndicator](https://github.com/JakeWharton/ViewPagerIndicator) by [Jake Wharton](https://github.com/JakeWharton)
+* [CircleProgress](https://github.com/lzyzsd/CircleProgress) by [lzyzsd](https://github.com/lzyzsd)
+
 
 
