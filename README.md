@@ -4,7 +4,7 @@ This app is the open source edition for [yahoo news digest](https://play.google.
 
 #Download
 
-You can directly download the apk from [here](https://github.com/iwillow/DigestNews/blob/master/screenshots/DigestNew_v1.01.apk) or scan the following QR code images from different app stores. 
+You can directly download the apk from [here](https://github.com/iwillow/DigestNews/blob/master/screenshots/DigestNew_v1.01.apk) or scan the following QR code images to download it from different android app stores. 
 
 ####百度手机助手
 ![Digest News](http://d.hiphotos.bdimg.com/wisegame/pic/item/aa3d70cf3bc79f3dc30bcce5bda1cd11738b2978.jpg)
