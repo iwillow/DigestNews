@@ -10,6 +10,19 @@ This app is the open source edition for [yahoo news digest](https://play.google.
 * Even though the app can run on some low screen resolution  (eg. 854x480) mobile phone. I strongly recommend 1280x720 and above higher screen resolution.
 * 4.7' and above screen dimension is recommended.Moreover,the app is developed for phone not pad.You'd better not install it on some pad  such as Nexus 7.
 
+
+#Screenshots
+
+![](https://github.com/iwillow/DigestNews/blob/master/screenshots/img1.png)
+![](https://github.com/iwillow/DigestNews/blob/master/screenshots/img2.png)
+
+#App Test Report
+
+![](https://github.com/iwillow/DigestNews/blob/master/screenshots/test_report1.PNG)
+![](https://github.com/iwillow/DigestNews/blob/master/screenshots/test_report2.PNG)
+
+You can see the complete report from [here](https://github.com/iwillow/DigestNews/blob/master/screenshots/1463979424_DigestNew_v1.01.apk_report.pdf).
+
 #Download
 
 You can directly download the apk from [here](https://github.com/iwillow/DigestNews/blob/master/screenshots/DigestNew_v1.01.apk) or scan the following QR code images to download it from different android app stores. 
@@ -22,12 +35,6 @@ You can directly download the apk from [here](https://github.com/iwillow/DigestN
 
 ####安卓市场
 ![Digest News](http://img.r1.market.hiapk.com/data/upload/qrcode/2016/5_23/14/9c8ee59c-f2b7-49ba-b892-9804973ee730.png)
-
-
-#Screenshots
-
-![](https://github.com/iwillow/DigestNews/blob/master/screenshots/img1.png)
-![](https://github.com/iwillow/DigestNews/blob/master/screenshots/img2.png)
 
 
 #Developer
