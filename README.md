@@ -18,8 +18,11 @@ This app is the open source edition for [yahoo news digest](https://play.google.
 
 #App Test Report
 
-![](https://github.com/iwillow/DigestNews/blob/master/screenshots/test_report1.PNG)
-![](https://github.com/iwillow/DigestNews/blob/master/screenshots/test_report2.PNG)
+![summary](https://github.com/iwillow/DigestNews/blob/master/screenshots/summary.png)
+![install duration](https://github.com/iwillow/DigestNews/blob/master/screenshots/install_duration.png)
+![launch duration](https://github.com/iwillow/DigestNews/blob/master/screenshots/launch_duration.png)
+![memory consumption](https://github.com/iwillow/DigestNews/blob/master/screenshots/memory_consumption.png)
+![CPU Change Curve](https://github.com/iwillow/DigestNews/blob/master/screenshots/CPU_curve.png)
 
 You can see the complete report from [here](https://github.com/iwillow/DigestNews/blob/master/screenshots/1463979424_DigestNew_v1.01.apk_report.pdf).
 
