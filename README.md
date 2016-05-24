@@ -24,7 +24,7 @@ This app is the open source edition for [yahoo news digest](https://play.google.
 ![memory consumption](https://github.com/iwillow/DigestNews/blob/master/screenshots/memory_consumption.png)
 ![CPU Change Curve](https://github.com/iwillow/DigestNews/blob/master/screenshots/CPU_curve.png)
 
-You can see the complete report from [here](https://github.com/iwillow/DigestNews/blob/master/screenshots/1463979424_DigestNew_v1.01.apk_report.pdf).
+
 
 #Download
 
