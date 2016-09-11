@@ -10,6 +10,7 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,6 +31,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.AMapOptions;
+import com.amap.api.maps2d.CameraUpdate;
+import com.amap.api.maps2d.CameraUpdateFactory;
+import com.amap.api.maps2d.SupportMapFragment;
+import com.amap.api.maps2d.model.BitmapDescriptorFactory;
+import com.amap.api.maps2d.model.CameraPosition;
+import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.MarkerOptions;
 import com.bumptech.glide.Glide;
 import com.google.android.exoplayer.util.Util;
 import com.iwillow.android.digestnews.db.EntityHelper;
@@ -792,7 +802,7 @@ public class NewsDetailFragment extends BaseFragment {
                 URLSpanNoUnderline.stripUnderlines(tweetScreenName);
 
                 TextView tweetTime = $(tweetItemView, R.id.tweetTime);
-                String d=TweetTransformer.twitterTime(tweetItemRealm.getCreated_at());
+                String d = TweetTransformer.twitterTime(tweetItemRealm.getCreated_at());
                 tweetTime.setText(d);
 
 
@@ -1113,6 +1123,51 @@ public class NewsDetailFragment extends BaseFragment {
                         LayoutInflater.from(locations.getContext()).inflate(R.layout.item_location, locations, false);
                 TextView caption = $(locationItemView, R.id.caption);
                 caption.setText(location.getCaption());
+                final double latitude = Double.valueOf(TextUtils.isEmpty(location.getLatitude()) ? "0" : location.getLatitude());
+                final double longitude = Double.valueOf(TextUtils.isEmpty(location.getLongtitude()) ? "0" : location.getLongtitude());
+                final int zoomLevel = Integer.valueOf(TextUtils.isEmpty(location.getZoonLevel()) ? "0" : location.getZoonLevel());
+                AMapOptions aMapOptions = new AMapOptions();
+                aMapOptions.scaleControlsEnabled(false).scrollGesturesEnabled(false);
+                SupportMapFragment supportMapFragment = SupportMapFragment.newInstance(aMapOptions);
+
+                LatLng latLng = new LatLng(latitude, longitude);
+                final ImageView errorTag = $(locationItemView, R.id.errorTag);
+                final ImageView locationImg = $(locationItemView, R.id.locationImg);
+                AMap aMap = supportMapFragment.getMap();
+                aMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(
+                        latLng, zoomLevel, 0, 0));
+                aMap.moveCamera(cameraUpdate);
+                aMap.getUiSettings().setAllGesturesEnabled(false);
+                aMap.getUiSettings().setZoomControlsEnabled(false);
+                aMap.getUiSettings().setZoomGesturesEnabled(false);
+                aMap.getUiSettings().setMyLocationButtonEnabled(false);
+                aMap.setMapLanguage(AMap.ENGLISH);
+                aMap.setOnMapLoadedListener(new AMap.OnMapLoadedListener() {
+                    @Override
+                    public void onMapLoaded() {
+                        errorTag.setVisibility(View.GONE);
+                        locationImg.setVisibility(View.GONE);
+                    }
+                });
+                getChildFragmentManager().beginTransaction().add(R.id.mapContainer, supportMapFragment).commit();
+                final String captionStr = location.getCaption();
+                final String name = location.getName();
+                $(locationItemView, R.id.mask).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), LocationActivity.class);
+                        intent.putExtra(LocationActivity.LATITUDE, latitude);
+                        intent.putExtra(LocationActivity.LONGITUDE, longitude);
+                        intent.putExtra(LocationActivity.ZOOM_LEVER, zoomLevel);
+                        intent.putExtra(LocationActivity.CAPTION, captionStr);
+                        intent.putExtra(LocationActivity.NAME, name);
+                        startActivity(intent);
+                    }
+                });
                 // caption.setTypeface(typefaceBold);
                 locations.addView(locationItemView);
             }

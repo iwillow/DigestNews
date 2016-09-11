@@ -576,4 +576,5 @@ at times you choose."</string>
     <string name="yssdk_uparrow_icon"></string>
     <string name="yssdk_videoicon"></string>
     <string name="title_activity_path_type">PathTypeActivity</string>
+    <string name="title_activity_map">MapActivity</string>
 </resources>

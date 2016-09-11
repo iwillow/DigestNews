@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="button_map" type="id" />
+    <item name="pin_header" type="id" />
+    <item name="button_expand_list_view" type="id" />
+    <item name="expand_list_view" type="id" />
+    <item name="map_view" type="id" />
+    <item name="text_view_group" type="id" />
+    <item name="text_view_child" type="id" />
+</resources>

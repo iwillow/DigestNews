@@ -16,7 +16,7 @@
     <string name="application_name">ExoPlayer Demo</string>
 
     <string name="enable_background_audio">Play in background</string>
-    
+
     <string name="audio">Audio</string>
 
     <string name="text">Text</string>
@@ -47,6 +47,7 @@
 
     <string name="storage_permission_denied">Permission to access storage was denied</string>
     <string name="title_activity_slide_show">SlideShowActivity</string>
+    <string name="title_activity_location">LocationActivity</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="auth_client_needs_enabling_title">An application requires Google Play Services to be enabled.</string>
     <string name="auth_client_needs_installation_title">An application requires installation of Google Play Services.</string>

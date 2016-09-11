@@ -404,7 +404,7 @@
     <dimen name="share_title_text_left_margin">20.0dp</dimen>
     <dimen name="share_title_text_right_margin">20.0dp</dimen>
     <dimen name="share_title_text_top_margin">12.0dp</dimen>
-    <item type="dimen" name="share_triangle_height">@dimen/options_overlay_triangle_height</item>
+    <item name="share_triangle_height" type="dimen">@dimen/options_overlay_triangle_height</item>
     <dimen name="slideshow_activity_caption_text_size">16.0sp</dimen>
     <dimen name="slideshow_activity_horizontal_padding">12.0dp</dimen>
     <dimen name="slideshow_activity_image_provider_bottom_padding">12.0dp</dimen>
@@ -425,7 +425,8 @@
     <dimen name="tutorial_text_size">16.0sp</dimen>
     <dimen name="widget_category_text_size">8.0sp</dimen>
     <dimen name="widget_date_content_line_spacing">-2.0sp</dimen>
-    <item type="dimen" name="widget_date_content_margin_left">@dimen/headline_content_padding_left</item>
+    <item name="widget_date_content_margin_left" type="dimen">@dimen/headline_content_padding_left
+    </item>
     <dimen name="widget_date_content_margin_top">4.0dp</dimen>
     <dimen name="widget_date_text_size">12.0sp</dimen>
     <dimen name="widget_diagonal_height">22.0dp</dimen>
@@ -538,7 +539,9 @@
     <dimen name="news_article_page_category_padding">2.0dp</dimen>
     <dimen name="news_article_references_publisher_bottom_padding">16.0dp</dimen>
     <dimen name="news_article_slideshow_justified_margin">2.0dp</dimen>
-    <item type="dimen" name="news_article_stats_description_text_size">@dimen/news_article_multi_summary_text_size</item>
+    <item name="news_article_stats_description_text_size" type="dimen">
+        @dimen/news_article_multi_summary_text_size
+    </item>
     <dimen name="news_article_stats_units_bottom_margin">16.0dp</dimen>
     <dimen name="news_article_stats_value_text_size_decrease_interval">10.0dp</dimen>
     <dimen name="news_article_title_line_spacing_reduction">-3.0dp</dimen>

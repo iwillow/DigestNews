@@ -4,6 +4,24 @@
     android:layout_height="250dp"
     android:layout_marginTop="10dp">
 
+    <!--    <com.amap.api.maps2d.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </com.amap.api.maps2d.MapView>-->
+
+
+    <!--    <fragment
+            android:id="@+id/mapFragment"
+            android:name="com.amap.api.maps2d.SupportMapFragment"
+            class="com.amap.api.maps2d.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />-->
+    <FrameLayout
+        android:id="@+id/mapContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <ImageView
         android:id="@+id/locationImg"
         android:layout_width="match_parent"
@@ -26,7 +44,14 @@
         android:layout_marginBottom="10dp"
         android:background="#55909090"
         android:padding="5dp"
+        android:text="The U.N. announced the fighting could displace another 30,000 people, adding to the millions who have already fled."
         android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:text="The U.N. announced the fighting could displace another 30,000 people, adding to the millions who have already fled." />
+        android:textSize="18sp" />
+
+    <View
+        android:id="@+id/mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent" />
+
 </FrameLayout>
