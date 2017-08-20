@@ -1,3 +1,6 @@
+## DEPRECATED
+## I am so sorry to inform you  this project is deprecated and no longer being maintained because Yahoo had no longer created new digests as of June 30,2017.I can not get the news content form old API.I've loved servering you all the year.
+![Digest News](https://github.com/iwillow/DigestNews/blob/master/screenshots/warning.jpg)
 # Digest News
 ![](https://github.com/iwillow/DigestNews/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
 
