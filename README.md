@@ -7,14 +7,14 @@
 This app is the open source edition for [yahoo news digest](https://play.google.com/store/apps/details?id=com.yahoo.mobile.client.android.atom). so do not make this app for commercial usage. This application's  http   response interfaces and images  are Copyright (c) 2014, Yahoo Inc. All Rights Reserved.This application uses open source components. You can find the source code of their open source projects along with license information below.  I am  very grateful to these developers for their contributions to open sources.
 
 
-#System And Device Requirements
+# System And Device Requirements
 
 * Android 4.0 minimum. Android 5.0+ recommended
 * Even though the app can run on some low screen resolution  (eg. 854x480) mobile phone. I strongly recommend 1280x720 and above higher screen resolution.
 * 4.7' and above screen dimension is recommended.Moreover,the app is developed for phone not pad.You'd better not install it on some pad  such as Nexus 7.
 
 
-#Screenshots
+# Screenshots
 
 ![](https://github.com/iwillow/DigestNews/blob/master/screenshots/img1.png)
 
