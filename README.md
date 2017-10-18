@@ -46,9 +46,9 @@ You can directly download the apk from [here](https://github.com/iwillow/DigestN
 
 ![Digest News](http://www.wandoujia.com/qr?s=5&c=http://www.wandoujia.com/apps/com.iwillow.android.digestnews)
 
-#### 安卓市场
 
-![Digest News](http://img.r1.market.hiapk.com/data/upload/qrcode/2016/5_23/14/9c8ee59c-f2b7-49ba-b892-9804973ee730.png)
+#### FIR
+<img src="screenshots/fir-qr.png" height="100" alt="Screenshot"/> 
 
 
 # Developer
